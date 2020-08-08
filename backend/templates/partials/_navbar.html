@@ -1,0 +1,117 @@
+{% load static %}
+{% load admin_urls %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-xl navbar-dark bg-info sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href=" {% url 'index' %}">
+            <img src="{% static 'img/logo.jpg' %}" class="logo" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+<!--
+            <ul class="navbar-nav">
+                <li {% if '/' == request.path %} class="nav-item active mr-3" {% else %} class="nav-item mr-3"
+                    {% endif %}>
+                    <a class="nav-link" href="{% url 'index' %}">Home</a>
+                </li>
+                <li {% if 'about' in request.path %} class="nav-item active mr-3" {% else %} class="nav-item mr-3"
+                    {% endif %}>
+                    <a class="nav-link" href="{% url 'about' %}">About</a>
+                </li>
+                <li {% if 'listings' in request.path %} class="nav-item active mr-3" {% else %} class="nav-item mr-3"
+                    {% endif %}>
+                    <a class="nav-link" href="{% url 'salon_list' %}">Featured Salons</a>
+                </li>
+            </ul>
+-->
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">Hair <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-item"><a href="#">Women's Haircut</a></li>
+                    <li class="dropdown-item"><a href="#">Men's Haircut</a></li>
+                    <li class="dropdown-item"><a href="#">Hair Color</a></li>
+                    <li class="dropdown-item" id="allTreatments"><a href="#">See all hair treatments</a></li>
+                </ul>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">Nails <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item"><a href="#">Pedicure</a></li>
+                        <li class="dropdown-item"><a href="#">Manicure</a></li>
+                        <li class="dropdown-item"><a href="#">Gel nails</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-item" id="allTreatments"><a href="#">See all nail treatments</a></li>
+                    </ul>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                        <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">Makeup <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-item"><a href="#">Wedding makeup</a></li>
+                            <li class="dropdown-item"><a href="#">Evening makeup</a></li>
+                            <li class="dropdown-item"><a href="#">Eyelash extension</a></li>
+                            <li class="divider"></li>
+                            <li class="dropdown-item"><a href="#">See all eyelash treatments</a></li>
+                        </ul>
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">Massage <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-item"><a href="#">Thai massage</a></li>
+                                <li class="dropdown-item"><a href="#">Neck massage</a></li>
+                                <li class="dropdown-item"><a href="#">Foot massage</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown-item"><a href="#">See all massage treatments</a></li>
+                            </ul>
+                            </li>
+                        </ul>
+                
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">Freelancers<b class="caret"></b></a>
+                            </li>
+                        </ul>
+                
+
+            <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                    {% if user.username == 'pikish' %}
+                        <li class="nav-item ml-3">
+                            <a href="{% url 'admin:index' %}">Hi {{user.username}}!</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item ml-3">
+                            Hi {{user.username}}!
+                        </li>
+                    {% endif %}
+                    <li class="nav-item ml-3">
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Log out</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item ml-3">
+                        <a class="nav-link" href="{% url 'signup' %}">
+                            <i class="fas fa-user-plus"></i> Register</a>
+                    </li>
+                    <li class="nav-item ml-3">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Log in</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,433 @@
+{% extends '_base.html' %}
+{% load humanize %}
+{% load utility_tags %}
+
+{% block content %}
+
+
+<section id="showcase-inner" class="py-5 text-white">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-12">
+                <h1 class="display-4">Browse Salons</h1>
+                <p class="lead">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt, pariatur!</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Breadcrumb -->
+<section id="bc" class="mt-3">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'index'%}">
+                        <i class="fas fa-home"></i> Home</a>
+                </li>
+                <li class="breadcrumb-item active"> Browse Salons</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+
+<section id="listings" class="py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">  
+            
+              <div class="wrapper center-block hidden-xs">
+                <div class="filters-text"> <span class="filter-span">Filters {{req}}<small>(find product using filters below) {{facets.selected}}</small></span> <span style="float:right;"><i class="fa fa-filter"></i></span> </div>
+                
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                  <!-- 
+                  {% with title="City" selected=facets.selected.city %}
+                  <div class="panel panel-default">
+
+                        <div class="panel-heading" role="tab" id="heading1">
+                            <h4 class="panel-title"> 
+                              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{title}}" 
+                              aria-expanded="false" aria-controls="collapse1"> City</a> 
+                            </h4>
+                        </div>
+
+                        <div id="collapse-{{title}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                            <div class="panel-body">
+
+                                <div class="checkbox"> 
+                                  <label><a href="{% modify_query 'page' 'city' %}"> 
+                                   <input type="checkbox" class="option-input checkbox {%if not selected%}checked{%endif%}"/> 
+                                    <span class="ml-10">All</span> </a></label></div>
+                                {% for cat in facets.categories.city %}
+                                <div class="checkbox"> 
+                                  <label><input id="filtered" type="checkbox" class="option-input checkbox" value="{{cat.pk}}"
+                                          data-target="{% add_to_query 'page' city=cat.pk %}" data-target-off="{% remove_from_query 'page' city=cat.pk %}"/>
+                                    <span class="ml-10">{{cat}}</span></label></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                  {% endwith %}
+                  -->
+                   
+                  {% with title="City" selected=facets.selected.city %}
+                  <div class="panel panel-default">
+
+                        <div class="panel-heading" role="tab" id="heading1">
+                            <h4 class="panel-title"> 
+                              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{title}}" 
+                              aria-expanded="false" aria-controls="collapse1"> City</a> 
+                            </h4>
+                        </div>
+
+                        <div id="collapse-{{title}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                            <div class="panel-body">
+
+                                <div class="checkbox"> 
+                                  <label><a href="{% modify_query 'page' 'city' %}"> 
+                                   <input type="checkbox" class="option-input checkbox {%if not selected%}checked{%endif%}"/> 
+                                    <span class="ml-10">All</span> </a></label></div>
+                                {% for cat in facets.categories.city %}
+                                <div class="checkbox"> 
+                                  <label><input type="checkbox" class="option-input checkbox"/>
+                                    <a href="{% add_to_query 'page' city=cat.pk %}"><span class="ml-10">{{cat}}</span></a></label></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                  {% endwith %}
+
+                  {% with title="Area" selected=facets.selected.area %}
+                  <div class="panel panel-default">
+
+                        <div class="panel-heading" role="tab" id="heading1">
+                            <h4 class="panel-title"> 
+                              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{title}}" 
+                              aria-expanded="false" aria-controls="collapse1"> Area </a> 
+                            </h4>
+                        </div>
+
+                        <div id="collapse-{{title}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                            <div class="panel-body">
+
+                                <div class="checkbox"> 
+                                  <a href="{% modify_query 'page' 'area' %}"><label> 
+                                   <input type="checkbox" class="option-input checkbox"/> 
+                                    <span class="ml-10">All</span> </label></a></div>
+                                {% for cat in facets.categories.area %}
+                                <div class="checkbox"> 
+                                  <label> <input type="checkbox" class="option-input checkbox"/> 
+                                    <a href="{% modify_query 'page' area=cat.pk %}"><span class="ml-10">{{cat}}</span></a></label> </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                  {% endwith %}
+
+                  {% with title="Hair" selected=facets.selected.hair %}
+                  <div class="panel panel-default">
+
+                        <div class="panel-heading" role="tab" id="heading1">
+                            <h4 class="panel-title"> 
+                              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{title}}" 
+                              aria-expanded="false" aria-controls="collapse1"> Hair Categories </a> 
+                            </h4>
+                        </div>
+
+                        <div id="collapse-{{title}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                            <div class="panel-body">
+
+                                <div class="checkbox"> 
+                                  <a href="{% modify_query 'page' 'hair' %}"><label> 
+                                   <input type="checkbox" class="option-input checkbox"/> 
+                                    <span class="ml-10">All</span> </label></a></div>
+                                {% for cat in facets.categories.hair %}
+                                <div class="checkbox"> 
+                                  <a href="{% modify_query 'page' hair_categories=cat.pk %}"><label> 
+                                    <input type="checkbox" class="option-input checkbox"/> 
+                                     <span class="ml-10">{{cat}}</span></a></label> </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                  {% endwith %}
+
+                  {% with title="Nails" selected=facets.selected.nails %}
+                  <div class="panel panel-default">
+
+                        <div class="panel-heading" role="tab" id="heading1">
+                            <h4 class="panel-title"> 
+                              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{title}}" 
+                              aria-expanded="false" aria-controls="collapse1"> Nails Categories </a> 
+                            </h4>
+                        </div>
+
+                        <div id="collapse-{{title}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                            <div class="panel-body">
+
+                                <div class="checkbox"> 
+                                  <a href="{% modify_query 'page' 'nails' %}"><label> 
+                                   <input type="checkbox" class="option-input checkbox"/> 
+                                    <span class="ml-10">All</span> </label></a></div>
+                                {% for cat in facets.categories.nails %}
+                                <div class="checkbox"> 
+                                  <label> <input type="checkbox" class="option-input checkbox"/> 
+                                    <a href="{% modify_query 'page' nails_categories=cat.pk %}"><span class="ml-10">{{cat}}</span></a></label> </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                  {% endwith %}
+
+                  {% with title="Hair Removal" selected=facets.selected.hair_removal %}
+                  <div class="panel panel-default">
+
+                        <div class="panel-heading" role="tab" id="heading1">
+                            <h4 class="panel-title"> 
+                              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{title}}" 
+                              aria-expanded="false" aria-controls="collapse1"> Hair Removal Categories </a> 
+                            </h4>
+                        </div>
+
+                        <div id="collapse-{{title}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                            <div class="panel-body">
+
+                                <div class="checkbox"> 
+                                  <a href="{% modify_query 'page' 'hair_removal' %}"><label> 
+                                   <input type="checkbox" class="option-input checkbox"/> 
+                                    <span class="ml-10">All</span> </label></a></div>
+                                {% for cat in facets.categories.hair_removal %}
+                                <div class="checkbox"> 
+                                  <label> <input type="checkbox" class="option-input checkbox"/> 
+                                    <a href="{% modify_query 'page' hair_removal_categories=cat.pk %}"><span class="ml-10">{{cat}}</span></a></label> </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                  {% endwith %}
+
+                  {% with title="Makeup" selected=facets.selected.makeup %}
+                  <div class="panel panel-default">
+
+                        <div class="panel-heading" role="tab" id="heading1">
+                            <h4 class="panel-title"> 
+                              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{title}}" 
+                              aria-expanded="false" aria-controls="collapse1"> Makeup Categories </a> 
+                            </h4>
+                        </div>
+
+                        <div id="collapse-{{title}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                            <div class="panel-body">
+
+                                <div class="checkbox"> 
+                                  <a href="{% modify_query 'page' 'makeup' %}"><label> 
+                                   <input type="checkbox" class="option-input checkbox"/> 
+                                    <span class="ml-10">All</span> </label></a></div>
+                                {% for cat in facets.categories.makeup %}
+                                <div class="checkbox"> 
+                                  <label> <input type="checkbox" class="option-input checkbox"/> 
+                                    <a href="{% modify_query 'page' makeup_categories=cat.pk %}"><span class="ml-10">{{cat}}</span></a></label> </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                  {% endwith %}
+
+                  {% with title="Massage" selected=facets.selected.massage %}
+                  <div class="panel panel-default">
+
+                        <div class="panel-heading" role="tab" id="heading1">
+                            <h4 class="panel-title"> 
+                              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{title}}" 
+                              aria-expanded="false" aria-controls="collapse1"> Massage Categories </a> 
+                            </h4>
+                        </div>
+
+                        <div id="collapse-{{title}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                            <div class="panel-body">
+
+                                <div class="checkbox"> 
+                                  <label><input type="checkbox" class="option-input checkbox"/> 
+                                    <a href="{% modify_query 'page' 'massage_categories' %}"><span class="ml-10">All</span> </label></a></div>
+                                {% for cat in facets.categories.massage %}
+                                <div class="checkbox"> 
+                                  <label><input type="checkbox" class="option-input checkbox"/> 
+                                    <a href="{% modify_query 'page' massage_categories=cat.pk %}"> <span class="ml-10">{{cat}}</span></a></label> </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                  {% endwith %}
+
+                  {% with title="Price" selected=facets.selected.price %}
+                  <div class="panel panel-default">
+
+                        <div class="panel-heading" role="tab" id="heading1">
+                            <h4 class="panel-title"> 
+                              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{title}}" 
+                              aria-expanded="false" aria-controls="collapse1"> Price </a> 
+                            </h4>
+                        </div>
+
+                        <div id="collapse-{{title}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                            <div class="panel-body">
+
+                                <div class="checkbox"> 
+                                  <a href="{% modify_query 'page' 'price' %}"><label> 
+                                   <input type="checkbox" class="option-input checkbox"/> 
+                                    <span class="ml-10">All</span> </label></a></div>
+                                {% for p_val, p_display in facets.categories.price %}
+                                <div class="checkbox"> 
+                                  <a href="{% modify_query 'page' price_range=p_val %}"><label> 
+                                    <input type="checkbox" class="option-input checkbox"/> 
+                                     <span class="ml-10">{{p_display}}</span></a></label> </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                  {% endwith %}
+
+                  {% with title="Rating" selected=facets.selected.rating %}
+                  <div class="panel panel-default">
+
+                        <div class="panel-heading" role="tab" id="heading1">
+                            <h4 class="panel-title"> 
+                              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{title}}" 
+                              aria-expanded="false" aria-controls="collapse1"> Rating </a> 
+                            </h4>
+                        </div>
+
+                        <div id="collapse-{{title}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                            <div class="panel-body">
+
+                                <div class="checkbox"> 
+                                  <a href="{% modify_query 'page' 'rating' %}"><label> 
+                                   <input type="checkbox" class="option-input checkbox"/> 
+                                    <span class="ml-10">All</span> </label></a></div>
+                                {% for r_val, r_display in facets.categories.rating %}
+                                <div class="checkbox"> 
+                                  <a href="{% modify_query 'page' rating=cat.r_val %}"><label> 
+                                    <input type="checkbox" class="option-input checkbox"/> 
+                                     <span class="ml-10">{{r_display}}</span></a></label> </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                  {% endwith %}
+
+                    
+                </div>
+                <div class="text-right refine"> <button class="btn btn-out btn-primary btn-square" id="button-filter">Refine Search</button> </div>
+              </div>
+            </div>
+            <!-- Listings -->
+            <div class="col-md-8 offset-md-1">
+                {% if salon_list %}
+                  
+                  {% for salon in salon_list %}
+                          <div class="card mb-3" data-clickable="true" data-href="{% url 'salon_detail' salon.id %}">
+                            <div class="row no-gutters">
+                             <div class="col-md-4">
+                              <img class="card-img-top" src="{{salon.photo_main.url}}" alt="main photo">
+                              <!-- <div class="card-img-overlay">
+                                  <h2>
+                                      <span class="badge badge-secondary text-white">$490,000</span>
+                                  </h2> 
+                              </div> -->
+                            </div>
+                            <div class="col-md-8">
+                              <div class="card-body">
+                                  <div class="listing-heading text-center">
+                                      <h4 class="text-primary">  {{ salon.name }}</h4>
+                                      <p>
+                                          <i class="fas fa-map-marker text-secondary"></i>  {{ salon.address }}</p>
+                                  </div>
+                                  <hr>
+                                  <div class="row py-2 text-secondary">
+                                      <div class="col-6">
+                                          <i class="fas fa-venus-mars"></i>  Female/Male</div>
+                                      <div class="col-6">
+                                          <i class="fas fa-arrows-alt"></i>  {{ salon.city }}</div>
+                                  </div>
+                                  <div class="row py-2 text-secondary">
+                                      <div class="col-6">
+                                          <i class="fas fa-money-bill-wave"></i>  {{salon.price_range }}</div>
+                                      <div class="col-6">
+                                          <i class="fas fa-route"></i>  {{ salon.region }}</div>
+                                  </div>
+                                  <hr>
+                                  <div class="row py-2 text-secondary">
+                                      <div class="col-12">
+                                          <i class="fas fa-user"></i>  Phone: {{ salon.phone }}</div>
+                                  </div>
+                                  <div class="row text-secondary pb-2">
+                                      <div class="col-6">
+                                          <i class="fas fa-clock"></i>  {{ salon.list_date | timesince }}</div>
+                                  </div>                  
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      {% endfor %}
+                  
+                {% endif %}
+
+                <!--  Pagination inside results column  -->
+                <div class="row">
+                        <div class="col-md-12">
+                      
+                            <ul class="pagination">
+                              {% if salon_list.has_previous %}
+                                <li class = "page-item">
+                                  <a href="?page={{ salon_list.previous_page_number }}" class = "page-link">&laquo;</a>
+                                </li>
+                              {% else %}
+                                <li class="page-item disabled"><a class="page-link">&laquo;</a></li>
+                              {% endif %}
+
+                              {% if salon_list.number|add:'-1' > 1 %}
+                                <li class="page_item">
+                                  <a href="?page={{salon_list.number|add:'-2'}}" class="page-link">&hellip;</a>
+                                </li>
+                              {% endif %}
+ 
+                              {% for i in salon_list.paginator.page_range %}
+                                {% if salon_list.number == i %}
+                                  <li class="page-item active">
+                                    <a class="page-link">{{i}}</a>
+                                  </li>
+                                {% elif i > salon_list.number|add:'-2' and i < salon_list.number|add:'2' %}
+                                  <li class="page-item">
+                                    <a href="?page={{i}}" class="page-link">{{i}}</a>
+                                  </li>
+                                {% endif %}
+                              {% endfor %}
+
+                            {% if salon_list.paginator.num_pages > salon_list.number|add:'1' %}
+                              <li class="page_item">
+                                <a href="?page={{salon_list.number|add:'2'}}" class="page-link">&hellip;</a>
+                              </li>
+                            {% endif %}
+
+                              {% if salon_list.has_next %}
+                                <li class="page-item">
+                                  <a href="?page={{ salon_list.next_page_number }}" class="page-link">&raquo;</a>
+                                </li>
+                              {% else %}
+                                <li class="page-item disabled">
+                                  <a class="page-link">&raquo;</a>
+                                </li>
+                              {% endif %}
+                            </ul>
+                          
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+            
+    </div>
+  </section>
+
+{% endblock %}

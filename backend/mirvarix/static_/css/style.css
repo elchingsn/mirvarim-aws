@@ -1,0 +1,404 @@
+.btn-secondary {
+  color: #fff !important; }
+
+img {
+  width: 100%; }
+
+.logo {
+  width: 80px; }
+
+.navbar {
+  opacity: 2;
+  text-transform: uppercase; }
+
+.social a {
+  margin-right: 0.4rem; }
+
+#showcase {
+  background: url(../img/background.jpg) no-repeat top center fixed/cover;
+  position: relative;
+  min-height: 650px;
+  color: #fff;
+  padding-top: 6rem; }
+  #showcase .home-search {
+    min-height: 400px;
+    position: relative;
+    border-radius: 5px; }
+  #showcase .overlay {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-height: 400px;
+    width: 100%;
+    background: rgba(51, 51, 51, 0.8); }
+
+#services {
+  background: url(../img/building.jpg) no-repeat top center fixed/cover;
+  min-height: 300px;
+  position: relative;
+  overflow: hidden; }
+  #services::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-height: 100%;
+    width: 100%;
+    background: rgba(32, 134, 107, 0.8); }
+
+#showcase-inner {
+  background: url(../img/building.jpg) no-repeat top center fixed/cover;
+  position: relative;
+  overflow: hidden;
+  min-height: 200px; }
+  #showcase-inner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-height: 100%;
+    width: 100%;
+    background: rgba(32, 134, 107, 0.8); }
+  #showcase-inner.showcase-search {
+    min-height: 270px; }
+
+#work {
+  padding: 6rem 0; }
+
+.card-img-top {
+  max-height: 250px;
+}
+
+.listing-preview a {
+  position: relative;
+}
+
+/* added to widen the navbar*/
+@media (min-width: 992px) {
+  .container {
+    max-width: 75%;
+   }
+  }
+  
+@media (max-width: 991px) {
+  #showcase {
+    padding-top: 4rem; }
+    #showcase h1 {
+      font-size: 40px; }
+  .hide-md-down {
+    display: none; } }
+
+@media (max-width: 768px) {
+  #showcase {
+    padding-top: 3rem; }
+    #showcase h1 {
+      font-size: 40px; }
+    #showcase p {
+      display: none; }
+  #top-bar {
+    text-align: center; }
+    #top-bar .social {
+      text-align: center !important; } }
+
+@media (max-width: 576px) {
+  #showcase h1 {
+    font-size: 30px; }
+  #showcase-inner h1 {
+    font-size: 40px; } }
+
+/* dropdown menu styles*/
+nav {
+  width: 100%;
+  margin-top: 60px;
+  box-shadow: 5px 4px 5px #000;
+}
+
+/*
+.dropdown>.dropdown-menu {
+  top: 200%;
+  transition: 0.3s all ease-in-out;
+}
+*/
+.dropdown:hover>.dropdown-menu {
+  display: block;
+}
+
+.dropdown>.dropdown-toggle:active {
+  /*Without this, clicking will make it sticky*/
+    pointer-events: none; 
+}
+
+.dropdown>.dropdown-toggle::after {
+    content: none;
+}
+
+.nav-link {
+ color: white !important;
+ font-size: 1.2em;
+ }
+
+ .dropdown-item {
+  color: black;
+  font-size: 1em;
+  text-transform: capitalize;}
+
+  #allTreatments {
+    color: orange !important;
+  }
+ 
+
+  .card[data-clickable=true]{
+    cursor: pointer;
+  }
+
+
+  /* salon list css - need to be reviewed and refined */
+
+  body {
+    background-color: rgb(216, 244, 245)
+}
+
+.badge23 {
+    display: inline-block;
+    padding: 0.30em .4em;
+    font-size: 75%;
+    font-weight: 300;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+    color: #fff;
+    background-color: #28a745
+}
+
+.rating-review {
+    color: #5b5b5b;
+    font-size: 12px
+}
+
+.product_price {
+    display: inline-block;
+    font-size: 30px;
+    font-weight: 400;
+    margin-top: -11px;
+    margin-bottom: 0px;
+    color: #080808;
+    clear: left
+}
+
+.list-group-item {
+    position: relative;
+    display: block;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, .125)
+}
+
+.seperator {
+    background: #a2a2efb8
+}
+
+.wrapper {
+    width: 100%;
+    margin-top: 48px;
+    margin-left: 16px
+}
+
+@media(max-width:992px) {
+    .wrapper {
+        width: 100%
+    }
+}
+
+.panel {
+    margin-bottom: 5px
+}
+
+.panel-title {
+    margin-bottom: .0rem
+}
+
+.panel-collapse {
+    background: #fff;
+    border-bottom: 1px solid #d5d5d5
+}
+
+.panel-heading {
+    padding: 0;
+    border: 0;
+    padding: 9px 3px !important
+}
+
+.panel-body {
+    padding: 13px
+}
+
+.panel-title>a,
+.panel-title>a:active {
+    display: block;
+    padding: 10px;
+    color: #555;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    word-spacing: 3px;
+    text-decoration: none
+}
+
+.panel-heading a:before {
+    font-family: 'Font Awesome 5 Free';
+    content: "\f111";
+    float: right;
+    transition: all 0.5s
+}
+
+.panel-heading.active a:before {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    transform: rotate(180deg)
+}
+
+.panel-default>.panel-heading {
+    color: #282b2f;
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #d5d5d5
+}
+
+@keyframes click-wave {
+    0% {
+        height: 40px;
+        width: 40px;
+        opacity: 0.15;
+        position: relative
+    }
+
+    100% {
+        height: 200px;
+        width: 200px;
+        margin-left: -80px;
+        margin-top: -80px;
+        opacity: 0
+    }
+}
+
+.option-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+    position: relative;
+    top: -8.66667px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 24px;
+    width: 24px;
+    transition: all 0.15s ease-out 0s;
+    background: #cbd1d8;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 0.5rem;
+    outline: none;
+    position: relative;
+    z-index: 1000
+}
+
+.option-input:hover {
+    background: #9faab7
+}
+
+.option-input:checked {
+    background: #2874ef
+}
+
+.option-input:checked::before {
+    height: 24px;
+    width: 24px;
+    position: absolute;
+    content: "\f111";
+    font-family: "Font Awesome 5 Free";
+    display: inline-block;
+    font-size: 14.66667px;
+    text-align: center;
+    line-height: 26px
+}
+
+.option-input:checked::after {
+    -webkit-animation: click-wave 0.15s;
+    -moz-animation: click-wave 0.15s;
+    animation: click-wave 0.15s;
+    background: #E91E63;
+    content: '';
+    display: block;
+    position: relative;
+    z-index: 100
+}
+
+.option-input.radio {
+    border-radius: 50%
+}
+
+.option-input.radio::after {
+    border-radius: 50%
+}
+
+.checkbox input[type="checkbox"],
+.checkbox-inline input[type="checkbox"] {
+    float: left;
+    margin-left: -4px !important;
+    margin-top: 9px
+}
+
+input[type="checkbox"]:focus {
+    outline: thin dotted #333;
+    outline: 0px auto -webkit-focus-ring-color;
+    outline-offset: 0px
+}
+
+.ml-10 {
+    margin-left: 10px;
+    font-size: 12px;
+    color: #080808
+}
+
+.btn.btn-out {
+    outline: 1px solid #fff;
+    outline-offset: -5px
+}
+
+.btn {
+    border-radius: 2px;
+    text-transform: capitalize;
+    font-size: 11px;
+    padding: 10px 19px;
+    cursor: pointer;
+    color: #fff
+}
+
+.fa {
+    font-size: 12px;
+    color: #fff
+}
+
+.refine {
+    padding: 0px 0px !important
+}
+
+.filters-text {
+    background: #fff;
+    border: 1px solid #d5d5d5;
+    margin-bottom: 15px;
+    padding: 12px
+}
+
+.filter-span {
+    font-size: 17px;
+    color: #2874ef
+}
+
+/* end of filter related css */

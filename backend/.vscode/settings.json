@@ -1,0 +1,7 @@
+{
+    "python.pythonPath": "7bellas-env/bin/python3",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
+}
+
+

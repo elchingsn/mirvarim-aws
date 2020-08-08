@@ -1,0 +1,211 @@
+{% extends '_base.html' %}
+{% load humanize %}
+
+{% block content %}
+
+
+<!-- Showcase -->
+<section id="showcase">
+    <div class="container text-center">
+        <div class="home-search p-5">
+            <div class="overlay p-5">
+                <h1 class="display-4 mb-4">
+                    Beauty Searching Just Got So Easy
+                </h1>
+                <p class="lead">Если Вы ищите себе мастера или салон, которому могли бы довериться, приходите к нам, и
+                    вы поймете, что все услуги, которые предоставляются у нас, выполняются с душой, любовью и
+                    индивидуальным подходом к каждому клиенту.</p>
+                <div class="search">
+                    <form action="{% url 'salon_list' %}">
+                        <!-- Form Row 1 -->
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                <label class="sr-only">Keywords</label>
+                                <input type="text" name="keywords" class="form-control"
+                                    placeholder="Keyword (Hair, Nail, etc)">
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label class="sr-only">City</label>
+                                <input type="text" name="city" class="form-control" placeholder="City">
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label class="sr-only">State</label>
+                                <select name="state" class="form-control">
+                                    <option selected="true" disabled="disabled">Location</option>
+                                    <option value="AS">Ag Sheher</option>
+                                    <option value="AB">Axundov Bagi</option>
+                                    <option value="AM">Azadliq Meydani</option>
+                                    <option value="AK">Azerbaycan Kinoteatri</option>
+                                    <option value="BD">BDU</option>
+                                    <option value="BE">Besmertebe</option>
+                                    <option value="CK">Cavansir Korpusu</option>
+                                    <option value="DS">Dovlet Statistika Komitesi</option>
+                                    <option value="FB">Fontanlar Bagi</option>
+                                    <option value="HC">Husein Cavid Bagi</option>
+                                    <option value="KP">Koala Parki</option>
+                                    <option value="PA">Pirallahi</option>
+                                    <option value="YY">Yeni Yasamal</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Form Row 2 -->
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label class="sr-only">Services</label>
+                                <select name="bedrooms" class="form-control">
+                                    <option selected="true" disabled="disabled">Services (All)</option>
+                                    <option value="Nails">Nails</option>
+                                    <option value="Hair">Hair</option>
+                                    <option value="Eye">Eyebrows</option>
+                                    <option value="Cosm">Cosmetology</option>
+                                    <option value="Make">Make-up</option>
+                                    <option value="Tattoo">Tattoo/Piercing</option>
+                                    <option value="Massage">Massage</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <select name="price" class="form-control" id="type">
+                                    <option selected="true" disabled="disabled">Price Category</option>
+                                    <option value="XS">Budget</option>
+                                    <option value="S">Low</option>
+                                    <option value="M">Medium</option>
+                                    <option value="L">High</option>
+                                    <option value="XL">VIP</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-block mt-4" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Listings -->
+
+<section id="listings" class="py-5">
+    <div class="container">
+        <h3 class="text-center mb-3">Latest Salons</h3>
+        <div class="row">
+
+          {% if salons %}
+           
+            {% for salon in salons %}
+                <!-- Listings -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card listing-preview">
+                        <img class="card-img-top" src="{{salon.photo_main.url}}" alt="main photo">
+                        <!-- <div class="card-img-overlay">
+                            <h2>
+                                <span class="badge badge-secondary text-white">$490,000</span>
+                            </h2> 
+                        </div> -->
+                        <div class="card-body">
+                            <div class="listing-heading text-center">
+                                <h4 class="text-primary">  {{ salon.name }}</h4>
+                                <p>
+                                    <i class="fas fa-map-marker text-secondary"></i>  {{ salon.address }}</p>
+                            </div>
+                            <hr>
+                            <div class="row py-2 text-secondary">
+                                <div class="col-6">
+                                    <i class="fas fa-venus-mars"></i>  Female/Male</div>
+                                <div class="col-6">
+                                    <i class="fas fa-arrows-alt"></i>  {{ salon.city }}</div>
+                            </div>
+                            <div class="row py-2 text-secondary">
+                                <div class="col-6">
+                                    <i class="fas fa-money-bill-wave"></i>  {{salon.price_range }}</div>
+                                <div class="col-6">
+                                    <i class="fas fa-route"></i>  {{ salon.region }}</div>
+                            </div>
+                            <hr>
+                            <div class="row py-2 text-secondary">
+                                <div class="col-12">
+                                    <i class="fas fa-user"></i>  Phone: {{ salon.phone }}</div>
+                            </div>
+                            <div class="row text-secondary pb-2">
+                                <div class="col-6">
+                                    <i class="fas fa-clock"></i>  {{ salon.list_date | timesince }}</div>
+                            </div>
+                            <hr>
+                            <a href="{% url 'salon_detail' salon.id %}" class="btn btn-primary btn-block">More Info</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            
+          {% endif %}
+
+        </div>
+    </div>
+</section>
+
+<section id="services" class="py-5 bg-secondary text-white">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <i class="fas fa-comment fa-4x mr-4"></i>
+                <hr>
+                <h3>Write a review</h3>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt, debitis nam! Repudiandae,
+                    provident iste consequatur
+                    hic dignissimos ratione ea quae.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-hand-holding-usd fa-4x mr-4"></i>
+                <hr>
+                <h3>Salon Management</h3>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt, debitis nam! Repudiandae,
+                    provident iste consequatur
+                    hic dignissimos ratione ea quae.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-pen fa-4x mr-4"></i>
+                <hr>
+                <h3>Beauty Blog</h3>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt, debitis nam! Repudiandae,
+                    provident iste consequatur
+                    hic dignissimos ratione ea quae.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <a href="{% url 'about' %}">About</a>
+        </div>
+        <div class="col-md-3">
+            <i class="fas fa-phone"></i> (+41)-111-55567
+        </div>
+        <div class="col-md-3">
+            <i class="fas fa-envelope-open"></i> bbs@mirvarix.com
+        </div>
+        <div class="col-md-3">
+            <div class="social text-right">
+                <a href="#">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="#">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#">
+                    <i class="fab fa-pinterest"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

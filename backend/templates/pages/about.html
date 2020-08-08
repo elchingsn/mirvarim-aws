@@ -1,0 +1,110 @@
+{% extends '_base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<section id="showcase-inner" class="py-5 text-white">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-12">
+                <h1 class="display-4">About Mirvarix</h1>
+                <p class="lead">Mirvarix is the new way to find and book beauty & wellness services.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Breadcrumb -->
+<section id="bc" class="mt-3">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'index' %}">
+                        <i class="fas fa-home"></i> Home</a>
+                </li>
+                <li class="breadcrumb-item active"> About</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section id="about" class="py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>We search the perfect welness service for you</h2>
+                <p class="lead">Mirvarix is the new way to find and book beauty & wellness services.</p>
+                <img src=" {% static 'img/about.jpg' %}" alt="">
+                <p class="mt-4">Find your next massage salon, discover a trendy new hairdressers or a great nail salon.
+                    Discover beauty salons and services in your area and check the availability of dates and times for
+                    whenever suits you best. Compare prices, select your desired service with a few clicks and make
+                    online payments. After the booking, get immediate confirmation for your beauty treatment. </p>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img class="card-img-top" src="assets/img/realtors/kyle.jpg" alt="Salon of the week">
+                    <div class="card-body">
+                        <h5 class="card-title">Salon of the week</h5>
+                        <h6 class="text-secondary">Milky's</h6>
+                        <p class="card-text"> Total welness center specialising in organic means from Swiss Alps to help
+                            you get in shape.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Work -->
+<section id="work" class="bg-dark text-white text-center">
+    <h2 class="display-4">We work for you</h2>
+    <hr>
+    <a href="listings.html" class="btn btn-secondary text-white btn-lg">View Our Featured Salons</a>
+</section>
+
+<!-- Team -->
+<section id="team" class="py-5">
+    <div class="container">
+        <h2 class="text-center">Our Team</h2>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <img src="assets/img/realtors/kyle.jpg" alt="" class="rounded-circle mb-3">
+                <h4>Bbs</h4>
+                <p class="text-success">
+                    <i class="fas fa-award text-success mb-3"></i> CEO</p>
+                <hr>
+                <p>
+                    <i class="fas fa-phone"></i> (+30)-555-5555</p>
+                <p>
+                    <i class="fas fa-envelope-open"></i> eva@mirvarix.com</p>
+            </div>
+
+            <div class="col-md-4">
+                <img src="assets/img/realtors/mark.jpg" alt="" class="rounded-circle mb-3">
+                <h4>Pikish</h4>
+                <p class="text-success">CFO</p>
+                <hr>
+                <p>
+                    <i class="fas fa-phone"></i> (+30)-333-3333</p>
+                <p>
+                    <i class="fas fa-envelope-open"></i> pikish@mirvarix.com</p>
+            </div>
+
+            <div class="col-md-4">
+                <img src="assets/img/realtors/jenny.jpg" alt="" class="rounded-circle mb-3">
+                <h4>Piki</h4>
+                <p class="text-success">CTO</p>
+                <hr>
+                <p>
+                    <i class="fas fa-phone"></i> (+30)-777-7777</p>
+                <p>
+                    <i class="fas fa-envelope-open"></i> piki@mirvarix.com</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
