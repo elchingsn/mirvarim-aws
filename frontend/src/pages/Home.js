@@ -78,7 +78,7 @@ export default function Home() {
               >
                 <Card raised className={classes.card}>
                   <CardBody formHorizontal>
-                    <SearchSalons setSearchResults = {setSearchResults} /> 
+                    <SearchSalons state = {setSearchResults} /> 
 
                     
                     {/* <form>
@@ -126,12 +126,16 @@ export default function Home() {
           
         </Parallax> 
 
-        <div className={classNames(classes.main, classes.mainRaised)}>
+        {/* <div className={classNames(classes.main, classes.mainRaised)}> */}
+        <div className={classes.main}>
             <Query query={SALON_QUERY}>
                 {({ data, loading, error }) => {
                 if (loading) return <div>Loading</div>;
                 if (error) return <div>Error</div>;
-                return <Listings listings={data.salons}/>;
+                const featuredSalons = data.salons.filter(el => el.isFeatured == true)
+                console.log('salon list', data.salons);
+                console.log('featured salons', featuredSalons);
+                return <Listings listings={featuredSalons}/>;
                 }}
             </Query>
         </div>
@@ -168,6 +172,7 @@ const SALON_QUERY = gql`
         reviewSet{
           rating
         }
+        isFeatured
       }
 }
 `;

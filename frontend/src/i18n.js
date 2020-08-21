@@ -18,7 +18,7 @@ i18n
   .init({
     debug: true,
  
-    lng: 'aze',
+    //lng: 'aze',
     fallbackLng: 'aze',
     whitelist: ['aze','en','ru'],
  

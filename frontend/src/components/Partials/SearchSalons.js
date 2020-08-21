@@ -20,28 +20,43 @@ import CustomInput from "./CustomInput.js";
 import presentationStyle from "../../assets/jss/presentationStyle.js";
 const useStyles = makeStyles(presentationStyle);
 
-const SearchSalons = ({setSearchResults}) =>{
+const SearchSalons = ({state}) =>{
     const classes = useStyles();
-    const [search, setSearch] = useState("");
-    const [autoptions, setAutoptions] = useState([]);
+    const [search, setSearch] = useState(state["search"]);
+    const [location, setLocation] = useState(state["location"]);
+    const [catValue, setCatValue] = useState("");
+    const [checkedCat, setCheckedCat] = useState("");
+    const [salon_set, setSalonSet] = useState([]);
+    const [searchOptions, setSearchOptions] = useState([]);
+    const [locationOptions, setLocationOptions] = useState([]);
+    const [salonId, setSalonId] = useState("0");
     const inputEl = useRef();
 
-    const clearSearchInput = () => {
-        setSearchResults([]);
-        setSearch("");
-        inputEl.current.focus();
-      };
+    useEffect(() => {
+      if (state) {
+        setLocation(state["location"])
+        setSearch(state["search"])        
+      }
+    }, [state]);
+    
 
-    const handleSubmit = async (event, client) => {
-        event.preventDefault();
-        const submitResults = await client.query({
-            query: SEARCH_SALONS_QUERY,
-            variables: {search}
-        });
-        client.writeData({data: {search: {search}}});
-        console.log(submitResults.data.salons);
-        setSearchResults(submitResults.data.salons);
-        };
+    // setSearchResults is passed down as a prop
+    // const clearSearchInput = () => {
+    //     setSearchResults([]);
+    //     setSearch("");
+    //     inputEl.current.focus();
+    //   };
+
+    // const handleSubmit = async (event, client) => {
+    //     event.preventDefault();
+    //     const submitResults = await client.query({
+    //         query: SEARCH_SALONS_QUERY,
+    //         variables: {search}
+    //     });
+    //     client.writeData({data: {search: {search}}});
+    //     console.log('search salons', submitResults.data.salons);
+    //     setSearchResults(submitResults.data.salons);
+    //     };
 
     // const refValue = useRef(search);
     // useEffect(() => {
@@ -52,15 +67,38 @@ const SearchSalons = ({setSearchResults}) =>{
         event.preventDefault(); 
     };
 
-    const { data } = useQuery(SEARCH_SALONS_QUERY, {variables: {search}});
-    // console.log(autoptions)
+    // const { data: data_salon } = useQuery(SEARCH_SALONS_QUERY, {variables: {search}});
+    const { data: data_salon } = useQuery(SEARCH_SALONS_QUERY);
+    const { data: data_area } = useQuery(AREA_QUERY, {variables: {location}});
+    let options = [];
 
     useEffect(() => {   
-        if (data) { 
-            const options = data.salons.map((option) => option.name);
-            setAutoptions(options);
+        if (data_salon) { 
+          setSalonSet(data_salon.salons.map(el => el.name).flat(1));
+          // creating array of services
+          // const hairService_set = data_salon.salons.map(el => (el.hairserviceSet.map(item => item.title))).flat(1);
+          // const nailsService_set = data_salon.salons.map(el => (el.nailsserviceSet.map(item => item.title))).flat(1);
+          // creating array of categories as alias to services
+          const hairService_set = data_salon.salons.map(el => (el.hairCategories.map(item => item.title))).flat(1);
+          const nailsService_set = data_salon.salons.map(el => (el.nailsCategories.map(item => item.title))).flat(1);
+          const search_set = [].concat(salon_set,hairService_set,nailsService_set);
+          if (search) { options = search_set.filter(el => el.toLowerCase().includes(search.toLowerCase()))};
+          // when search field is cleared no drop down option will be visible
+          search ? setSearchOptions(options) : setSearchOptions([]);
+          if (salon_set.includes(search)) 
+            {setSalonId(data_salon.salons.find(el => el.name === search).id)}
+          else {setCheckedCat(search)}
+          if (hairService_set.includes(search)) {setCatValue("Hair")}
+          if (nailsService_set.includes(search)) {setCatValue("Nails")}
         };
-    }, [data]);
+    }, [search]);
+
+    useEffect(() => {   
+      if (data_area) { 
+          const options = data_area.area.map((option) => option.title);
+          setLocationOptions(options);
+      };
+  }, [data_area]);
 
 
     // const handleChange = (event, client) => {
@@ -89,7 +127,9 @@ const SearchSalons = ({setSearchResults}) =>{
     return(
         <ApolloConsumer>
             {client => (                   
-                <form onSubmit={event=>handleSubmit(event,client)}>
+                <form 
+                // onSubmit={event=>handleSubmit(event,client)}
+                >
                     <GridContainer>
                     <GridItem xs={12} sm={6} md={6}>
                         {/* <CustomInput
@@ -113,8 +153,9 @@ const SearchSalons = ({setSearchResults}) =>{
                         <Autocomplete
                         id="search"
                         freeSolo
-                        options={autoptions}
-                        // onChange = {event => handleChange(event,client)}
+                        options={searchOptions}
+                        onChange = {(event,values) => setSearch(values)}
+                        value = {search}
                         renderInput={(params) => (
                         <TextField 
                         {...params} 
@@ -141,23 +182,65 @@ const SearchSalons = ({setSearchResults}) =>{
                         <Autocomplete
                         id="location"
                         freeSolo
-                        options={autoptions}
+                        options={locationOptions}
+                        onChange = {(event,values) => setLocation(values)}
+                        value = {location}
                         renderInput={(params) => (
-                        <TextField {...params} label = "location" margin="none" />
+                        <TextField 
+                        {...params}
+                        onChange = {event => {
+                          setLocation(event.target.value);
+                          handleChange(event,client);
+                        }}
+                        label = "location" 
+                        margin="none" />
                         )}
                          />
                     </GridItem>
                     <GridItem xs={12} sm={2} md={2}>
-                        <Link to={"/salon"}> 
+                      {(salon_set.includes(search)) ?
+                        (<Link 
+                          to={{
+                            pathname: `/salon/${salonId}`,
+                            state: {
+                              search: search,
+                              location: location
+                            }
+                          }} > 
+                          <Button
+                          block
+                          color="primary"
+                          className={classes.button}
+                          type = "submit"
+                          // onClick={event=>
+                          //   {
+                          //   handleSubmit(event,client);
+                          //   window.location.href="/salon";
+                          // }}
+                          >
+                            Search
+                          </Button>
+                        </Link> ) :
+                        (<Link 
+                        to={{
+                          pathname: "/salon",
+                          state: {
+                            search: search,
+                            location: location,
+                            catValue: catValue,
+                            checkedCat: checkedCat
+                          }
+                        }} > 
                         <Button
                         block
                         color="primary"
                         className={classes.button}
                         type = "submit"
                         >
-                        Search
+                          Search
                         </Button>
-                        </Link>
+                      </Link>
+                      )}
                     </GridItem>
                     </GridContainer>
                 </form>
@@ -179,10 +262,34 @@ const SEARCH_SALONS_QUERY = gql`
             rating
             priceRange
             photoMain
-          
+            hairCategories {
+              title
+            }
+            nailsCategories {
+              title
+            }
+            hairserviceSet {
+              title
+            }
+            nailsserviceSet {
+              title
+            }
         }
     }
 `;
+
+const AREA_QUERY = gql`
+    query($search:String) {
+      area (search: $search) {
+          id
+          title
+          salonSet{
+            name
+          }
+        }
+  }
+  `;
+
 
 export default SearchSalons; 
 

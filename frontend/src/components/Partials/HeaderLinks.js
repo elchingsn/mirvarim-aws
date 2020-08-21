@@ -82,7 +82,7 @@ export default function HeaderLinks(props) {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(false);
   const [fbUser, setFbUser] = useState("");
-  const [flag, setFlag] = useState("aze");
+  const [flag, setFlag] = useState(localStorage.getItem("i18nextLng"));
 
   const { t, i18n } = useTranslation();
 
@@ -137,7 +137,7 @@ export default function HeaderLinks(props) {
                     noLiPadding
                     navDropdown
                     hoverColor={dropdownHoverColor}
-                    buttonText = {t("Manicure/Pedicure")} 
+                    buttonText = {t("Nails")} 
                     dropdownList={categories} 
                     buttonProps={{
                       className: classes.navLink,
@@ -222,7 +222,7 @@ export default function HeaderLinks(props) {
                   id="demo-simple-select-outlined"
                   value={flag}
                   onChange={(event) => changeLang(event.target.value)}
-                  label="Age"
+                  label="flag"
                 >
                   <MenuItem value="aze">
                     <img src={aze_flag} style={{width: 30, height: 30}}/>

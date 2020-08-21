@@ -54,7 +54,8 @@ class Query(graphene.ObjectType):
     salons_filtered = graphene.List(SalonType, 
                                     area=graphene.List(graphene.String),
                                     hair=graphene.List(graphene.String),
-                                    nails=graphene.List(graphene.String))
+                                    nails=graphene.List(graphene.String),
+                                    massage=graphene.List(graphene.String))
     salon_selected = graphene.List(SalonType, id=graphene.Int(required=True))
     hair_cat = graphene.List(HairType)
     nails_cat = graphene.List(NailsType)
@@ -62,7 +63,7 @@ class Query(graphene.ObjectType):
     makeup_cat = graphene.List(MakeupType)
     massage_cat = graphene.List(MassageType)
     city = graphene.List(CityType)
-    area = graphene.List(AreaType)
+    area = graphene.List(AreaType, search=graphene.String())
 
     def resolve_salons(self, info, search=None):
         if search:
@@ -81,20 +82,23 @@ class Query(graphene.ObjectType):
               
         return Salon.objects.all()
     
-    def resolve_salons_filtered(self, info, area=[], hair=[], nails=[]):
+    def resolve_salons_filtered(self, info, area=[], hair=[], nails=[], massage=[]):
 
-        if area and (not hair) and (not nails):
+        if area and (not hair) and (not nails) and (not massage):
             return Salon.objects.filter(area__title__in=area).distinct()
         
-        if area and (hair or nails):
+        if area and (hair or nails or massage):
             return Salon.objects.filter(Q(area__title__in=area) &
                                         (Q(hair_categories__title__in=hair) |
-                                        Q(nails_categories__title__in=nails))
+                                        Q(nails_categories__title__in=nails)|
+                                        Q(massage_categories__title__in=massage))
                                         ).distinct()
         
-        if not area and (hair or nails):
+        if not area and (hair or nails or massage):
             return Salon.objects.filter(Q(hair_categories__title__in=hair) |
-                                        Q(nails_categories__title__in=nails)).distinct()
+                                        Q(nails_categories__title__in=nails)|
+                                        Q(massage_categories__title__in=massage)
+                                        ).distinct()
         
         return Salon.objects.all()
     
@@ -131,7 +135,9 @@ class Query(graphene.ObjectType):
     def resolve_city(self, info):
         return City.objects.all()
     
-    def resolve_area(self, info):
+    def resolve_area(self, info, search=None):
+        if search:
+          return Area.objects.filter(title__icontains=search).distinct()
         return Area.objects.all()
 
 # class CityInput(graphene.InputObjectType):

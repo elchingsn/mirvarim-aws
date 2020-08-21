@@ -9,7 +9,8 @@ import {
     cardTitle,
     grayColor,  
     whiteColor,
-    roseColor
+    roseColor,
+    dangerColor
   } from "./mirvarix-react.js";
   
   import tooltipsStyle from "./tooltipsStyle.js";
@@ -253,6 +254,21 @@ import {
       left: "0",
       boxShadow: "1px 1px 1px #222",
       animation: "moveDown 0.5s ease-in-out",
+    },
+    priceContainer: {
+      display: "inline-flex"
+    },
+    price: {
+      fontSize: "15px",
+      color: grayColor[1]
+    },
+    priceOld: {
+      fontSize: "15px",
+      color: grayColor[22],
+      textDecoration: "line-through"
+    },
+    priceNew: {
+      color: dangerColor[0]
     }
     
   };

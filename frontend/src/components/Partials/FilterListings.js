@@ -33,7 +33,7 @@ const useStyles = makeStyles(styles);
 const FilterListings = ({listings}) =>{
     console.log(listings)
     const classes = useStyles();
-    const API_BASE = `${process.env.REACT_APP_DEV_API_BASE}/media/`    
+    const API_BASE = `${process.env.REACT_APP_API_BASE}/media`    
     const [isFavorite, setFavorite] = useState(false)
     return(
         <div>
@@ -73,7 +73,7 @@ const FilterListings = ({listings}) =>{
                     />
                 </CardHeader>
                 </GridItem>
-                <GridItem xs={11} sm={6} md={6}>
+                <GridItem style={{paddingLeft:"25px"}} xs={11} sm={6} md={6}>
                 <h2 className={classes.cardTitle}>
                     {listing.name}
                 </h2>

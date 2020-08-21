@@ -24,7 +24,7 @@ const Listings = ({listings}) => {
     const classes = useStyles();
 
     // "http://127.0.0.1:8000/media/";
-    const API_BASE = `${process.env.REACT_APP_DEV_API_BASE}/media/`    
+    const API_BASE = `${process.env.REACT_APP_API_BASE}/media`    
 
     return (
       <div className={classes.team}>

@@ -97,7 +97,7 @@ const HoverDropdown = (props) => {
   
     const onMenuItemClick = (category) =>{
       console.log({category})
-      window.location.reload()
+      //window.location.reload()
     }
     return (
       // <div className={classes.root}>
@@ -109,7 +109,8 @@ const HoverDropdown = (props) => {
             //   catValue: buttonText,
             //   checkedCat: category.title
             // }
-            state: [buttonText]
+            state: {catValue: buttonText}
+
           }}>
             <Button
               aria-controls={id}
@@ -161,11 +162,11 @@ const HoverDropdown = (props) => {
                         {dropdownList.map(category => (
                           <Link to={{
                             pathname: "/salon",
-                            // state: {
-                            //   catValue: buttonText,
-                            //   checkedCat: category.title
-                            // }
-                            state: [buttonText, category.title]
+                            state: {
+                              catValue: buttonText,
+                              checkedCat: category.title
+                            }
+                            // state: [buttonText, category.title]
                           }}>
                           <MenuItem 
                           key={category.id}

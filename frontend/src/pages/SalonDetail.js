@@ -20,6 +20,7 @@ import Grid from '@material-ui/core/Grid';
 import Dialog from '@material-ui/core/Dialog';
 import Box from '@material-ui/core/Box';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import Divider from '@material-ui/core/Divider';
 
 import GridContainer from "../components/Partials/GridContainer.js";
 import GridItem from "../components/Partials/GridItem.js";
@@ -40,6 +41,7 @@ import { UserContext, ME_QUERY } from "App";
 
 import styles from "../assets/jss/salonDetailStyle.js";
 import ReviewList from "components/Partials/ReviewList.js";
+import CardFooter from "components/Partials/CardFooter.js";
 const useStyles = makeStyles(styles);
 
 const RatingDistribution = ({value, progress, quantity}) => {
@@ -81,7 +83,7 @@ const SalonDetail=({match}) => {
     const [smallViewSize, setSmallViewSize] = useState(true)
  
     const id = match.params.id;
-    const API_BASE = "http://127.0.0.1:8000/media/";
+    const API_BASE = `${process.env.REACT_APP_API_BASE}/media`    
     console.log(id);
 
     // const { isSticky, element } = Sticky()
@@ -194,7 +196,7 @@ const SalonDetail=({match}) => {
       
     return (
     <div>
-        <div className={classes.container}>
+        {/* <div className={classes.container}>
         <GridContainer>
         <GridItem
                 xs={12}
@@ -204,12 +206,12 @@ const SalonDetail=({match}) => {
               >
                 <Card raised className={classes.card}>
                   <CardBody formHorizontal>
-                    <SearchSalons setSearchResults = {setSearchResults} /> 
+                    <SearchSalons state = {setSearchResults} /> 
                   </CardBody>
                 </Card>
         </GridItem> 
         </GridContainer>
-        </div>
+        </div> */}
 
         <Query query={SELECTED_SALON_QUERY} variables={{ id }}>
         {({ data, loading, error }) => {
@@ -217,6 +219,12 @@ const SalonDetail=({match}) => {
             if (error) return <Error error={error} />;
             console.log(data.salonSelected[0]);
             const salon = data.salonSelected[0];
+            const hairServices = salon.hairserviceSet
+            const nailsServices = salon.nailsserviceSet
+            const hairRemovalServices = salon.hairremovalserviceSet
+            const makeupServices = salon.makeupserviceSet
+            const massageServices = salon.massageserviceSet
+            const services = [...hairServices, ...nailsServices, ...hairRemovalServices, ...makeupServices, ...massageServices]    
             const _raw_images = [salon.photoMain, salon.photo1, salon.photo2, salon.photo3,
                 salon.photo4, salon.photo5, salon.photo6];
             const _images = _raw_images.filter((el) => el!="");
@@ -357,7 +365,7 @@ const SalonDetail=({match}) => {
                   </nav>
                   <GridContainer>
                     <GridItem md={12} sm={12} className={classNames(classes.paddingLR, classes.paddingT)}>
-                      <p style={{fontSize:"18px", marginTop:"30px", color:"inherit"}}> Reviews</p>
+                      <p style={{fontSize:"18px", marginTop:"30px", color:"inherit"}}> About</p>
                       <p> {salon.description} </p>
                     </GridItem>
                   </GridContainer>
@@ -366,23 +374,50 @@ const SalonDetail=({match}) => {
                   <div className={classNames(classes.tab, classes.mainRaised)} ref={servicesRef}>
                   <GridContainer>
                     <GridItem md={12} sm={12} className={classNames(classes.paddingLR,classes.paddingT)}>
+                    <p style={{fontSize:"18px", color:"inherit"}}>Services</p>
                         <Accordion
                           //active={0}
                           activeColor="info"
                           collapses={[
                               {
-                              title: "Details and Care",
+                              title: "",
                               content: (
-                                  <ul>
-                                  <li>Storm and midnight-blue stretch cotton-blend</li>
-                                  <li>
-                                      Notch lapels, functioning buttoned cuffs, two front
-                                      flap pockets, single vent, internal pocket
-                                  </li>
-                                  <li>Two button fastening</li>
-                                  <li>84% cotton, 14% nylon, 2% elastane</li>
-                                  <li>Dry clean</li>
-                                  </ul>
+                                <div>
+                                {services.map(service => (
+                                <>
+                                <CardFooter style={{paddingTop:"5px",paddingBottom:"5px",paddingLeft:"0px"}}>
+                                    <>
+                                    <div className={classes.priceContainer}>
+                                      {service.title} 
+                                    </div>
+                                    <div style={{paddingLeft:"15px"}}>
+                                      &nbsp;  
+                                      <i className="far fa-clock">&nbsp;{service.duration} min</i>
+                                    </div>
+                                    <div className={classNames(classes.stats, classes.mlAuto)}>
+                                      {service.promotionPrice ? (
+                                      <>
+                                      <span className={classNames(classes.priceOld)}>
+                                        {" "}
+                                        AZN {service.price}
+                                      </span>
+                                      <span className={classNames(classes.price, classes.priceNew)}>
+                                        {" "}
+                                        AZN {service.promotionPrice}
+                                      </span>
+                                      </> ) : (
+                                      <span className={classNames(classes.price)}>
+                                        {" "}
+                                        AZN {service.price}
+                                      </span> 
+                                      )}
+                                    </div>
+                                    </>
+                            </CardFooter>
+                            <Divider/>
+                            </>
+                            ))}
+                            </div>
                               )
                               }
                           ]}
@@ -522,6 +557,36 @@ query ($id:Int!) {
         photo4
         photo5
         photo6
+        hairserviceSet {
+          title,
+          price,
+          promotionPrice,
+          duration
+        }
+        nailsserviceSet {
+          title,
+          price,
+          promotionPrice,
+          duration
+        }
+        hairremovalserviceSet {
+          title,
+          price,
+          promotionPrice,
+          duration
+        }
+        makeupserviceSet {
+          title,
+          price,
+          promotionPrice,
+          duration
+        }
+        massageserviceSet {
+          title,
+          price,
+          promotionPrice,
+          duration
+        }
     }
 }
 `;

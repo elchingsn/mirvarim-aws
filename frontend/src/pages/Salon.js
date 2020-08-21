@@ -17,7 +17,7 @@ const useStyles = makeStyles(styles);
 
 const Salon=({location}) => {
     const classes = useStyles();
-    const [searchResults, setSearchResults] = useState([]);
+    // const [searchResults, setSearchResults] = useState([]);
 
     React.useEffect(() => {
         window.scrollTo(0, 0);
@@ -25,28 +25,29 @@ const Salon=({location}) => {
       });
     
     let initCatValue = ""
+    let initServiceValue = ""
+    let initAreaValue = ""
     let initCheckedCat = []
     let initValues = []
 
     console.log(location.state)
+    console.log(initCheckedCat);
+
     if (location.state) {
-      initValues = location.state
+      initValues = location.state;
+      initCatValue = initValues["catValue"];
+      initCheckedCat.push(initValues["checkedCat"]);
+      initServiceValue = initValues["search"];
+      initAreaValue = initValues["location"];
     }
 
-    console.log(initValues[0])
-
-    if(initValues.length == 2) { 
-      initCatValue = initValues[0];
-      initCheckedCat.push(initValues[1])
-     }
-    
-     if (initValues.length == 1) {
-      initCatValue = initValues[0]
-     }
-    
-    
-    console.log("test1", initCatValue)
-    console.log("test2", initCheckedCat)
+    // if(initValues.length == 2) { 
+    //   initCatValue = initValues[0];
+    //   initCheckedCat.push(initValues[1])
+    //  }
+    //  if (initValues.length == 1) {
+    //   initCatValue = initValues[0]
+    //  }
 
     return (
     <div>
@@ -65,7 +66,7 @@ const Salon=({location}) => {
               >
                 <Card raised className={classes.card}>
                   <CardBody formHorizontal>
-                    <SearchSalons setSearchResults = {setSearchResults} /> 
+                    <SearchSalons state = {location.state} /> 
                   </CardBody>
                 </Card>
         </GridItem> 
@@ -73,7 +74,12 @@ const Salon=({location}) => {
         </div>
 
         <div className={classNames(classes.main, classes.mainRaised)}>
-        <Filter initCatValue={initCatValue} initCheckedCat={initCheckedCat}/>
+        <Filter 
+          initCatValue={initCatValue} 
+          initCheckedCat={initCheckedCat}
+          initServiceValue={initServiceValue}
+          initAreaValue={initAreaValue}
+        />
         </div>
         
     </div>

@@ -5,7 +5,7 @@ WORKDIR /home/app/frontend
 RUN mkdir -p /home/app/frontend
 
 # copy react app to container
-COPY package.json package-lock.json /app/frontend/
+COPY package.json package-lock.json /home/app/frontend/
 COPY . /home/app/frontend/
 
 # Install dependencies

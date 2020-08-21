@@ -53,7 +53,7 @@ import { node } from "prop-types";
 
 const useStyles = makeStyles(styles);
 
-export default function Filter({initCatValue, initCheckedCat}) {
+export default function Filter({initCatValue, initCheckedCat, initServiceValue, initAreaValue}) {
   const [area, setArea] = useState([]);
   const [hair, setHair] = useState([]);
   const [nails, setNails] = useState([]);
@@ -62,19 +62,20 @@ export default function Filter({initCatValue, initCheckedCat}) {
   const [massage, setMassage] = useState([]);
   
   const [areaSelected, setAreaSelected] = useState(0);
-  const [hairSelected, setHairSelected] = useState(0);
-  const [nailsSelected, setNailsSelected] = useState(0);
-  const [hairRemovalSelected, setHairRemovalSelected] = useState(0);
-  const [makeupSelected, setMakeupSelected] = useState(0);
-  const [massageSelected, setMassageSelected] = useState(0);
+  // const [hairSelected, setHairSelected] = useState(0);
+  // const [nailsSelected, setNailsSelected] = useState(0);
+  // const [hairRemovalSelected, setHairRemovalSelected] = useState(0);
+  // const [makeupSelected, setMakeupSelected] = useState(0);
+  // const [massageSelected, setMassageSelected] = useState(0);
 
   const [areaTitle, setAreaTitle] = useState("Area");
-  const [hairTitle, setHairTitle] = useState("Hair Services");
-  const [nailsTitle, setNailsTitle] = useState("Nails Services");
+  // const [hairTitle, setHairTitle] = useState("Hair Services");
+  // const [nailsTitle, setNailsTitle] = useState("Nails Services");
 
   const [catValue, setCatValue] = useState(initCatValue);
   const [catDisplay, setCatDisplay] = useState(true);
   const [checkedCat, setCheckedCat] = useState(initCheckedCat);
+  const [serviceValue, setServiceValue] = useState(initServiceValue);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [salonsPerPage, setSalonsPerPage] = useState(3);
@@ -97,20 +98,21 @@ export default function Filter({initCatValue, initCheckedCat}) {
   // console.log(nails);
 
   useEffect(() => {
-    if(initCatValue) {setCatDisplay(false)}
+    if(initCatValue) {setCatDisplay(false)};
+    if(initAreaValue) {setArea(initAreaValue.split())};
   },[])
   
-  React.useEffect(() => {
+  useEffect(() => {
     (areaSelected)? setAreaTitle(`Area (${areaSelected} selected)`) : setAreaTitle("Area");
   }, [areaSelected]);
 
-  React.useEffect(() => {
-    (hairSelected)? setHairTitle(`Hair Services (${hairSelected} selected)`) : setHairTitle("Hair Services");
-  }, [hairSelected]);
+  // React.useEffect(() => {
+  //   (hairSelected)? setHairTitle(`Hair Services (${hairSelected} selected)`) : setHairTitle("Hair Services");
+  // }, [hairSelected]);
 
-  React.useEffect(() => {
-    (nailsSelected)? setNailsTitle(`Nails Services (${nailsSelected} selected)`) : setNailsTitle("Nails Services");
-  }, [nailsSelected]);
+  // React.useEffect(() => {
+  //   (nailsSelected)? setNailsTitle(`Nails Services (${nailsSelected} selected)`) : setNailsTitle("Nails Services");
+  // }, [nailsSelected]);
 
   const handleCatChange = event => {
     setCatValue(event.target.value);
@@ -152,6 +154,8 @@ export default function Filter({initCatValue, initCheckedCat}) {
       newCheckedCat.splice(currentIndex, 1);
     }
     setCheckedCat(newCheckedCat);
+    console.log('new cat', newCheckedCat);
+    console.log('checked cat', checkedCat);
     setCurrentPage(1);
   };
 
@@ -395,7 +399,7 @@ export default function Filter({initCatValue, initCheckedCat}) {
             <Card plain>
               <CardBody className={classes.cardBodyRefine}>
                 <h4 className={classes.cardTitle + " " + classes.textLeft}>
-                  Refine
+                  Reset filter
                   <Tooltip
                     id="tooltip-top"
                     title="Reset Filter"
@@ -472,6 +476,7 @@ export default function Filter({initCatValue, initCheckedCat}) {
                               id="size-small-standard-multi"
                               size="small"
                               options={categories}
+                              value={area}
                               onChange={(event,value) => {
                                 setArea(value);
                                 setAreaSelected(value.length);
