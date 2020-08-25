@@ -61,15 +61,34 @@ export default function Home() {
                   classes.textCenter
                 )}
               >
-                <h1 className={classes.brand}>Find your pearl in the ocean of beauty!!</h1>
+                <h2 className={classes.brand}>Find your pearl in the ocean of beauty!!</h2>
                 <Hidden smDown implementation="css">
-                  <h3 className={classes.brand}>
+                  <h4 className={classes.brand}>
                   Bridging the gap between personalised salon services, professionals 
                   and online booking experiences, Mirvarim is the new one-stop-shop wellness and beauty 
                   treatment platform that provides a wealth of experts at our fingertips.
-                  </h3>
+                  </h4>
                 </Hidden>
               </GridItem>
+              {/* <GridItem
+                xs={12}
+                sm={12}
+                md={12}
+                className={classNames(classes.mlAuto, classes.mrAuto)}
+              >
+                <Card raised className={classes.card}>
+                  <CardBody formHorizontal>
+                    <SearchSalons state = {setSearchResults} /> 
+                  </CardBody>
+                </Card>
+              </GridItem>  */}
+             </GridContainer>
+          </div>
+        </Parallax> 
+
+        {/* <div className={classNames(classes.main, classes.mainRaised)}> */}
+        <div className={classes.main}>
+          <div className={classes.container}>
               <GridItem
                 xs={12}
                 sm={12}
@@ -79,55 +98,10 @@ export default function Home() {
                 <Card raised className={classes.card}>
                   <CardBody formHorizontal>
                     <SearchSalons state = {setSearchResults} /> 
-
-                    
-                    {/* <form>
-                      <GridContainer>
-                        <GridItem xs={12} sm={6} md={6}>
-                          <CustomInput
-                            id="name"
-                            inputProps={{
-                              placeholder: "Find service or salon"
-                            }}
-                            formControlProps={{
-                              fullWidth: true,
-                              className: classes.formControl
-                            }}
-                          />
-                        </GridItem>
-                        <GridItem xs={12} sm={4} md={4}>
-                          <CustomInput
-                            id="email"
-                            inputProps={{
-                              placeholder: "Location"
-                            }}
-                            formControlProps={{
-                              fullWidth: true,
-                              className: classes.formControl
-                            }}
-                          />
-                        </GridItem>
-                        <GridItem xs={12} sm={2} md={2}>
-                          <Button
-                            block
-                            color="primary"
-                            className={classes.button}
-                          >
-                            Search
-                          </Button>
-                        </GridItem>
-                      </GridContainer>
-                    </form> */}
                   </CardBody>
                 </Card>
               </GridItem> 
-             </GridContainer>
-          </div> 
-          
-        </Parallax> 
-
-        {/* <div className={classNames(classes.main, classes.mainRaised)}> */}
-        <div className={classes.main}>
+         </div>
             <Query query={SALON_QUERY}>
                 {({ data, loading, error }) => {
                 if (loading) return <div>Loading</div>;
@@ -138,9 +112,6 @@ export default function Home() {
                 return <Listings listings={featuredSalons}/>;
                 }}
             </Query>
-        </div>
-      <br/>
-      <br/>
       <div className={classes.container}>
       {/* <h2 className={classes.title}>About us</h2> */}
         <p>
@@ -155,6 +126,7 @@ export default function Home() {
         with our detailed service overviews & get instant info on opening hours & location. The mission of Mirvarim is to be
         the go-to discovery platform for all beauty and wellness services anytime, anywhere. 
         </p>
+      </div>
       </div>
     </div>
     );

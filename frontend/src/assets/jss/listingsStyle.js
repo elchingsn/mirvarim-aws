@@ -14,7 +14,11 @@ import {
 
 const listingsSection = {
   container,
-  title,
+  title: {
+    ...title,
+    textAlign: "center",
+    marginTop: "10px"
+  },
   mlAuto,
   mrAuto,
   cardTitle: {
@@ -31,7 +35,7 @@ const listingsSection = {
     textAlign: "center"
   },
   team: {
-    padding: "50px 0",
+    padding: "10px 0",
     "& h5$description,& h5$descriptionWhite": {
       marginBottom: "50px"
     }

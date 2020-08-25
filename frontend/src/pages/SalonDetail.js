@@ -83,7 +83,7 @@ const SalonDetail=({match}) => {
     const [smallViewSize, setSmallViewSize] = useState(true)
  
     const id = match.params.id;
-    const API_BASE = `${process.env.REACT_APP_API_BASE}/media`    
+    const API_BASE = `${process.env.REACT_APP_API_BASE}/media`;
     console.log(id);
 
     // const { isSticky, element } = Sticky()

@@ -24,13 +24,13 @@ const presentationStyle = {
   },
   mainRaised,
   parallax: {
-    height: "60vh",
+    height: "45vh",
     overflow: "hidden"
   },
   container: {
     ...container,
     zIndex: 1,
-    paddingTop:"15vh"
+    paddingTop:"3vh"
   },
   conatiner2: {
     ...container,
@@ -49,7 +49,7 @@ const presentationStyle = {
     color: whiteColor,
     textAlign: "center",
     "& h1": {
-      fontSize: "4.2rem",
+      fontSize: "3rem",
       fontWeight: "600",
       display: "inline-block",
       position: "relative"
@@ -79,7 +79,7 @@ const presentationStyle = {
     textAlign: "center"
   },
   card: {
-    marginTop: "30px"
+    marginTop: "15px"
   },
   formControl: {
     margin: "0",
@@ -90,6 +90,39 @@ const presentationStyle = {
   },
   button: {
     margin: "0 !important"
+  },
+  listbox: {
+    width: 300,
+    margin: 0,
+    padding: 0,
+    zIndex: 1,
+    position: 'absolute',
+    listStyle: 'none',
+    backgroundColor: whiteColor,
+    overflow: 'auto',
+    maxHeight: 250,
+    border: '1px solid rgba(0,0,0,.25)',
+    '& li': {
+      padding: "2px 5px",
+      margin: "0px",
+      display: "flex",
+      '& span': {
+        flexGrow: "1",
+        margin: "52px 55px"
+      }
+    },
+    '& li[data-focus="true"]': {
+      backgroundColor: '#4a8df6',
+      color: 'white',
+      cursor: 'pointer'
+    },
+    '& li:active': {
+      backgroundColor: '#2977f5',
+      color: 'white',
+    }
+  },
+  input: {
+    padding: "0px", //no effect
   }
 };
 

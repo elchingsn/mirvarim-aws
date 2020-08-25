@@ -23,11 +23,16 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import Pagination from '@material-ui/lab/Pagination';
+import Hidden from "@material-ui/core/Hidden";
+import IconButton from "@material-ui/core/IconButton";
+import Drawer from "@material-ui/core/Drawer";
 // @material-ui icons
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import Cached from "@material-ui/icons/Cached";
 import Subject from "@material-ui/icons/Subject";
 import Check from "@material-ui/icons/Check";
+import FilterListIcon from '@material-ui/icons/FilterList';
+import Close from "@material-ui/icons/Close";
 
 // core components
 import FilterListings from "./FilterListings";
@@ -54,6 +59,8 @@ import { node } from "prop-types";
 const useStyles = makeStyles(styles);
 
 export default function Filter({initCatValue, initCheckedCat, initServiceValue, initAreaValue}) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   const [area, setArea] = useState([]);
   const [hair, setHair] = useState([]);
   const [nails, setNails] = useState([]);
@@ -113,6 +120,10 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   // React.useEffect(() => {
   //   (nailsSelected)? setNailsTitle(`Nails Services (${nailsSelected} selected)`) : setNailsTitle("Nails Services");
   // }, [nailsSelected]);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   const handleCatChange = event => {
     setCatValue(event.target.value);
@@ -393,8 +404,9 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   return (
     <div className={classes.container}>
      {/* <Container> */}
-        <GridContainer>
+      <GridContainer>
           <GridItem xs={12} sm={12} md={4} lg={3} >
+          <Hidden smDown implementation="css" className={classes.hidden}>
           <div className={classNames(classes.tab, classes.mainRaised)}>
             <Card plain>
               <CardBody className={classes.cardBodyRefine}>
@@ -602,12 +614,147 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                   ]}
                 />
                 </div> */}
-
-
-              </CardBody>
+                </CardBody>
             </Card>
             </div>
+            </Hidden>
           </GridItem>
+  
+            <Hidden mdUp implementation="js">
+              <Drawer
+                variant="temporary"
+                anchor={"bottom"}
+                open={mobileOpen}
+                classes={{
+                  paper: classes.drawerPaper
+                }}
+                onClose={handleDrawerToggle}
+              >
+                <IconButton
+                  color="inherit"
+                  aria-label="close filter"
+                  onClick={handleDrawerToggle}
+                  // className={classes.closeButtonDrawer}
+                >
+                  <Close />
+                </IconButton>
+                <div className={classes.container}>
+                  <div className={classes.paddingTB}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          tabIndex={-1}
+                          //onClick={() => handleToggle(1)}
+                          checked={false}
+                          checkedIcon={
+                            <Check className={classes.checkedIcon} />
+                          }
+                          icon={
+                            <Check className={classes.uncheckedIcon} />
+                          }
+                          classes={{
+                            checked: classes.checked,
+                            root: classes.checkRoot
+                          }}
+                        />
+                      }
+                      classes={{ label: classes.label }}
+                      label="Promotions"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          tabIndex={-1}
+                          //onClick={() => handleToggle(2)}
+                          checked={true}
+                          checkedIcon={
+                            <Check className={classes.checkedIcon} />
+                          }
+                          icon={
+                            <Check className={classes.uncheckedIcon} />
+                          }
+                          classes={{
+                            checked: classes.checked,
+                            root: classes.checkRoot
+                          }}
+                        />
+                      }
+                      classes={{ label: classes.label }}
+                      label="Online booking"
+                    />
+                    </div>
+                    <Divider/>
+                    <div className={classes.paddingB}>
+                      <h4>{areaTitle}</h4>
+                      <Query query={AREA_QUERY}>
+                        {({data, loading, error}) => {
+                          if (loading) return <Loading />;
+                          if (error) return <Error error={error} />;
+                          const categories = data.area.map(item => item.title);
+                        return  <Autocomplete
+                                  multiple
+                                  limitTags={3}
+                                  id="size-small-standard-multi"
+                                  size="small"
+                                  options={categories}
+                                  value={area}
+                                  onChange={(event,value) => {
+                                    setArea(value);
+                                    setAreaSelected(value.length);
+                                  }}
+                                  renderInput={(params) => (
+                                    <TextField {...params} 
+                                    variant="outlined" 
+                                    label="Location" 
+                                    placeholder="More areas" />
+                                  )}
+                                />
+                              }}
+                      </Query>
+                    </div>
+                    <Divider/>
+                    <div className={classes.paddingTB}>
+                    {catDisplay ? (
+                      <FormControl component="fieldset">
+                        <FormLabel component="legend" style={{paddingBottom:"10px"}}>Category</FormLabel>
+                        <RadioGroup
+                          aria-label="category"
+                          name="category"
+                          value={catValue}
+                          onChange={handleCatChange}
+                        >
+                          <FormControlLabel value="Hair" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}} />} label="Hair" />
+                          <FormControlLabel value="Nails" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Nails" />
+                          <FormControlLabel value="Hair Removal" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Hair Removal" />
+                          <FormControlLabel value="Makeup" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Makeup" />
+                          <FormControlLabel value="Massage" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Massage" />
+                        </RadioGroup>
+                      </FormControl>) : 
+                      (<div>
+                        <span>
+                          {catValue} &nbsp;
+                          <button
+                            style={{ border: "none", borderRadius: "30px" }}
+                            onClick={() => {
+                              setCatDisplay(true);
+                              setCatValue("");
+                              setCheckedCat([]);
+                              setHair([]);
+                              setNails([]);
+                            }}
+                          >
+                            X
+                          </button>
+                        </span>
+                      </div>
+                    )}
+                    </div>
+                    <Divider/>
+                    <CategoryServices catValue={catValue}/>
+                  </div>
+                  </Drawer>
+            </Hidden>
+
 
           <GridItem xs={12} sm={12} md={8} lg={9}>
             {/* <GridContainer> */}
@@ -628,6 +775,19 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
             </div>
           </GridItem>       
         </GridContainer>
+        <Hidden mdUp>
+          <div className={classes.stickyFilter}>
+            <Button
+              color="primary"
+              aria-label="open filter"
+              onClick={handleDrawerToggle}
+              className={classes.button}
+            >
+              <i class="fas fa-sliders-h"></i>
+              {/* <FilterListIcon /> */}
+            </Button>
+          </div>
+        </Hidden>
       {/* </Container> */}
     </div>
   );

@@ -38,7 +38,7 @@ import UserLinks from "components/Partials/UserLinks.js";
 // import CardBody from "components/Card/CardBody.js";
 // import CustomInput from "components/CustomInput/CustomInput.js";
 
-import style from "../../assets/jss/headerLinksStyle.js";
+import style from "../../assets/jss/navbarStyle.js";
 import HoverDropdown from "../../components/Partials/HoverDropdown";
 import CreateSalon from "../../components/Salon/CreateSalon.js";
 
@@ -119,7 +119,7 @@ const Navbar = (props) => {
             color="transparent"   
             fixed
             changeColorOnScroll={{
-                height: 400,
+                height: 210,
                 color: "darkSlateBlue"
               }}
             links1 = {<UserLinks currentUser={currentUser} dropdownHoverColor={dropdownHoverColor} />}

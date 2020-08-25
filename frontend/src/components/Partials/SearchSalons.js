@@ -153,9 +153,12 @@ const SearchSalons = ({state}) =>{
                         <Autocomplete
                         id="search"
                         freeSolo
+                        size="small"
                         options={searchOptions}
                         onChange = {(event,values) => setSearch(values)}
                         value = {search}
+                        classes={{listbox:classes.listbox,
+                                input: classes.input}}
                         renderInput={(params) => (
                         <TextField 
                         {...params} 
@@ -182,18 +185,22 @@ const SearchSalons = ({state}) =>{
                         <Autocomplete
                         id="location"
                         freeSolo
+                        size="small"
+                        classes={{listbox: classes.listbox,
+                          option: classes.input}}
                         options={locationOptions}
                         onChange = {(event,values) => setLocation(values)}
                         value = {location}
                         renderInput={(params) => (
                         <TextField 
                         {...params}
+                        margin="none"
                         onChange = {event => {
                           setLocation(event.target.value);
                           handleChange(event,client);
                         }}
                         label = "location" 
-                        margin="none" />
+                        />
                         )}
                          />
                     </GridItem>

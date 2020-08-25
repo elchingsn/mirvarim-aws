@@ -1,4 +1,4 @@
-import headerLinksStyle from "./headerLinksStyle.js";
+import navbarStyle from "./navbarStyle.js";
 import {
   container,
   mrAuto,

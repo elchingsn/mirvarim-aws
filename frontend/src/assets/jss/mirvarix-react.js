@@ -129,8 +129,9 @@ const dribbbleColor = "#ea4c89";
 const redditColor = "#ff4500";
 const instagramColor = "#125688";
 // const darkSlateBlue = "#483D8B";
-//const darkSlateBlue = "#29a3a3";
-const darkSlateBlue = "#336699";
+//const darkSlateBlue = "#001c31";
+// const darkSlateBlue = "#336699";
+const darkSlateBlue = "#022136";
 
 const transition = {
   transition: "all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1)"

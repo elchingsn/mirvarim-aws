@@ -129,6 +129,31 @@ const styles = {
       paddingTop: "30px",
     },
   },
+  hidden: {
+    width: "100%"
+  },
+  closeButtonDrawer: {
+    position: "absolute",
+    right: "8px",
+    top: "9px",
+    zIndex: "1"
+  },
+  stickyFilter: {
+    fontSize: "20px",
+    color: "white",
+    padding: "10px",
+    position: "fixed",
+    left: "0",
+    bottom: "60px",
+    height: "auto",
+    width: "100%",
+    zIndex: "3",
+    display: "flex",
+    justifyContent: "center"
+  },
+  button: {
+    padding: "15px",
+  },
 };
 
 export default styles;

@@ -8,7 +8,7 @@ import {
 
 import tooltip from "./tooltipsStyle.js";
 
-const headerLinksStyle = theme => ({
+const navbarStyle = theme => ({
   list: {
     [theme.breakpoints.up("md")]: {
       WebkitBoxAlign: "center",
@@ -226,7 +226,7 @@ const headerLinksStyle = theme => ({
     paddingTop: "6px",
     position: "relative",
     textTransform: 'none',
-    fontSize: "1.2rem",
+    fontSize: "0.875rem",
     [theme.breakpoints.down("sm")]:{
       color: darkSlateBlue //new effective
     }
@@ -244,4 +244,4 @@ const headerLinksStyle = theme => ({
   }
 });
 
-export default headerLinksStyle;
+export default navbarStyle;

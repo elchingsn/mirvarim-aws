@@ -23,13 +23,13 @@ const useStyles = makeStyles(styles);
 const Listings = ({listings}) => {
     const classes = useStyles();
 
-    // "http://127.0.0.1:8000/media/";
     const API_BASE = `${process.env.REACT_APP_API_BASE}/media`    
 
     return (
       <div className={classes.team}>
         <div className={classes.container}>
-          <GridContainer>
+        <h3 className={classes.title}>Featured Salons</h3> 
+          {/* <GridContainer>
             <GridItem
               xs={12}
               sm={8}
@@ -38,11 +38,11 @@ const Listings = ({listings}) => {
                 classes.mlAuto + " " + classes.mrAuto + " " + classes.textCenter
               }
             >
-              <h2 className={classes.title}>Featured Salons</h2> 
+              <h3 className={classes.title}>Featured Salons</h3> 
               <h5 className={classes.description}>
               </h5>
             </GridItem>
-          </GridContainer>
+          </GridContainer> */}
           <GridContainer>
             {listings.map(listing =>{
               const ratingList = listing.reviewSet.length ? listing.reviewSet.map(node => node.rating) : []
@@ -68,9 +68,9 @@ const Listings = ({listings}) => {
                     />
                   </CardHeader>
                   <CardBody plain>
-                    <h3 className={classes.cardTitle}>{listing.name}</h3>
+                    <h4 className={classes.cardTitle}>{listing.name}</h4>
                     <Rating name="read-only" size="small" value={avgRating} precision={0.1} readOnly />
-                    <h4 className={classes.cardCategory}>{listing.address}</h4>
+                    <h5 className={classes.cardCategory}>{listing.address}</h5>
                   </CardBody>
                   {/* <CardFooter profile plain className={classes.justifyContent}>
                   </CardFooter> */}

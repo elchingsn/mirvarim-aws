@@ -56,7 +56,7 @@ const Salon=({location}) => {
         className={classes.parallax}
         >
         </Parallax> */}
-        <div className={classes.container}>
+        {/* <div className={classes.container}>
         <GridContainer>
         <GridItem
                 xs={12}
@@ -71,7 +71,7 @@ const Salon=({location}) => {
                 </Card>
         </GridItem> 
         </GridContainer>
-        </div>
+        </div> */}
 
         <div className={classNames(classes.main, classes.mainRaised)}>
         <Filter 

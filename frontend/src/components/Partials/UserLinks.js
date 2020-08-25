@@ -22,7 +22,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Icon from "@material-ui/core/Icon";
 
-import style from "../../assets/jss/headerLinksStyle.js";
 import HoverDropdown from "../../components/Partials/HoverDropdown";
 import CreateSalon from "../../components/Salon/CreateSalon.js";
 
@@ -33,7 +32,7 @@ import aze_flag from "assets/img/aze.png"
 import ru_flag from "assets/img/ru.png"
 import en_flag from "assets/img/eng.png"
 
-import styles from "../../assets/jss/headerLinksStyle.js";
+import styles from "../../assets/jss/navbarStyle.js";
 
 const useStyles = makeStyles(styles);
 
