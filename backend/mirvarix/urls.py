@@ -22,7 +22,7 @@ urlpatterns = [
     # apiclient on client-side will request this adress later
     # path("graphql/", csrf_exempt(GraphQLView.as_view(graphiql=True))),
 
-    path("graphql/", csrf_exempt(FileUploadGraphQLView.as_view(graphiql=True))),
+    path("graphql/", csrf_exempt(FileUploadGraphQLView.as_view(graphiql=False))),
 
     # (it points to ~/templates/index.html)
     # (currently there is no file, webpack production bundle will come here )

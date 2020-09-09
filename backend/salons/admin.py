@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db import models
 from django.forms import CheckboxSelectMultiple
-from .models import Salon, Hair, Nails, HairRemoval, Makeup, Massage, City, Area
+from .models import Salon, Hair, Nails, HairRemoval, Makeup, Massage, Eyebrow, Cosmetology, Tattoo, Aesthetics, City, Area
 
 class SalonAdmin(admin.ModelAdmin):
   
@@ -36,6 +36,18 @@ class MakeupAdmin(admin.ModelAdmin):
   pass
 @admin.register(Massage)
 class MassageAdmin(admin.ModelAdmin):
+  pass
+@admin.register(Eyebrow)
+class EyebrowAdmin(admin.ModelAdmin):
+  pass
+@admin.register(Cosmetology)
+class CosmetologyAdmin(admin.ModelAdmin):
+  pass
+@admin.register(Tattoo)
+class TattooAdmin(admin.ModelAdmin):
+  pass
+@admin.register(Aesthetics)
+class AestheticsAdmin(admin.ModelAdmin):
   pass
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):

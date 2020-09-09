@@ -3,6 +3,8 @@ import { ApolloConsumer, Query } from "@apollo/react-components";
 import gql from "graphql-tag";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
+import Hidden from "@material-ui/core/Hidden";
+
 import withRoot from "./withRoot";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
@@ -10,12 +12,17 @@ import Salon from "./pages/Salon";
 import SalonDetail from "./pages/SalonDetail";
 import Partner from "./pages/Partner";
 import CreateReview from "components/Review/CreateReview";
+import CreateSalon from "components/Salon/CreateSalon";
 
-import Navbar from "./components/Partials/Navbar";
+import Navbar from "components/Partials/Navbar";
 import MainFooter from "components/Partials/MainFooter"
-import Loading from "./components/Shared/Loading";
-import TokenError from "./components/Shared/TokenError";
-import Error from "./components/Shared/Error"
+import FooterMenu from "components/Partials/FooterMenu"
+import Loading from "components/Shared/Loading";
+import Error from "components/Shared/Error"
+import Login from "components/Auth/Login"
+import Activate from "components/Auth/Activate"
+import PasswordReset from "components/Auth/PasswordReset"
+import routes, { renderRoutes } from 'components/Partner/routes.js';
 
 export const UserContext = React.createContext();
 
@@ -25,9 +32,11 @@ const App = () => (
       if (loading) return <Loading />;
       if (error) {
         return <Error error = {error} />
-        // return <TokenError />
       };
+      if (!data.me) { window.location.reload() }
+      console.log('me query in index files',data);
       const currentUser = data.me;
+      const {id} = currentUser;
 
       return (
         <Router>
@@ -35,13 +44,28 @@ const App = () => (
             <Navbar currentUser={currentUser} dropdownHoverColor="info" />
             <Switch>
               <Route exact path="/" component={Home} />
+              <Route exact path="/login" component={Login} />
+              <Route path="/activate/:token" component={Activate} />
+              <Route path="/reset/:token" component={PasswordReset} />
               <Route exact path="/salon" component={Salon} />
               <Route path="/profile/:id" component={Profile} />
               <Route path="/salon/:id" component={SalonDetail} />
               <Route path="/review/:id" component={CreateReview} />
-              <Route exact path="/partner" component={Partner} />
+              <Route exact path="/partner/:id" component={Partner} /> 
+              {/* <Route exact path="/partner/:id/salon/create" component={CreateSalon} />  */}
+              {renderRoutes(routes)}
             </Switch>
-            <MainFooter/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <Hidden smDown implementation="css">
+              <MainFooter currentUser={currentUser}/>
+            </Hidden>
+            <Hidden mdUp implementation="css">
+              <FooterMenu currentUser={currentUser}/>
+            </Hidden>
           </UserContext.Provider>
         </Router>
       );
@@ -56,6 +80,72 @@ export const ME_QUERY = gql`
       username
       email
       role
+      dateJoined
+      salonSet{
+        id
+        name
+        address
+        city {
+          id
+          title
+        }
+        area {
+          id
+          title
+        }
+        description
+        rating
+        priceRange
+        photoMain
+        photo1
+        photo2
+        photo3
+        photo4
+        hairCategories {
+          id
+          title
+        }
+        nailsCategories {
+          id
+          title
+        }
+        hairRemovalCategories {
+          id
+          title
+        }
+        makeupCategories {
+          id
+          title
+        }
+        massageCategories {
+          id
+          title
+        }
+        eyebrowCategories {
+          id
+          title
+        }
+        cosmetologyCategories {
+          id
+          title
+        }
+        tattooCategories {
+          id
+          title
+        }
+        aestheticsCategories {
+          id
+          title
+        }
+        hairserviceSet {
+          id
+          title
+        }
+        nailsserviceSet {
+          id
+          title
+        }
+      }
     }
   }
 `;

@@ -1,46 +1,29 @@
-import React, {useState} from "react";
-import {Link} from "react-router-dom";
+import React, { useContext, useState } from 'react';
+import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
+import LoadingScreen from 'components/Partials/LoadingScreen';
 
-import { ApolloConsumer, Query } from "@apollo/react-components";
-import gql from "graphql-tag";
+import PropTypes from 'prop-types'; 
+import { makeStyles } from '@material-ui/core';
+import NavBar from 'components/Partner/Dashboard/NavBar';
+import TopBar from 'components/Partner/Dashboard/TopBar';
+import CreateSalon from 'components/Salon/CreateSalon'
+import DashboardLayout from 'components/Partner/Dashboard';
 
-import { makeStyles } from "@material-ui/core/styles"; 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-
-import Parallax from "../components/Partials/Parallax.js";
-import Footer from "../components/Partials/Footer.js";
-import GridContainer from "../components/Partials/GridContainer.js";
-import GridItem from "../components/Partials/GridItem.js";
-import Button from "../components/Partials/Button.js";
-import Card from "../components/Partials/Card.js";
-import CardBody from "../components/Partials/CardBody.js";
-import CustomInput from "../components/Partials/CustomInput.js";
-
-import presentationStyle from "../assets/jss/presentationStyle.js";
-import CreateSalon from "../components/Salon/CreateSalon.js";
-
-const useStyles = makeStyles(presentationStyle);
-
-const Partner = ()=>{
-    // const [form, setForm] = useState(false);
-
+const Partner = ({ match })=>{
+    console.log(match);
+    const id = match.params.id;
+    let { path, url } = useRouteMatch();
+    console.log(path, 'and', url)
+    
     React.useEffect(() => {
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
     });
     
-    const classes = useStyles()
-
-    return(
-      <div>
-        {/* <Button onClick={() => setForm(true)}>
-          Add Salon
-        </Button>
-        {form && <CreateSalon/>} */}
-      </div>
+ 
+      return (
+        <DashboardLayout/>
     );
-
 }
 
 export default Partner;

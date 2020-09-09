@@ -16,7 +16,6 @@ import {
 } from "assets/jss/mirvarix-react.js";
 import zIndex from "@material-ui/core/styles/zIndex";
 
-
 const style = {
   container,
   title,

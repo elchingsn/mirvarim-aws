@@ -42,5 +42,13 @@ class Vote(models.Model):
   def __str__(self):
     return self.voted_by.username
 
+class Like(models.Model):
+  liked_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+  salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
+  like_date = models.DateTimeField(default=datetime.now, blank=True)
+
+  def __str__(self):
+    return self.liked_by.username
+
 
   

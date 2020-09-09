@@ -12,7 +12,7 @@ import datetime
 import requests
 import os
 
-from .models import Salon, Hair, Nails, HairRemoval, Makeup, Massage, City, Area
+from .models import Salon, Hair, Nails, HairRemoval, Makeup, Massage, Eyebrow, Cosmetology, Tattoo, Aesthetics, City, Area
 
 class HairType(DjangoObjectType):
     class Meta:
@@ -33,6 +33,22 @@ class MakeupType(DjangoObjectType):
 class MassageType(DjangoObjectType):
     class Meta:
         model = Massage
+
+class EyebrowType(DjangoObjectType):
+    class Meta:
+        model = Eyebrow
+
+class CosmetologyType(DjangoObjectType):
+    class Meta:
+        model = Cosmetology
+
+class TattooType(DjangoObjectType):
+    class Meta:
+        model = Tattoo
+
+class AestheticsType(DjangoObjectType):
+    class Meta:
+        model = Aesthetics
 
 class CityType(DjangoObjectType):
     class Meta:
@@ -55,13 +71,23 @@ class Query(graphene.ObjectType):
                                     area=graphene.List(graphene.String),
                                     hair=graphene.List(graphene.String),
                                     nails=graphene.List(graphene.String),
-                                    massage=graphene.List(graphene.String))
+                                    hairRemoval=graphene.List(graphene.String),
+                                    makeup=graphene.List(graphene.String),
+                                    massage=graphene.List(graphene.String),
+                                    eyebrow=graphene.List(graphene.String),
+                                    cosmetology=graphene.List(graphene.String),
+                                    tattoo=graphene.List(graphene.String),
+                                    aesthetics=graphene.List(graphene.String))                                  
     salon_selected = graphene.List(SalonType, id=graphene.Int(required=True))
     hair_cat = graphene.List(HairType)
     nails_cat = graphene.List(NailsType)
     hair_removal_cat = graphene.List(HairRemovalType)
     makeup_cat = graphene.List(MakeupType)
     massage_cat = graphene.List(MassageType)
+    eyebrow_cat = graphene.List(EyebrowType)
+    cosmetology_cat = graphene.List(CosmetologyType)
+    tattoo_cat = graphene.List(TattooType)
+    aesthetics_cat = graphene.List(AestheticsType)
     city = graphene.List(CityType)
     area = graphene.List(AreaType, search=graphene.String())
 
@@ -76,46 +102,50 @@ class Query(graphene.ObjectType):
                 Q(nails_categories__title__icontains=search) |
                 Q(hair_removal_categories__title__icontains=search) |
                 Q(makeup_categories__title__icontains=search) |
-                Q(massage_categories__title__icontains=search)   
+                Q(massage_categories__title__icontains=search) |
+                Q(eyebrow_categories__title__icontains=search) |
+                Q(cosmetology_categories__title__icontains=search) |
+                Q(tattoo_categories__title__icontains=search) |
+                Q(aesthetics_categories__title__icontains=search)  
             )
             return Salon.objects.filter(filter).distinct()
               
         return Salon.objects.all()
     
-    def resolve_salons_filtered(self, info, area=[], hair=[], nails=[], massage=[]):
+    def resolve_salons_filtered(self, info, area=[], hair=[], nails=[], hairRemoval=[], makeup=[], massage=[],
+                                eyebrow=[], cosmetology=[], tattoo=[], aesthetics=[]):
 
-        if area and (not hair) and (not nails) and (not massage):
+        if area and (not (hair or nails or hairRemoval or makeup or massage or eyebrow or cosmetology or tattoo or aesthetics)):
             return Salon.objects.filter(area__title__in=area).distinct()
         
-        if area and (hair or nails or massage):
+        if area and (hair or nails or hairRemoval or makeup or massage or eyebrow or cosmetology or tattoo or aesthetics):
             return Salon.objects.filter(Q(area__title__in=area) &
                                         (Q(hair_categories__title__in=hair) |
                                         Q(nails_categories__title__in=nails)|
-                                        Q(massage_categories__title__in=massage))
-                                        ).distinct()
+                                        Q(hair_removal_categories__title__in=hairRemoval)|
+                                        Q(makeup_categories__title__in=makeup)|
+                                        Q(massage_categories__title__in=massage)|
+                                        Q(eyebrow_categories__title__in=eyebrow)|
+                                        Q(cosmetology_categories__title__in=cosmetology)|
+                                        Q(tattoo_categories__title__in=tattoo)|
+                                        Q(aesthetics_categories__title__in=aesthetics))).distinct()
         
-        if not area and (hair or nails or massage):
+        if not area and (hair or nails or hairRemoval or makeup or massage or eyebrow or cosmetology or tattoo or aesthetics):
             return Salon.objects.filter(Q(hair_categories__title__in=hair) |
                                         Q(nails_categories__title__in=nails)|
-                                        Q(massage_categories__title__in=massage)
-                                        ).distinct()
+                                        Q(hair_removal_categories__title__in=hairRemoval)|
+                                        Q(makeup_categories__title__in=makeup)|
+                                        Q(massage_categories__title__in=massage)|
+                                        Q(eyebrow_categories__title__in=eyebrow)|
+                                        Q(cosmetology_categories__title__in=cosmetology)|
+                                        Q(tattoo_categories__title__in=tattoo)|
+                                        Q(aesthetics_categories__title__in=aesthetics)).distinct()
         
         return Salon.objects.all()
     
 
     def resolve_salon_selected(self, info, id):
         return Salon.objects.filter(id=id)
-
-        # if area and (not haircut) and (not nails):
-        #     return Salon.objects.filter(area__title__in=area).distinct()
-
-                                         
-        # if (not area) and (haircut) and (not nails):
-        #     return Salon.objects.filter(area__title__in=area).distinct()
-
-                                         
-        # if area and (not haircut) and (not nails):
-        #     return Salon.objects.filter(area__title__in=area).distinct()
 
     def resolve_hair_cat(self, info):
         return Hair.objects.all()
@@ -131,6 +161,18 @@ class Query(graphene.ObjectType):
 
     def resolve_massage_cat(self, info):
         return Massage.objects.all()
+
+    def resolve_eyebrow_cat(self, info):
+        return Eyebrow.objects.all()
+
+    def resolve_cosmetology_cat(self, info):
+        return Cosmetology.objects.all()
+
+    def resolve_tattoo_cat(self, info):
+        return Tattoo.objects.all()
+
+    def resolve_aesthetics_cat(self, info):
+        return Aesthetics.objects.all()
 
     def resolve_city(self, info):
         return City.objects.all()
@@ -157,6 +199,10 @@ class SalonInput(graphene.InputObjectType):
     hair_removal_categories = graphene.List(graphene.String)
     makeup_categories = graphene.List(graphene.String)
     massage_categories = graphene.List(graphene.String)
+    eyebrow_categories = graphene.List(graphene.String)
+    cosmetology_categories = graphene.List(graphene.String)
+    tattoo_categories = graphene.List(graphene.String)
+    aesthetics_categories = graphene.List(graphene.String)
     male = graphene.Boolean()
     female = graphene.Boolean()
     email = graphene.String()
@@ -189,6 +235,10 @@ class CreateSalon(graphene.Mutation):
         hair_removal_categories = salon_data.hair_removal_categories,
         makeup_categories = salon_data.makeup_categories,
         massage_categories = salon_data.massage_categories,
+        eyebrow_categories = salon_data.eyebrow_categories,
+        cosmetology_categories = salon_data.cosmetology_categories,
+        tattoo_categories = salon_data.tattoo_categories,
+        aesthetics_categories = salon_data.aesthetics_categories,
         male = salon_data.male,
         female = salon_data.female,
         email = salon_data.email,
@@ -239,8 +289,134 @@ class CreateSalon(graphene.Mutation):
         if nails_categories[0]:
           for id in nails_categories[0]:
             salon.nails_categories.add(Nails.objects.get(id=id))
-   
+
+        if hair_removal_categories[0]:
+          for id in hair_removal_categories[0]:
+            salon.hair_removal_categories.add(HairRemoval.objects.get(id=id))
+
+        if makeup_categories[0]:
+          for id in makeup_categories[0]:
+            salon.makeup_categories.add(Makeup.objects.get(id=id))
+
+        if massage_categories[0]:
+          for id in massage_categories[0]:
+            salon.massage_categories.add(Massage.objects.get(id=id))
+
+        if eyebrow_categories[0]:
+          for id in eyebrow_categories[0]:
+            salon.eyebrow_categories.add(Eyebrow.objects.get(id=id))
+
+        if cosmetology_categories[0]:
+          for id in cosmetology_categories[0]:
+            salon.cosmetology_categories.add(Cosmetology.objects.get(id=id))
+
+        if tattoo_categories[0]:
+          for id in tattoo_categories[0]:
+            salon.tattoo_categories.add(Tattoo.objects.get(id=id))
+
+        if aesthetics_categories[0]:
+          for id in aesthetics_categories[0]:
+            salon.aesthetics_categories.add(Aesthetics.objects.get(id=id))
+
         return CreateSalon(salon=salon)
+
+class UpdateSalon(graphene.Mutation):
+    salon = graphene.Field(SalonType)
+
+    class Arguments:
+        salon_id = graphene.Int(required=True)
+        salon_data = SalonInput(required=True)
+    
+    @staticmethod
+    def mutate(root,info,salon_id,salon_data):
+        user = info.context.user
+        salon=Salon.objects.get(id=salon_id)
+      
+        if salon.created_by != user:
+            raise GraphQLError('Not permitted to update this salon.')
+      
+        city_id = salon_data.city_id,
+        area_id = salon_data.area_id,    
+        hair_categories = salon_data.hair_categories,
+        nails_categories = salon_data.nails_categories,
+        hair_removal_categories = salon_data.hair_removal_categories,
+        makeup_categories = salon_data.makeup_categories,
+        massage_categories = salon_data.massage_categories,
+        eyebrow_categories = salon_data.eyebrow_categories,
+        cosmetology_categories = salon_data.cosmetology_categories,
+        tattoo_categories = salon_data.tattoo_categories,
+        aesthetics_categories = salon_data.aesthetics_categories,
+        # id is passed from frontend, salon model however requires relevant objects
+        city_obj = City.objects.get(id=city_id[0])
+        area_obj = Area.objects.get(id=area_id[0])  
+       
+        salon.name = salon_data.name
+        salon.address = salon_data.address
+        salon.city = city_obj
+        salon.area = area_obj
+        salon.description = salon_data.description
+        salon.price_range = salon_data.price_range
+        salon.masters = salon_data.masters
+        salon.male = salon_data.male
+        salon.female = salon_data.female
+        salon.email = salon_data.email
+        salon.phone = salon_data.phone
+        salon.photo_main = salon_data.photo_main
+        salon.photo_1 = salon_data.photo_1
+        salon.photo_2 = salon_data.photo_2
+        salon.photo_3 = salon_data.photo_3
+        salon.photo_4 = salon_data.photo_4
+        salon.photo_5 = salon_data.photo_5
+        salon.photo_6 = salon_data.photo_6
+        
+        if hair_categories[0]:
+          salon.hair_categories.clear()
+          for id in hair_categories[0]:
+            salon.hair_categories.add(Hair.objects.get(id=id))
+
+        if nails_categories[0]:
+          salon.nails_categories.clear()
+          for id in nails_categories[0]:
+            salon.nails_categories.add(Nails.objects.get(id=id))
+
+        if hair_removal_categories[0]:
+          salon.hair_removal_categories.clear()
+          for id in hair_removal_categories[0]:
+            salon.hair_removal_categories.add(HairRemoval.objects.get(id=id))
+
+        if makeup_categories[0]:
+          salon.makeup_categories.clear()
+          for id in makeup_categories[0]:
+            salon.makeup_categories.add(Makeup.objects.get(id=id))
+
+        if massage_categories[0]:
+          salon.massage_categories.clear()
+          for id in massage_categories[0]:
+            salon.massage_categories.add(Massage.objects.get(id=id))
+
+        if eyebrow_categories[0]:
+          salon.eyebrow_categories.clear()
+          for id in eyebrow_categories[0]:
+            salon.eyebrow_categories.add(Eyebrow.objects.get(id=id))
+
+        if cosmetology_categories[0]:
+          salon.cosmetology_categories.clear()
+          for id in cosmetology_categories[0]:
+            salon.cosmetology_categories.add(Cosmetology.objects.get(id=id))
+
+        if tattoo_categories[0]:
+          salon.tattoo_categories.clear()
+          for id in tattoo_categories[0]:
+            salon.tattoo_categories.add(Tattoo.objects.get(id=id))
+
+        if aesthetics_categories[0]:
+          salon.aesthetics_categories.clear()
+          for id in aesthetics_categories[0]:
+            salon.aesthetics_categories.add(Aesthetics.objects.get(id=id))
+
+        salon.save()
+        
+        return UpdateSalon(salon=salon)
 
 
 class UploadFile(graphene.Mutation):
@@ -301,6 +477,7 @@ class UploadFile(graphene.Mutation):
     
 class SalonMutation(graphene.ObjectType):
     create_salon = CreateSalon.Field() 
+    update_salon = UpdateSalon.Field() 
     upload_img = UploadFile.Field()
 
     

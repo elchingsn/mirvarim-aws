@@ -56,17 +56,17 @@ const Review = ({match})=>{
   React.useEffect(() => {
       window.scrollTo(0, 0);
       document.body.scrollTop = 0;
-  });
+  }, []);
   
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
 
-  const [question1, setQuestion1] = useState(4);
-  const [question2, setQuestion2] = useState(4);
-  const [question3, setQuestion3] = useState(4);
-  const [question4, setQuestion4] = useState(4);
-  const [question5, setQuestion5] = useState(4);
+  const [question1, setQuestion1] = useState(0);
+  const [question2, setQuestion2] = useState(0);
+  const [question3, setQuestion3] = useState(0);
+  const [question4, setQuestion4] = useState(0);
+  const [question5, setQuestion5] = useState(0);
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -77,7 +77,7 @@ const Review = ({match})=>{
     return ['Provide feedback', 'Add rating', 'Add comment [optional]', 'Submit'];
   }
 
-  const Question = ({setQuestion, number, question}) => {
+  const Question = ({setQuestion, number, question, style, selected}) => {
     return(
       <div>
         <GridContainer style = {{width:"100%"}}>
@@ -85,7 +85,7 @@ const Review = ({match})=>{
           <h4 style = {{marginLeft: "30px", marginBottom: "0"}}> {number} {question} </h4>
           </GridItem>
           <GridItem xs={6} sm={2} md={2} lg={1} className = {classes.grid}>
-              <IconButton 
+              <IconButton className = {classNames({[classes[`${style}`]] : selected === 1})}
               aria-label="question1" onClick = {() => {setQuestion(1);
                                                       console.log("answered");
                                                       }}
@@ -95,21 +95,21 @@ const Review = ({match})=>{
               <h5 style = {{ textAlign: "center", margin: "0"}} > Yes </h5>
           </GridItem> 
           <GridItem xs={6} sm={2} md={2} lg={1} className = {classes.grid}>
-              <IconButton 
+          <IconButton className = {classNames({[classes[`${style}`]] : selected === 2})}
               aria-label="question1" onClick = {() => setQuestion(2)} >
                 <SentimentSatisfiedIcon className = {classes.button} color="secondary" />
               </IconButton>
               <h5 style = {{ textAlign: "center", margin: "0"}} > Bele de </h5>
           </GridItem> 
           <GridItem xs={6} sm={2} md={2} lg={1} className = {classes.grid}>
-              <IconButton 
+          <IconButton className = {classNames({[classes[`${style}`]] : selected === 3})}
               aria-label="question1" onClick = {() => setQuestion(3)} >
                 <SentimentVeryDissatisfiedIcon className = {classes.button} color="error" />
               </IconButton>
               <h5 style = {{ textAlign: "center", margin: "0"}} > No </h5>
           </GridItem> 
           <GridItem xs={6} sm={2} md={2} lg={1} className = {classes.grid}>
-              <IconButton 
+          <IconButton className = {classNames({[classes[`${style}`]] : selected === 4})}
               aria-label="question1" onClick = {() => setQuestion(4)} >
                 <NotInterestedIcon className = {classes.button} />
               </IconButton>
@@ -127,11 +127,11 @@ const Review = ({match})=>{
         return (
           <div>
             <h3 style = {{marginLeft: "20px"}}> Please answer below questions</h3>
-            <Question setQuestion={setQuestion1} number="1." question="Was it clean?"/>
-            <Question setQuestion={setQuestion2} number="2." question="Was it professional?"/>
-            <Question setQuestion={setQuestion3} number="3." question="Was it punctual?"/>
-            <Question setQuestion={setQuestion4} number="4." question="Was it easy to find?"/>
-            <Question setQuestion={setQuestion5} number="5." question="Was it good value for money?"/>
+            <Question setQuestion={setQuestion1} number="1." question="Was it clean?" style="button1" selected={question1}/>
+            <Question setQuestion={setQuestion2} number="2." question="Was it professional?" style="button1" selected={question2}/>
+            <Question setQuestion={setQuestion3} number="3." question="Was it punctual?" style="button1" selected={question3}/>
+            <Question setQuestion={setQuestion4} number="4." question="Was it easy to find?" style="button1" selected={question4}/>
+            <Question setQuestion={setQuestion5} number="5." question="Was it good value for money?" style="button1" selected={question5}/>
             {console.log (question1, question2, question3, question4, question5)}
           </div>
         );
@@ -324,8 +324,18 @@ const useStyles = makeStyles((theme) => ({
   button: {
     //margin: theme.spacing.unit * 2,
     // width: 150, height: 150,
-    fontSize: 50,
-    padding: 0,
+    fontSize: 35,
+    padding: 0
+  },
+  button1: {
+  //  "&:focus":{
+      border: "3px solid red"
+  //  }
+  },
+  button2: {
+    "&:active":{
+      border: "3px solid orange"
+    }
   },
   icon: {
     marginLeft: theme.spacing.unit,

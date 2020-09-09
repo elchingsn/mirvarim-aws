@@ -28,7 +28,7 @@ const Listings = ({listings}) => {
     return (
       <div className={classes.team}>
         <div className={classes.container}>
-        <h3 className={classes.title}>Featured Salons</h3> 
+        {/* <h3 className={classes.title}>Featured Salons</h3>  */}
           {/* <GridContainer>
             <GridItem
               xs={12}
@@ -50,13 +50,13 @@ const Listings = ({listings}) => {
               const avgRating = ratingList.length ? (ratingList.reduce((avgRating,x) => avgRating + x)/countReviews).toFixed(1) : 0
 
               return (
-                <GridItem xs={12} sm={6} md={4}>
+                <GridItem xs={6} sm={6} md={3}>
                 <Link to={`/salon/${listing.id}`}>
                 <Card plain profile>
                   <CardHeader image plain>
                       {/* <img src={require(`../../../../media/${listing.photoMain}`)} */}
                       <img src={`${API_BASE}/${listing.photoMain}`}
-                      style={{height:"250px"}}
+                      //style={{height:"250px"}}
                       alt="..." />
                 
                     <div

@@ -3,7 +3,8 @@ import {Link} from "react-router-dom";
 import classNames from "classnames";
 import ImageGallery from "react-image-gallery";
 
-import { Query } from "@apollo/react-components";
+import {Query, Mutation} from "@apollo/react-components";
+import { ApolloProvider, useQuery, useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -11,6 +12,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import ShoppingCart from "@material-ui/icons/ShoppingCart";
+import DateRangeIcon from '@material-ui/icons/DateRange';
 import Rating from '@material-ui/lab/Rating';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -20,13 +22,13 @@ import Grid from '@material-ui/core/Grid';
 import Dialog from '@material-ui/core/Dialog';
 import Box from '@material-ui/core/Box';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import Divider from '@material-ui/core/Divider';
 
 import GridContainer from "../components/Partials/GridContainer.js";
 import GridItem from "../components/Partials/GridItem.js";
 import Card from "../components/Partials/Card.js";
 import CardBody from "../components/Partials/CardBody.js";
-import SearchSalons from "../components/Partials/SearchSalons.js";
 import Filter from "../components/Partials/Filter.js";
 import Accordion from "components/Partials/Accordion.js";
 import Button from "components/Partials/Button.js";
@@ -38,10 +40,12 @@ import Auth from "components/Auth"
 import Sticky from 'utils/sticky/Sticky.js';
 
 import { UserContext, ME_QUERY } from "App";
+import {PROFILE_QUERY} from "pages/Profile";
 
 import styles from "../assets/jss/salonDetailStyle.js";
 import ReviewList from "components/Partials/ReviewList.js";
 import CardFooter from "components/Partials/CardFooter.js";
+import ShowMoreText from "utils/truncate/ShowMoreText.js";
 const useStyles = makeStyles(styles);
 
 const RatingDistribution = ({value, progress, quantity}) => {
@@ -78,9 +82,11 @@ const SalonDetail=({match}) => {
 
     const [open, setOpen] = useState(false);
     const [colorSelect, setColorSelect] = useState("0");
-    const [searchResults, setSearchResults] = useState([]);
     const [tabIndex, setTabIndex] = useState(0);
     const [smallViewSize, setSmallViewSize] = useState(true)
+    const [isFavorite, setFavorite] = useState(false)
+    const [likeId, setLikeId] = useState("")
+    const [loadButton, setLoadButton] = useState(true)
  
     const id = match.params.id;
     const API_BASE = `${process.env.REACT_APP_API_BASE}/media`;
@@ -88,17 +94,28 @@ const SalonDetail=({match}) => {
 
     // const { isSticky, element } = Sticky()
 
-    // React.useEffect(() => {
-    //     window.scrollTo(0, 0);
-    //     document.body.scrollTop = 0;
-    //   }, []);
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+      }, []);
 
- 
     const [isSticky, setSticky] = React.useState(false);
     const stickyRef = useRef(null);
     const aboutRef = useRef(null);
     const servicesRef = useRef(null);
     const reviewRef = useRef(null);
+
+    const { data: review_data, fetchMore } = useQuery(
+      REVIEW_QUERY,
+      {
+        variables: {
+          id,
+          skip: 0,
+          first: 5
+        },
+        fetchPolicy: "cache-and-network"
+      }
+    );
 
     const handleScroll = () => {
         // console.log("REF",stickyRef);
@@ -137,6 +154,132 @@ const SalonDetail=({match}) => {
         block: 'start'
       })
     };
+
+    const handleCreateLike = (createLike) =>{
+      setFavorite(true);
+      createLike({variables: {salonId: id}}).catch(err => console.error(err));
+    }
+
+    const handleDeleteLike = (deleteLike) =>{
+      setFavorite(false);
+      console.log('likeID',likeId);
+      deleteLike({variables: { likeId }}).catch(err => console.error(err));
+    }
+
+    // const handleUpdateCacheUp = (cache, { data: { createLike } }) => {
+    //   const data = cache.readQuery({ query: SELECTED_SALON_QUERY });
+    //   data.salonSelected[0].likeSet = [...data.salonSelected[0].likeSet, createLike.like];
+    //   console.log('cache update',data.salonSelected[0].likeSet);
+    //   cache.writeQuery({ query: SELECTED_SALON_QUERY}, data);
+    // };
+
+    const FavoriteButton = ({xs, sm, md}) => {
+      return(
+        <GridItem xs={xs} sm={sm} md={md} className={classNames(classes.floatRight)}>
+          <Box display="flex" justifyContent="flex-end">
+          <Box>
+          {currentUser ? 
+            (!isFavorite ? 
+              ( 
+                <Mutation
+                  mutation={CREATE_LIKE}
+                  // variables={{salonId: id}}
+                  onCompleted={data => {
+                    setLikeId(data.createLike.like.id);
+                  }}
+                  update={(cache, { data: { createLike } }) => {
+                    //handleUpdateCacheUp(); 
+                    const {salonSelected} = cache.readQuery({ query: SELECTED_SALON_QUERY, variables: {id} });
+                    console.log('salonData', salonSelected);
+                    salonSelected[0].likeSet = [...salonSelected[0].likeSet, createLike.like];
+                    console.log('cache update',salonSelected);
+                    cache.writeQuery({ query: SELECTED_SALON_QUERY, variables: {id}, data: {salonSelected} });              
+                  }}
+                  refetchQueries={() => [{ query: PROFILE_QUERY, variables: {id:currentUser.id} }]}
+                >
+                  {(createLike, { loading, error }) => {
+                  if (error) return <Error error={error} />;
+                    return(
+                      <Button 
+                        color="info" 
+                        size="lg" 
+                        simple
+                        onClick={() => handleCreateLike(createLike)}
+                        className={`${smallViewSize? "classes.floatright" : "classes.right"}`}>
+                        <FavoriteIcon color="disabled"/>
+                      </Button>
+                    );
+                  }}
+                </Mutation>   
+              ):
+              (<Mutation
+                mutation={DELETE_LIKE}
+                onCompleted={data => {
+                  console.log(data)
+                }}
+                update={(cache, { data: { deleteLike } }) => {
+                  const {salonSelected} = cache.readQuery({ query: SELECTED_SALON_QUERY, variables: {id} });
+                  salonSelected[0].likeSet = salonSelected[0].likeSet.filter(({id}) => id != deleteLike.likeId);
+                  console.log('cache update',salonSelected);
+                  cache.writeQuery({ query: SELECTED_SALON_QUERY, variables: {id}, data: {salonSelected} });              
+                }}
+                refetchQueries={() => [{ query: PROFILE_QUERY, variables: {id:currentUser.id} }]}
+
+              >
+                {(deleteLike, { loading, error }) => {
+                if (error) return <Error error={error} />;
+                  return(
+                    <Button 
+                      color="info" 
+                      size="lg" 
+                      simple
+                      onClick={() => handleDeleteLike(deleteLike)}
+                      className={`${smallViewSize? "classes.floatright" : "classes.right"}`}>
+                      <FavoriteIcon color="error"/>
+                    </Button>
+                  );
+                }}
+              </Mutation>))
+          
+// {/*           
+//                   (<Mutation
+//                     mutation={DELETE_LIKE}
+//                     onCompleted={data => {
+//                       console.log(data)
+//                     }}
+//                   >
+//                     {(deleteLike, { loading, error }) => {
+//                     if (error) return <Error error={error} />;
+//                       return(<FavoriteIcon color="disabled"/>);
+//                     }}
+//                   </Mutation>)}
+//               </Button>) */}
+
+          : (<div>
+              <Button 
+                onClick={() => setOpen(true)} 
+                color="info" 
+                size="lg" 
+                simple
+                className={`${smallViewSize? "classes.floatright" : "classes.right"}`}>  
+                  {isFavorite ? 
+                  (<FavoriteIcon color="error" />) :
+                  (<FavoriteIcon/>)}
+                </Button>
+                <Dialog
+                  open={open}
+                  onClose={() => setOpen(false)}
+                >
+                  <Auth/>
+                </Dialog>
+              </div>)
+          }
+          </Box>
+          </Box>
+        </GridItem>
+      );
+    }
+
 
     const RateButton = ({xs, sm, md}) => {
       return(
@@ -196,32 +339,27 @@ const SalonDetail=({match}) => {
       
     return (
     <div>
-        {/* <div className={classes.container}>
-        <GridContainer>
-        <GridItem
-                xs={12}
-                sm={12}
-                md={12}
-                className={classNames(classes.mlAuto, classes.mrAuto)}
-              >
-                <Card raised className={classes.card}>
-                  <CardBody formHorizontal>
-                    <SearchSalons state = {setSearchResults} /> 
-                  </CardBody>
-                </Card>
-        </GridItem> 
-        </GridContainer>
-        </div> */}
-
         <Query query={SELECTED_SALON_QUERY} variables={{ id }}>
         {({ data, loading, error }) => {
             if (loading) return <Loading />;
             if (error) return <Error error={error} />;
             console.log(data.salonSelected[0]);
+            console.log('favorite',isFavorite);
+            if ((currentUser) && (data.salonSelected[0].likeSet[0])){
+              data.salonSelected[0].likeSet.map(node => {
+                if (currentUser.email == node.likedBy.email) {
+                  if(!likeId) {
+                    setFavorite(true);
+                    setLikeId(node.id);
+                  };
+                }
+              })
+            } 
+            console.log('likeID',likeId);
             const salon = data.salonSelected[0];
             const hairServices = salon.hairserviceSet
             const nailsServices = salon.nailsserviceSet
-            const hairRemovalServices = salon.hairremovalserviceSet
+            const hairRemovalServices = salon.hairremovalserviceSet 
             const makeupServices = salon.makeupserviceSet
             const massageServices = salon.massageserviceSet
             const services = [...hairServices, ...nailsServices, ...hairRemovalServices, ...makeupServices, ...massageServices]    
@@ -257,94 +395,168 @@ const SalonDetail=({match}) => {
 
             return (
             <div className={classNames(classes.section, classes.sectionGray)}>
-                <div className={classes.container}>
+              <div className={classes.container}>
                 <div className={classNames(classes.main, classes.mainRaised)}>
-                    <GridContainer>
-                    <GridItem md={6} sm={6} className={classes.paddingTLR}>
-                        <ImageGallery
-                        showFullscreenButton={true}
-                        showPlayButton={false}      
-                        startIndex={0}
-                        items={images}
-                        />
-                    </GridItem>
-                    <GridItem md={6} sm={6} className={classes.paddingL}>
-                        <h2 className={classes.title}>{salon.name}</h2>
-                        <h5>{salon.address}</h5>
-                        
-                        {/* <GridContainer className={classes.paddingR}>
-                          <GridItem md={12} sm={12}>
-                             <p> {salon.description} </p>
-                          </GridItem>
-                        </GridContainer> */}
-
-                        <GridContainer className={classes.pickSize}>
-                        <GridItem md={6} sm={6}>
-                            <label>Opening Hours</label>
-                            <FormControl
-                            fullWidth
-                            className={classes.selectFormControl}
-                            >
-                            <Select
-                                MenuProps={{
-                                className: classes.selectMenu
-                                }}
-                                classes={{
-                                select: classes.select
-                                }}
-                                value={colorSelect}
-                                onChange={event => setColorSelect(event.target.value)}
-                                inputProps={{
-                                name: "colorSelect",
-                                id: "color-select"
-                                }}
-                            >
-                                <MenuItem
-                                classes={{
-                                    root: classes.selectMenuItem,
-                                    selected: classes.selectMenuItemSelected
-                                }}
-                                value="0"
-                                >
-                                9.00-13.00
-                                </MenuItem>
-                                <MenuItem
-                                classes={{
-                                    root: classes.selectMenuItem,
-                                    selected: classes.selectMenuItemSelected
-                                }}
-                                value="1"
-                                >
-                                13.00-18.00
-                                </MenuItem>
-                                <MenuItem
-                                classes={{
-                                    root: classes.selectMenuItem,
-                                    selected: classes.selectMenuItemSelected
-                                }}
-                                value="2"
-                                >
-                                18.00-22.00
-                                </MenuItem>
-                            </Select>
-                            </FormControl>
+                    {smallViewSize? 
+                      (<GridContainer>
+                        <GridItem xs={12} sm={12} className={classes.paddingTLR}>
+                            <ImageGallery
+                            showFullscreenButton={true}
+                            showPlayButton={false}      
+                            startIndex={0}
+                            items={images}
+                            />
                         </GridItem>
+                        <GridItem xs={10} sm={10} className={classes.paddingL}>
+                          <h2 className={classes.title}>{salon.name}</h2>
+                          <h5>{salon.address}</h5>
+                          <GridContainer className={classes.pickSize}>
+                          {/* <GridItem md={6} sm={6} xs={12}>
+                              <label>Opening Hours</label>
+                              <FormControl
+                              fullWidth
+                              className={classes.selectFormControl}
+                              >
+                              <Select
+                                  MenuProps={{
+                                  className: classes.selectMenu
+                                  }}
+                                  classes={{
+                                  select: classes.select
+                                  }}
+                                  value={colorSelect}
+                                  onChange={event => setColorSelect(event.target.value)}
+                                  inputProps={{
+                                  name: "colorSelect",
+                                  id: "color-select"
+                                  }}
+                              >
+                                  <MenuItem
+                                  classes={{
+                                      root: classes.selectMenuItem,
+                                      selected: classes.selectMenuItemSelected
+                                  }}
+                                  value="0"
+                                  >
+                                  9.00-13.00
+                                  </MenuItem>
+                                  <MenuItem
+                                  classes={{
+                                      root: classes.selectMenuItem,
+                                      selected: classes.selectMenuItemSelected
+                                  }}
+                                  value="1"
+                                  >
+                                  13.00-18.00
+                                  </MenuItem>
+                                  <MenuItem
+                                  classes={{
+                                      root: classes.selectMenuItem,
+                                      selected: classes.selectMenuItemSelected
+                                  }}
+                                  value="2"
+                                  >
+                                  18.00-22.00
+                                  </MenuItem>
+                              </Select>
+                              </FormControl>
+                          </GridItem> */}
 
-                        <GridItem md={6} sm={6}>
-                            <Rating name="read-only" size="small" value={salon.rating} readOnly />
-                            <h5>View all reviews</h5>
+                          <GridItem md={6} sm={6} xs={12}>
+                              <Rating name="read-only" size="small" value={salon.rating} readOnly />
+                              <h5>View all reviews</h5>
                             </GridItem>
-                        </GridContainer>
+                          </GridContainer>
+                      </GridItem>
+                      <FavoriteButton xs="2" sm="2" md="2"/>
+                      </GridContainer>):
+                  (<GridContainer>
+                  <GridItem md={6} sm={6} className={classes.paddingTLR}>
+                    <ImageGallery
+                    showFullscreenButton={true}
+                    showPlayButton={false}      
+                    startIndex={0}
+                    items={images}
+                    />
+                </GridItem>
+                <GridItem md={5} sm={5} className={classes.paddingL}>
+                    <h2 className={classes.title}>{salon.name}</h2>
+                    <h5>{salon.address}</h5>
+                    <GridContainer className={classes.pickSize}>
+                    {/* <GridItem md={6} sm={6}>
+                        <label>Opening Hours</label>
+                        <FormControl
+                        fullWidth
+                        className={classes.selectFormControl}
+                        >
+                        <Select
+                            MenuProps={{
+                            className: classes.selectMenu
+                            }}
+                            classes={{
+                            select: classes.select
+                            }}
+                            value={colorSelect}
+                            onChange={event => setColorSelect(event.target.value)}
+                            inputProps={{
+                            name: "colorSelect",
+                            id: "color-select"
+                            }}
+                        >
+                            <MenuItem
+                            classes={{
+                                root: classes.selectMenuItem,
+                                selected: classes.selectMenuItemSelected
+                            }}
+                            value="0"
+                            >
+                            9.00-13.00
+                            </MenuItem>
+                            <MenuItem
+                            classes={{
+                                root: classes.selectMenuItem,
+                                selected: classes.selectMenuItemSelected
+                            }}
+                            value="1"
+                            >
+                            13.00-18.00
+                            </MenuItem>
+                            <MenuItem
+                            classes={{
+                                root: classes.selectMenuItem,
+                                selected: classes.selectMenuItemSelected
+                            }}
+                            value="2"
+                            >
+                            18.00-22.00
+                            </MenuItem>
+                        </Select>
+                        </FormControl>
+                    </GridItem> */}
 
-                        {/* <GridContainer className={classes.pullRight}>
-                        <Button round color="rose">
-                            Add to Cart &nbsp; <ShoppingCart />
-                        </Button>
-                        </GridContainer> */}
-                    </GridItem>
+                    <GridItem md={6} sm={6}>
+                        <Rating name="read-only" size="small" value={salon.rating} readOnly />
+                        <h5>View all reviews</h5>
+                      </GridItem>
+
+                    <GridItem md={6} sm={6} className={classes.pullRight}>
+                    <Button color="primary" round>
+                        Make a reservation &nbsp; <DateRangeIcon />
+                    </Button>
+                    </GridItem> 
                     </GridContainer>
+
+
+                    {/* <GridContainer className={classes.pullRight}>
+                    <Button round color="rose">
+                        Add to Cart &nbsp; <ShoppingCart />
+                    </Button>
+                    </GridContainer> */}
+                </GridItem>
+                <FavoriteButton xs="2" sm="1" md="1"/>
+                </GridContainer>)}
                 </div>
-                </div>
+              </div>
 
                 <div className={classes.container} ref={stickyRef} >
                   <div className={classNames(classes.main, classes.mainRaised)} ref={aboutRef}>
@@ -366,7 +578,9 @@ const SalonDetail=({match}) => {
                   <GridContainer>
                     <GridItem md={12} sm={12} className={classNames(classes.paddingLR, classes.paddingT)}>
                       <p style={{fontSize:"18px", marginTop:"30px", color:"inherit"}}> About</p>
-                      <p> {salon.description} </p>
+                      <ShowMoreText>
+                        {salon.description} 
+                      </ShowMoreText>
                     </GridItem>
                   </GridContainer>
                   </div>
@@ -375,13 +589,13 @@ const SalonDetail=({match}) => {
                   <GridContainer>
                     <GridItem md={12} sm={12} className={classNames(classes.paddingLR,classes.paddingT)}>
                     <p style={{fontSize:"18px", color:"inherit"}}>Services</p>
-                        <Accordion
+                        {/* <Accordion
                           //active={0}
                           activeColor="info"
                           collapses={[
                               {
                               title: "",
-                              content: (
+                              content: ( */}
                                 <div>
                                 {services.map(service => (
                                 <>
@@ -418,10 +632,10 @@ const SalonDetail=({match}) => {
                             </>
                             ))}
                             </div>
-                              )
+                              {/* )
                               }
                           ]}
-                        />
+                        /> */}
                     </GridItem>
                   </GridContainer>
                   </div>
@@ -510,9 +724,9 @@ const SalonDetail=({match}) => {
                     </Query>
                   
                  
-                  <GridContainer>                    
+                  {/* <GridContainer>                    
                     <GridItem md={12} sm={12} className={classNames(classes.paddingLR)}>
-                      <Query query={REVIEW_QUERY} variables={{ id }}>
+                      <Query query={REVIEW_QUERY} variables={{ id, first:3, skip:0 }}>
                         {({ data, loading, error }) => {
                         if (loading) return <div>Loading</div>;
                         if (error) return <div>Error</div>;
@@ -520,10 +734,41 @@ const SalonDetail=({match}) => {
                         }}
                       </Query>
                     </GridItem>
-                    {/* <Button round color="rose">
-                      Load more...
-                    </Button> */}
-                  </GridContainer>
+                  </GridContainer> */}
+                  
+                  {review_data && 
+                  (<GridContainer>                    
+                    <GridItem md={12} sm={12} className={classNames(classes.paddingLR)}>
+                        <ReviewList reviews={review_data.reviews || []}/>
+                        { loadButton &&(
+                        <Button  
+                          round 
+                          simple 
+                          size="small"
+                          color="rose"
+                          onClick={()=>
+                            fetchMore({
+                              variables:{
+                                skip: review_data.reviews.length
+                              },
+                              updateQuery: (prev, {fetchMoreResult}) => {
+                                console.log('prev',prev);
+                                console.log('more',fetchMoreResult);
+                                if (fetchMoreResult.reviews.length == 0) {
+                                  setLoadButton(false)
+                                  return prev
+                                };
+                                return Object.assign({}, prev, {
+                                  reviews: [...prev.reviews, ...fetchMoreResult.reviews]
+                                });
+                              }
+                            })
+                          }
+                        >
+                          Load more...
+                        </Button>)}
+                    </GridItem>
+                  </GridContainer>)}
                 </div>
                 </div>
 
@@ -539,13 +784,14 @@ const SalonDetail=({match}) => {
 };
 
 const SELECTED_SALON_QUERY = gql`
-query ($id:Int!) {
-    salonSelected(id: $id) {
+query selected_salon ($id:Int!) {
+    salonSelected(id:$id) {
         id
         name
         address
         description
         city{
+          id
           title
         }
         rating
@@ -558,43 +804,62 @@ query ($id:Int!) {
         photo5
         photo6
         hairserviceSet {
-          title,
-          price,
-          promotionPrice,
+          id
+          title
+          price
+          promotionPrice
           duration
         }
         nailsserviceSet {
-          title,
-          price,
-          promotionPrice,
+          id
+          title
+          price
+          promotionPrice
           duration
         }
         hairremovalserviceSet {
-          title,
-          price,
-          promotionPrice,
+          id
+          title
+          price
+          promotionPrice
           duration
         }
         makeupserviceSet {
-          title,
-          price,
-          promotionPrice,
+          id
+          title
+          price
+          promotionPrice
           duration
         }
         massageserviceSet {
-          title,
-          price,
-          promotionPrice,
+          id
+          title
+          price
+          promotionPrice
           duration
+        }
+        likeSet {
+          id
+          salon {
+            id
+            name
+          }
+          likedBy {
+            id
+            username
+            email
+          }
         }
     }
 }
 `;
 
 const REVIEW_QUERY = gql`
-query ($id:Int!) {
-  reviews(id:$id){
+query salon_review ($id:Int!, $first:Int, $skip:Int) {
+  reviews(id:$id, first:$first, skip:$skip){
+    id
     postedBy {
+      id
       username
     }
     rating
@@ -606,11 +871,38 @@ query ($id:Int!) {
     comment
     postDate
     voteSet{
+      id
       isUseful
     }
   }
 }
 `;
 
+const CREATE_LIKE = gql`
+  mutation($salonId: Int!) {
+    createLike(salonId: $salonId) {
+      like {
+        id
+        salon {
+          id
+          name
+        }
+        likedBy {
+          id
+          username
+          email
+        }
+      }
+    }
+  }
+`;
+
+const DELETE_LIKE = gql`
+  mutation($likeId: Int!) {
+    deleteLike(likeId: $likeId) {
+      likeId
+    }
+  }
+`;
 export default SalonDetail;
 

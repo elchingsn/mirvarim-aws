@@ -17,6 +17,10 @@ import ListItem from "@material-ui/core/ListItem";
 import Typography from "@material-ui/core/Typography";
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -79,9 +83,10 @@ export default function HeaderLinks(props) {
   const { currentUser } = props;
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState(false);
-  const [fbUser, setFbUser] = useState("");
-  const [flag, setFlag] = useState("aze");
+  const [dashboard, setDashboard] = useState(false);
+  // const [form, setForm] = useState(false);
+  // const [fbUser, setFbUser] = useState("");
+  const [flag, setFlag] = useState(localStorage.getItem("i18nextLng"));
 
   const { t, i18n } = useTranslation();
 
@@ -93,63 +98,152 @@ export default function HeaderLinks(props) {
     setOpen(false);
   };
 
+  const handleDashboardOpen = () => {
+    setDashboard(true);
+  };
+
+  const handleDashboardClose = () => {
+    setDashboard(false);
+  };
+
   const changeLang = (code) => {
     i18n.changeLanguage(code);
     setFlag(code);
   }
-
 
   return (
       <div className={classes.collapse}>      
         {/* Auth User Info */}
         {currentUser
         ? (<div>    
-            {/* Below commented code yields purple text */}
-            {/* <Link to={"/partner"} className={classes.grow}>
-            <Button className={classes.listItem} variant="outlined"
-              onClick={(e)=> e.preventDefault}>
-              <h5 style={{margin:"5px"}}>List your salon</h5>
-            </Button>
-            </Link> */}
-            <Link to={"/partner"}>
-            <Button className={classes.username} size="small" variant="outlined"
-              onClick={(e)=> e.preventDefault}>
-              List your salon
-            </Button>
-            </Link>
+          <List className={classes.list + " " + classes.mlAuto}>
+          <ListItem className={classes.listItem}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <Select
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={flag}
+                  onChange={(event) => changeLang(event.target.value)}
+                  label="flag"
+                >
+                  <MenuItem value="aze">
+                    <img src={aze_flag} style={{width: 30, height: 30}}/>
+                  </MenuItem>
+                  <MenuItem value="ru">
+                    <img src={ru_flag} style={{width: 30, height: 30}}/>
+                  </MenuItem>
+                  <MenuItem value="en">
+                    <img src={en_flag} style={{width: 30, height: 30}}/>
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </ListItem> 
+            {currentUser.role === "A_3" ? 
+              (<ListItem className={classes.listItem}>
+                {/* Below commented code yields purple text */}
+                {/* <Link to={"/partner"} className={classes.grow}>
+                <Button className={classes.listItem} variant="outlined"
+                  onClick={(e)=> e.preventDefault}>
+                  <h5 style={{margin:"5px"}}>List your salon</h5>
+                </Button>
+                </Link> */}
+                <Link to={`/partner/${currentUser.id}`}>
+                <Button className={classes.username} size="small" variant="outlined"
+                  onClick={(e)=> e.preventDefault}>
+                  List your salon
+                </Button>
+                </Link>
+                </ListItem>) 
+              :(<ListItem className={classes.listItem}>
+                <Button className={classes.username} size="small" variant="outlined"
+                  onClick={handleDashboardOpen}>
+                  List your salon
+                </Button>
+                </ListItem>
+              )}
             {/* <Link to={`/profile/${currentUser.id}`} className={classes.grow}>
               <Typography variant="headline" className={classes.username} noWrap>
               {currentUser.username} 
               </Typography> 
             </Link> */}
+            <ListItem className={classes.listItem}>
             <Link to={`/profile/${currentUser.id}`} className={classes.grow}>
               <Button className={classes.username} size="small" 
                 onClick={(e)=> e.preventDefault}>
                 {currentUser.username} 
               </Button>
             </Link>
+            </ListItem>
+            <ListItem className={classes.listItem}>
             <Signout /> 
+          </ListItem>
+          </List>
             </div>  
           )
         : (<div>
-            <Link to={"/partner"}>
+          <List className={classes.list + " " + classes.mlAuto}>
+          <ListItem className={classes.listItem}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <Select
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={flag}
+                  onChange={(event) => changeLang(event.target.value)}
+                  label="flag"
+                >
+                  <MenuItem value="aze">
+                    <img src={aze_flag} style={{width: 30, height: 30}}/>
+                  </MenuItem>
+                  <MenuItem value="ru">
+                    <img src={ru_flag} style={{width: 30, height: 30}}/>
+                  </MenuItem>
+                  <MenuItem value="en">
+                    <img src={en_flag} style={{width: 30, height: 30}}/>
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </ListItem> 
+
+            <ListItem className={classes.listItem}>
             <Button className={classes.username} size="small" variant="outlined"
-              onClick={(e)=> e.preventDefault}>
+              onClick={handleDashboardOpen}>
               List your salon
             </Button>
-            </Link>
+            </ListItem>
+
+            <ListItem className={classes.listItem}>
             <Button className={classes.username} size="small" 
             onClick={handleLoginOpen}>Login/Register</Button>
+            </ListItem>
+            </List>
             <Dialog
               open={open}
               onClose={handleLoginClose}
-              //aria-labelledby="alert-dialog-title"
+              //aria-labelledby="alert-dialog-title" 
               //aria-describedby="alert-dialog-description"
             >
               <Auth/>
             </Dialog>
             </div>)
         }   
+        <Dialog
+          open={dashboard}
+          onClose={handleDashboardClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">Become our business partner</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Please login as a salon or freelancer to add salon/service
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDashboardClose} color="primary" autoFocus>
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
   );
 }

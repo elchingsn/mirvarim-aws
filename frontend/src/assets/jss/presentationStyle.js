@@ -24,7 +24,7 @@ const presentationStyle = {
   },
   mainRaised,
   parallax: {
-    height: "45vh",
+    height: "39vh",
     overflow: "hidden"
   },
   container: {
@@ -44,6 +44,11 @@ const presentationStyle = {
   title: {
     ...title,
     color: whiteColor
+  },
+  title1: {
+    ...title,
+    textAlign: "center",
+    marginTop: "30px"
   },
   brand: {
     color: whiteColor,
@@ -123,6 +128,11 @@ const presentationStyle = {
   },
   input: {
     padding: "0px", //no effect
+  },
+  search: {
+    display: "flex",
+    justifyContent: "center",
+    width:"100%"
   }
 };
 

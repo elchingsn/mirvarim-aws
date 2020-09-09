@@ -55,11 +55,13 @@ import salonImage from "../../assets/img/salon1.jpeg"
 
 import styles from "../../assets/jss/filterStyle.js";
 import { node } from "prop-types";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(styles);
 
 export default function Filter({initCatValue, initCheckedCat, initServiceValue, initAreaValue}) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const [area, setArea] = useState([]);
   const [hair, setHair] = useState([]);
@@ -67,6 +69,10 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   const [hairRemoval, setHairRemoval] = useState([]);
   const [makeup, setMakeup] = useState([]);
   const [massage, setMassage] = useState([]);
+  const [eyebrow, setEyebrow] = useState([]);
+  const [cosmetology, setCosmetology] = useState([]);
+  const [tattoo, setTattoo] = useState([]);
+  const [aesthetics, setAesthetics] = useState([]);
   
   const [areaSelected, setAreaSelected] = useState(0);
   // const [hairSelected, setHairSelected] = useState(0);
@@ -154,7 +160,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   //   return function cleanup() {};
   // });
 
-  const {data} = useQuery(FILTERED_SALONS_QUERY, {variables:{area, hair, nails}});
+  const {data} = useQuery(FILTERED_SALONS_QUERY, {variables:{area, hair, nails}}, { fetchPolicy: 'network-only' });
     
   const handleCatToggle = value => {
     const currentIndex = checkedCat.indexOf(value);
@@ -178,15 +184,16 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
         return(
           <div className={classes.paddingTB}>
             <FormControl component="fieldset" >
-            <FormLabel component="legend" className={classes.paddingB}> Hair Services</FormLabel>
+            <FormLabel component="legend" className={classes.paddingB}>{t("Hair Services")}</FormLabel>
             <FormGroup>
-            <Query query={HAIR_QUERY}>
+            <Query query={HAIR_QUERY} fetchPolicy='network-only'>
               {({data, loading, error}) => {
                 if (loading) return <Loading />;
                 if (error) return <Error error={error} />;
                 const categories = data.hairCat.map(item => item.title);
                 console.log("checkedCat",checkedCat);
                 console.log("hair",hair);
+                console.log('categories',categories)
                 if (checkedCat.length) {setHair(checkedCat)}
                 else if (hair.length != categories.length) {setHair(categories)}
                 return(
@@ -224,7 +231,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
           return(
             <div className={classes.paddingTB}>
               <FormControl component="fieldset" >
-              <FormLabel component="legend" className={classes.paddingB}> Nails Services</FormLabel>
+              <FormLabel component="legend" className={classes.paddingB}>{t("Nails Services")}</FormLabel>
               <FormGroup>
               <Query query={NAILS_QUERY}>
                 {({data, loading, error}) => {
@@ -268,7 +275,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
         return(
           <div className={classes.paddingTB}>
             <FormControl component="fieldset" >
-            <FormLabel component="legend" className={classes.paddingB}> Hair Removal Services</FormLabel>
+            <FormLabel component="legend" className={classes.paddingB}>{t("Hair Removal Services")}</FormLabel>
             <FormGroup>
             <Query query={HAIR_REMOVAL_QUERY}>
               {({data, loading, error}) => {
@@ -312,7 +319,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
         return(
           <div className={classes.paddingTB}>
             <FormControl component="fieldset" >
-            <FormLabel component="legend" className={classes.paddingB}> Makeup Services</FormLabel>
+            <FormLabel component="legend" className={classes.paddingB}>{t("Makeup Services")}</FormLabel>
             <FormGroup>
             <Query query={MAKEUP_QUERY}>
               {({data, loading, error}) => {
@@ -356,7 +363,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
           return(
             <div className={classes.paddingTB}>
               <FormControl component="fieldset" >
-              <FormLabel component="legend" className={classes.paddingB}> Massage Services</FormLabel>
+              <FormLabel component="legend" className={classes.paddingB}>{t("Massage&Spa Services")} </FormLabel>
               <FormGroup>
               <Query query={MASSAGE_QUERY}>
                 {({data, loading, error}) => {
@@ -395,7 +402,193 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
           </FormGroup>
           </FormControl>
         </div>
-      );       
+      );
+      case "Eyebrow":
+        return(
+          <div className={classes.paddingTB}>
+            <FormControl component="fieldset" >
+            <FormLabel component="legend" className={classes.paddingB}>{t("Eyebrow/Eyelashes Services")}</FormLabel>
+            <FormGroup>
+            <Query query={EYEBROW_QUERY}>
+              {({data, loading, error}) => {
+                if (loading) return <Loading />;
+                if (error) return <Error error={error} />;
+                const categories = data.eyebrowCat.map(item => item.title);
+                console.log("checkedCat",checkedCat);
+                console.log("eyebrow",eyebrow);
+                console.log('categories',categories)
+                if (checkedCat.length) {setEyebrow(checkedCat)}
+                else if (eyebrow.length != categories.length) {setEyebrow(categories)}
+                return(
+                categories.map(node => (
+                  <FormControlLabel
+                    control={
+                    <Checkbox
+                      onClick={() => handleCatToggle(node)}
+                      checked={ 
+                        checkedCat.includes(node)
+                      }
+                      checkedIcon={
+                        <Check className={classes.checkedIcon} />
+                      }
+                      icon={
+                        <Check className={classes.uncheckedIcon} />
+                      }
+                      classes={{
+                        checked: classes.checked,
+                        root: classes.checkRoot
+                      }}
+                    />
+                  }
+                  classes={{ label: classes.label }}
+                  label={node}
+                />
+                )));
+            }}
+            </Query>
+            </FormGroup>
+            </FormControl>
+          </div>
+        );
+        case "Cosmetology":
+          return(
+            <div className={classes.paddingTB}>
+              <FormControl component="fieldset" >
+              <FormLabel component="legend" className={classes.paddingB}>{t("Cosmetology Services")}</FormLabel>
+              <FormGroup>
+              <Query query={COSMETOLOGY_QUERY}>
+                {({data, loading, error}) => {
+                  if (loading) return <Loading />;
+                  if (error) return <Error error={error} />;
+                  const categories = data.cosmetologyCat.map(item => item.title);
+                  console.log("checkedCat",checkedCat);
+                  console.log('categories',categories)
+                  if (checkedCat.length) {setCosmetology(checkedCat)}
+                  else if (cosmetology.length != categories.length) {setCosmetology(categories)}
+                  return(
+                  categories.map(node => (
+                    <FormControlLabel
+                      control={
+                      <Checkbox
+                        onClick={() => handleCatToggle(node)}
+                        checked={ 
+                          checkedCat.includes(node)
+                        }
+                        checkedIcon={
+                          <Check className={classes.checkedIcon} />
+                        }
+                        icon={
+                          <Check className={classes.uncheckedIcon} />
+                        }
+                        classes={{
+                          checked: classes.checked,
+                          root: classes.checkRoot
+                        }}
+                      />
+                    }
+                    classes={{ label: classes.label }}
+                    label={node}
+                  />
+                  )));
+              }}
+              </Query>
+              </FormGroup>
+              </FormControl>
+            </div>
+          );
+          case "Tattoo":
+            return(
+              <div className={classes.paddingTB}>
+                <FormControl component="fieldset" >
+                <FormLabel component="legend" className={classes.paddingB}>{t("Tattoo/Piercing Services")} </FormLabel>
+                <FormGroup>
+                <Query query={TATTOO_QUERY}>
+                  {({data, loading, error}) => {
+                    if (loading) return <Loading />;
+                    if (error) return <Error error={error} />;
+                    const categories = data.tattooCat.map(item => item.title);
+                    console.log("checkedCat",checkedCat);
+                    console.log('categories',categories)
+                    if (checkedCat.length) {setTattoo(checkedCat)}
+                    else if (tattoo.length != categories.length) {setTattoo(categories)}
+                    return(
+                    categories.map(node => (
+                      <FormControlLabel
+                        control={
+                        <Checkbox
+                          onClick={() => handleCatToggle(node)}
+                          checked={ 
+                            checkedCat.includes(node)
+                          }
+                          checkedIcon={
+                            <Check className={classes.checkedIcon} />
+                          }
+                          icon={
+                            <Check className={classes.uncheckedIcon} />
+                          }
+                          classes={{
+                            checked: classes.checked,
+                            root: classes.checkRoot
+                          }}
+                        />
+                      }
+                      classes={{ label: classes.label }}
+                      label={node}
+                    />
+                    )));
+                }}
+                </Query>
+                </FormGroup>
+                </FormControl>
+              </div>
+            );
+            case "Aesthetics":
+              return(
+                <div className={classes.paddingTB}>
+                  <FormControl component="fieldset" >
+                  <FormLabel component="legend" className={classes.paddingB}>{t("Aesthetic Medicine Services")} </FormLabel>
+                  <FormGroup>
+                  <Query query={AESTHETICS_QUERY}>
+                    {({data, loading, error}) => {
+                      if (loading) return <Loading />;
+                      if (error) return <Error error={error} />;
+                      const categories = data.aestheticsCat.map(item => item.title);
+                      console.log("checkedCat",checkedCat);
+                      console.log('categories',categories)
+                      if (checkedCat.length) {setAesthetics(checkedCat)}
+                      else if (aesthetics.length != categories.length) {setAesthetics(categories)}
+                      return(
+                      categories.map(node => (
+                        <FormControlLabel
+                          control={
+                          <Checkbox
+                            onClick={() => handleCatToggle(node)}
+                            checked={ 
+                              checkedCat.includes(node)
+                            }
+                            checkedIcon={
+                              <Check className={classes.checkedIcon} />
+                            }
+                            icon={
+                              <Check className={classes.uncheckedIcon} />
+                            }
+                            classes={{
+                              checked: classes.checked,
+                              root: classes.checkRoot
+                            }}
+                          />
+                        }
+                        classes={{ label: classes.label }}
+                        label={node}
+                      />
+                      )));
+                  }}
+                  </Query>
+                  </FormGroup>
+                  </FormControl>
+                </div>
+              );
+                   
       default:
         return null;
     }
@@ -758,10 +951,13 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
 
           <GridItem xs={12} sm={12} md={8} lg={9}>
             {/* <GridContainer> */}
-              <Query query={FILTERED_SALONS_QUERY} variables={{area, hair, nails}}>
+              <Query query={FILTERED_SALONS_QUERY} variables={{area, hair, nails}} fetchPolicy='network-only'>
                 {({data, loading, error}) => {
                   if (loading) return <Loading />;
                   if (error) return <Error error={error} />;
+                  console.log('area', area)
+                  console.log('hair', hair)
+                  console.log('nails', nails)
                     // Get current salons
                   const currentSalons = data.salonsFiltered.slice(indexOfFirstSalon, indexOfLastSalon);
                   setCount(Math.ceil(data.salonsFiltered.length/salonsPerPage))
@@ -805,41 +1001,48 @@ query ($area:[String],
         address
         description
         city{
+          id
           title
         }
         reviewSet{
+          id
           rating
         }
         priceRange
         photoMain 
         hairserviceSet {
-          title,
-          price,
-          promotionPrice,
+          id
+          title
+          price
+          promotionPrice
           duration
         }
         nailsserviceSet {
-          title,
-          price,
-          promotionPrice,
+          id
+          title
+          price
+          promotionPrice
           duration
         }
         hairremovalserviceSet {
-          title,
-          price,
-          promotionPrice,
+          id
+          title
+          price
+          promotionPrice
           duration
         }
         makeupserviceSet {
-          title,
-          price,
-          promotionPrice,
+          id
+          title
+          price
+          promotionPrice
           duration
         }
         massageserviceSet {
-          title,
-          price,
-          promotionPrice,
+          id
+          title
+          price
+          promotionPrice
           duration
         }
     }
@@ -852,6 +1055,7 @@ const AREA_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
@@ -864,6 +1068,7 @@ const HAIR_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
@@ -876,6 +1081,7 @@ const NAILS_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
@@ -888,6 +1094,7 @@ const HAIR_REMOVAL_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
@@ -900,6 +1107,7 @@ const MAKEUP_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
@@ -912,9 +1120,63 @@ const MASSAGE_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
 }
 `;
+
+const EYEBROW_QUERY = gql`
+{
+    eyebrowCat{
+        id
+        title
+        salonSet{
+          id
+          name
+        }
+      }
+}
+`;
+
+const COSMETOLOGY_QUERY = gql`
+{
+    cosmetologyCat{
+        id
+        title
+        salonSet{
+          id
+          name
+        }
+      }
+}
+`;
+
+const TATTOO_QUERY = gql`
+{
+    tattooCat{
+        id
+        title
+        salonSet{
+          id
+          name
+        }
+      }
+}
+`;
+
+const AESTHETICS_QUERY = gql`
+{
+    aestheticsCat{
+        id
+        title
+        salonSet{
+          id
+          name
+        }
+      }
+}
+`;
+
 

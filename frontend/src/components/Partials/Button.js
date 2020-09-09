@@ -20,6 +20,7 @@ const RegularButton = React.forwardRef((props, ref) => {
     fullWidth,
     disabled,
     simple,
+    simpler, //new
     size,
     block,
     link,
@@ -37,6 +38,7 @@ const RegularButton = React.forwardRef((props, ref) => {
     [classes.fullWidth]: fullWidth,
     [classes.disabled]: disabled,
     [classes.simple]: simple,
+    [classes.simpler]: simpler,
     [classes.block]: block,
     [classes.link]: link,
     [classes.justIcon]: justIcon,

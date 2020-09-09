@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db import models
 from django.forms import CheckboxSelectMultiple
-from .models import Review, Vote
+from .models import Review, Vote, Like
 
 class ReviewAdmin(admin.ModelAdmin):
   
@@ -20,3 +20,8 @@ admin.site.register(Review, ReviewAdmin)
 @admin.register(Vote)
 class VoteAdmin(admin.ModelAdmin):
   pass
+
+@admin.register(Like)
+class LikeAdmin(admin.ModelAdmin):
+  list_display = ('liked_by', 'salon', 'like_date',)
+

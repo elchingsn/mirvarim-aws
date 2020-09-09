@@ -18,13 +18,19 @@ i18n
   .init({
     debug: true,
  
-    //lng: 'aze',
-    fallbackLng: 'aze',
+    lng: localStorage.getItem("i18nextLng") || 'aze',
+    fallbackLng: {'default': ['aze']},
     whitelist: ['aze','en','ru'],
  
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
+    detection: {
+      order: ["localStorage", "navigator"],
+      lookupQuerystring: "lng",
+      // lookupLocalStorage: I18N_LANGUAGE, //I18N_LANGUAGE is const defined elsewhere
+      caches: ["localStorage"]
+    }
   });
  
 export default i18n;

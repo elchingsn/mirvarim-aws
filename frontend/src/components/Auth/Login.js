@@ -3,6 +3,7 @@ import FacebookLogin from 'react-facebook-login';
 import { Mutation } from '@apollo/react-components';
 import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import gql from "graphql-tag";
+import { Link } from "react-router-dom";
 
 import withStyles from "@material-ui/core/styles/withStyles";
 import Typography from "@material-ui/core/Typography";
@@ -99,6 +100,7 @@ const Login = ({ classes, setNewUser }) => {
       if (res.data.tokenAuth.success) {
         localStorage.setItem("accessToken", res.data.tokenAuth.token);
         localStorage.setItem("refreshToken", res.data.tokenAuth.refreshToken);
+        console.log('over here');
         client.writeData({ data: { isLoggedIn: true } });
       } else {
         register( {variables: {username, email, role: "1", password1: password, password2: password}});
@@ -111,7 +113,7 @@ const Login = ({ classes, setNewUser }) => {
     console.log('statusChangeCallback');
     if (response.status === 'connected') {   // Logged into your webpage and Facebook.
       //testAPI();  
-      console.log(response);   
+      console.log('FB response', response);   
       window.FB.api('/me?fields=id,name,email,permissions', function(response) {
       // localStorage.setItem('facebook', "connected");
       handleFBRegistration (response.name.split(' ')[0], response.email, response.name.split(' ')[0].concat(response.id));
@@ -195,6 +197,10 @@ const Login = ({ classes, setNewUser }) => {
                 >
                   New user? Register here
                 </Button>
+                <br/>
+                <Link to="/reset">
+                  <h6 >Forgot password?</h6>
+                </Link>
 
                 {/* Error Handling */}
                 {error && <Error error={error} />}

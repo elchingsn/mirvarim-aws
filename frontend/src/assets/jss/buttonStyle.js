@@ -737,7 +737,15 @@ const buttonStyle = {
   },
   fileButton: {
     // display: "inline-block"
-  }
+  },
+  simpler: {
+    "&,&:focus,&:hover": {
+      color: "white",
+      background: "transparent",
+      boxShadow: "none",
+      border: "1px solid #FFFFFF"
+    }
+  },
 };
 
 export default buttonStyle;

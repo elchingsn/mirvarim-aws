@@ -20,10 +20,13 @@ import CustomInput from "./CustomInput.js";
 import presentationStyle from "../../assets/jss/presentationStyle.js";
 const useStyles = makeStyles(presentationStyle);
 
-const SearchSalons = ({state}) =>{
+const SearchSalons = ({state, setSearchOpen}) =>{
     const classes = useStyles();
-    const [search, setSearch] = useState(state["search"]);
-    const [location, setLocation] = useState(state["location"]);
+    //needed to pass search field values from home page to search component of salon page
+    // const [search, setSearch] = useState(state["search"]);
+    // const [location, setLocation] = useState(state["location"]);
+    const [search, setSearch] = useState("");
+    const [location, setLocation] = useState("");
     const [catValue, setCatValue] = useState("");
     const [checkedCat, setCheckedCat] = useState("");
     const [salon_set, setSalonSet] = useState([]);
@@ -31,6 +34,7 @@ const SearchSalons = ({state}) =>{
     const [locationOptions, setLocationOptions] = useState([]);
     const [salonId, setSalonId] = useState("0");
     const inputEl = useRef();
+    // state from footer panel
 
     useEffect(() => {
       if (state) {
@@ -81,7 +85,15 @@ const SearchSalons = ({state}) =>{
           // creating array of categories as alias to services
           const hairService_set = data_salon.salons.map(el => (el.hairCategories.map(item => item.title))).flat(1);
           const nailsService_set = data_salon.salons.map(el => (el.nailsCategories.map(item => item.title))).flat(1);
-          const search_set = [].concat(salon_set,hairService_set,nailsService_set);
+          const hairRemovalService_set = data_salon.salons.map(el => (el.hairRemovalCategories.map(item => item.title))).flat(1);
+          const makeupService_set = data_salon.salons.map(el => (el.makeupCategories.map(item => item.title))).flat(1);
+          const massageService_set = data_salon.salons.map(el => (el.massageCategories.map(item => item.title))).flat(1);
+          const eyebrowService_set = data_salon.salons.map(el => (el.eyebrowCategories.map(item => item.title))).flat(1);
+          const cosmetologyService_set = data_salon.salons.map(el => (el.cosmetologyCategories.map(item => item.title))).flat(1);
+          const tattooService_set = data_salon.salons.map(el => (el.tattooCategories.map(item => item.title))).flat(1);
+          const aestheticsService_set = data_salon.salons.map(el => (el.aestheticsCategories.map(item => item.title))).flat(1);
+          const search_set = [].concat(salon_set,hairService_set,nailsService_set,hairRemovalService_set,makeupService_set,
+                              massageService_set,eyebrowService_set,cosmetologyService_set,tattooService_set,aestheticsService_set);
           if (search) { options = search_set.filter(el => el.toLowerCase().includes(search.toLowerCase()))};
           // when search field is cleared no drop down option will be visible
           search ? setSearchOptions(options) : setSearchOptions([]);
@@ -90,6 +102,13 @@ const SearchSalons = ({state}) =>{
           else {setCheckedCat(search)}
           if (hairService_set.includes(search)) {setCatValue("Hair")}
           if (nailsService_set.includes(search)) {setCatValue("Nails")}
+          if (hairRemovalService_set.includes(search)) {setCatValue("Hair Removal")}
+          if (makeupService_set.includes(search)) {setCatValue("Makeup")}
+          if (massageService_set.includes(search)) {setCatValue("Massage")}
+          if (eyebrowService_set.includes(search)) {setCatValue("Eyebrow")}
+          if (cosmetologyService_set.includes(search)) {setCatValue("Cosmetology")}
+          if (tattooService_set.includes(search)) {setCatValue("Tattoo")}
+          if (aestheticsService_set.includes(search)) {setCatValue("Aesthetics")}
         };
     }, [search]);
 
@@ -224,29 +243,32 @@ const SearchSalons = ({state}) =>{
                           //   handleSubmit(event,client);
                           //   window.location.href="/salon";
                           // }}
+                          onClick={()=>setSearchOpen(false)}
                           >
                             Search
                           </Button>
                         </Link> ) :
                         (<Link 
-                        to={{
-                          pathname: "/salon",
-                          state: {
-                            search: search,
-                            location: location,
-                            catValue: catValue,
-                            checkedCat: checkedCat
-                          }
-                        }} > 
-                        <Button
-                        block
-                        color="primary"
-                        className={classes.button}
-                        type = "submit"
-                        >
-                          Search
-                        </Button>
-                      </Link>
+                          style={{color: "white"}}
+                          to={{
+                            pathname: "/salon",
+                            state: {
+                              search: search,
+                              location: location,
+                              catValue: catValue,
+                              checkedCat: checkedCat
+                            }
+                          }} > 
+                            <Button
+                              block
+                              color="primary"
+                              className={classes.button}
+                              type = "submit"
+                              onClick={()=>setSearchOpen(false)}
+                              >
+                              Search
+                            </Button>
+                        </Link>
                       )}
                     </GridItem>
                     </GridContainer>
@@ -273,6 +295,27 @@ const SEARCH_SALONS_QUERY = gql`
               title
             }
             nailsCategories {
+              title
+            }
+            hairRemovalCategories {
+              title
+            }
+            makeupCategories {
+              title
+            }
+            massageCategories {
+              title
+            }
+            eyebrowCategories {
+              title
+            }
+            cosmetologyCategories {
+              title
+            }
+            tattooCategories {
+              title
+            }
+            aestheticsCategories {
               title
             }
             hairserviceSet {

@@ -22,7 +22,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Icon from "@material-ui/core/Icon";
 
-import style from "../../assets/jss/navbarStyle.js";
 import HoverDropdown from "../../components/Partials/HoverDropdown";
 import CreateSalon from "../../components/Salon/CreateSalon.js";
 
@@ -159,7 +158,7 @@ export default function HeaderLinks(props) {
                     noLiPadding
                     navDropdown
                     hoverColor={dropdownHoverColor}
-                    buttonText = "Hair Removal" 
+                    buttonText = {t("Hair Removal")}
                     dropdownList={categories} 
                     buttonProps={{
                       className: classes.navLink,
@@ -181,7 +180,7 @@ export default function HeaderLinks(props) {
                     noLiPadding
                     navDropdown
                     hoverColor={dropdownHoverColor}
-                    buttonText = "Makeup" 
+                    buttonText = {t("Makeup")} 
                     dropdownList={categories} 
                     buttonProps={{
                       className: classes.navLink,
@@ -191,7 +190,6 @@ export default function HeaderLinks(props) {
                 }}
             </Query>
             </ListItem>
-
             <ListItem className={classes.listItem}>
             <Query query={MASSAGE_QUERY}>
                 {({ data, loading, error }) => {
@@ -203,7 +201,7 @@ export default function HeaderLinks(props) {
                     noLiPadding
                     navDropdown
                     hoverColor={dropdownHoverColor}
-                    buttonText = {t("Massage")} 
+                    buttonText = {t("Massage&Spa")} 
                     dropdownList={categories} 
                     buttonProps={{
                       className: classes.navLink,
@@ -213,9 +211,94 @@ export default function HeaderLinks(props) {
                 }}
             </Query>
             </ListItem> 
+            <ListItem className={classes.listItem}>
+            <Query query={EYEBROW_QUERY}>
+                {({ data, loading, error }) => {
+                if (loading) return <Loading />;
+                if (error) return <Error error={error} />;
+                const categories = data.eyebrowCat;
+
+                return <HoverDropdown 
+                    noLiPadding
+                    navDropdown
+                    hoverColor={dropdownHoverColor}
+                    buttonText = {t("Eyebrow/lashes")} 
+                    dropdownList={categories} 
+                    buttonProps={{
+                      className: classes.navLink,
+                      color: "transparent"
+                    }}
+                    />;
+                }}
+            </Query>
+            </ListItem> 
+            <ListItem className={classes.listItem}>
+            <Query query={COSMETOLOGY_QUERY}>
+                {({ data, loading, error }) => {
+                if (loading) return <Loading />;
+                if (error) return <Error error={error} />;
+                const categories = data.cosmetologyCat;
+
+                return <HoverDropdown 
+                    noLiPadding
+                    navDropdown
+                    hoverColor={dropdownHoverColor}
+                    buttonText = {t("Cosmetology")} 
+                    dropdownList={categories} 
+                    buttonProps={{
+                      className: classes.navLink,
+                      color: "transparent"
+                    }}
+                    />;
+                }}
+            </Query>
+            </ListItem>
+            <ListItem className={classes.listItem}>
+            <Query query={TATTOO_QUERY}>
+                {({ data, loading, error }) => {
+                if (loading) return <Loading />;
+                if (error) return <Error error={error} />;
+                const categories = data.tattooCat;
+
+                return <HoverDropdown 
+                    noLiPadding
+                    navDropdown
+                    hoverColor={dropdownHoverColor}
+                    buttonText = {t("Tattoo/Piercing")} 
+                    dropdownList={categories} 
+                    buttonProps={{
+                      className: classes.navLink,
+                      color: "transparent"
+                    }}
+                    />;
+                }}
+            </Query>
+            </ListItem> 
+            <ListItem className={classes.listItem}>
+            <Query query={AESTHETICS_QUERY}>
+                {({ data, loading, error }) => {
+                if (loading) return <Loading />;
+                if (error) return <Error error={error} />;
+                const categories = data.aestheticsCat;
+
+                return <HoverDropdown 
+                    noLiPadding
+                    navDropdown
+                    hoverColor={dropdownHoverColor}
+                    buttonText = {t("Aesthetics")} 
+                    dropdownList={categories} 
+                    buttonProps={{
+                      className: classes.navLink,
+                      color: "transparent"
+                    }}
+                    />;
+                }}
+            </Query>
+            </ListItem>  
+
             <ListItem>
             </ListItem> 
-            <ListItem>
+            {/* <ListItem>
               <FormControl variant="outlined" className={classes.formControl}>
                 <Select
                   labelId="demo-simple-select-outlined-label"
@@ -235,7 +318,7 @@ export default function HeaderLinks(props) {
                   </MenuItem>
                 </Select>
               </FormControl>
-            </ListItem> 
+            </ListItem>  */}
           </List>
       </div>
   );
@@ -301,6 +384,55 @@ const MASSAGE_QUERY = gql`
       }
 }
 `;
+
+const EYEBROW_QUERY = gql`
+{
+    eyebrowCat{
+        id
+        title
+        salonSet{
+          name
+        }
+      }
+}
+`;
+
+const COSMETOLOGY_QUERY = gql`
+{
+    cosmetologyCat{
+        id
+        title
+        salonSet{
+          name
+        }
+      }
+}
+`;
+
+const TATTOO_QUERY = gql`
+{
+    tattooCat{
+        id
+        title
+        salonSet{
+          name
+        }
+      }
+}
+`;
+
+const AESTHETICS_QUERY = gql`
+{
+    aestheticsCat{
+        id
+        title
+        salonSet{
+          name
+        }
+      }
+}
+`;
+
 
 HeaderLinks.defaultProps = {
   hoverColor: "primary"

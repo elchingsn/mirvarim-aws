@@ -24,7 +24,7 @@ const navbarStyle = theme => ({
       color: darkSlateBlue, //new no effect
       alignItems: "start", // no effect
       paddingRight: "20px",
-      paddingTop: "50px"
+      paddingTop: "25px"
     },
     marginTop: "0px",
     display: "flex",

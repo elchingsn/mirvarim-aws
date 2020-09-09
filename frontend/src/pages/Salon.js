@@ -36,7 +36,7 @@ const Salon=({location}) => {
     if (location.state) {
       initValues = location.state;
       initCatValue = initValues["catValue"];
-      initCheckedCat.push(initValues["checkedCat"]);
+      if (initValues["checkedCat"]) {initCheckedCat.push(initValues["checkedCat"])};
       initServiceValue = initValues["search"];
       initAreaValue = initValues["location"];
     }

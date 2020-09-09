@@ -1,4 +1,9 @@
 {
+  "category types": {
+    "HairType":"Hair", 
+    "NailsType":"Nails",
+    "HairRemovalType":"Hair Removal"
+  },
   "comment1": "Hair Category",
   "Hair": "Hair",
   "Haircut": "Haircut",

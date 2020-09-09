@@ -77,22 +77,29 @@ const Navbar = (props) => {
 
 
     if(props.location.pathname.match(/partner/)){
-      return (
-        <div>
-          {(currentUser && currentUser.role == "A_3")?
-          (<CreateSalon/>) :
-          (<div> Login as a salon to add salon</div>)
-          }
-        </div>
-      );
+      return (null);
     }
 
 
     if(props.location.pathname.match(/review/)){
-      return (null);
+      return (
+        <div>
+        <Header
+              //brand="MIRVARIM"
+              color="darkSlateBlue"   
+              // fixed
+              // changeColorOnScroll={{
+              //     height: 400,
+              //     color: "darkSlateBlue"
+              //   }}  
+              // 
+              links1 = {<UserLinks currentUser={currentUser} />}
+        />
+      </div>
+      );
     }
 
-    if(props.location.pathname.match(/salon/)){
+    if((props.location.pathname.match(/salon/))||(props.location.pathname.match(/profile/))) {
       return (
         <div>
           <Header
@@ -110,6 +117,25 @@ const Navbar = (props) => {
         </div>
       );
     }
+
+    if((props.location.pathname.match(/activate/))||(props.location.pathname.match(/reset/))) {
+      return (
+        <div>
+          <Header
+                //brand="MIRVARIM"
+                color="darkSlateBlue"   
+                // fixed
+                // changeColorOnScroll={{
+                //     height: 400,
+                //     color: "darkSlateBlue"
+                //   }}  
+                // 
+                //links1 = {<UserLinks currentUser={currentUser} />}
+          />
+        </div>
+      );
+    }
+
 
     return(
 
@@ -391,6 +417,54 @@ const MAKEUP_QUERY = gql`
 const MASSAGE_QUERY = gql`
 {
     massageCat{
+        id
+        title
+        salonSet{
+          name
+        }
+      }
+}
+`;
+
+const EYEBROW_QUERY = gql`
+{
+    eyebrowCat{
+        id
+        title
+        salonSet{
+          name
+        }
+      }
+}
+`;
+
+const COSMETOLOGY_QUERY = gql`
+{
+    cosmetologyCat{
+        id
+        title
+        salonSet{
+          name
+        }
+      }
+}
+`;
+
+const TATTOO_QUERY = gql`
+{
+    tattooCat{
+        id
+        title
+        salonSet{
+          name
+        }
+      }
+}
+`;
+
+const AESTHETICS_QUERY = gql`
+{
+    aestheticsCat{
         id
         title
         salonSet{

@@ -7,6 +7,7 @@ import gql from "graphql-tag";
 import axios from "axios";
 import Cookies from 'js-cookie';
 
+import Box from "@material-ui/core/Box";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Typography from "@material-ui/core/Typography";
@@ -44,13 +45,17 @@ const CreateSalon = ({classes}) => {
     const [cityId, setCityId] = useState("");
     const [areaId, setAreaId] = useState("");
     const [description, setDescription] = useState("");
-    const [priceRange, setPriceRange] = useState("");
+    const [priceRange, setPriceRange] = useState(2);
     const [masters, setMasters] = useState(1);
     const [hairCategories, setHairCategories] = useState([]);
     const [nailsCategories, setNailsCategories] = useState([]);
     const [hairRemovalCategories, setHairRemovalCategories] = useState([]);
-    const [makeupCategories, setMakeupCategories] = useState("");
-    const [massageCategories, setMassageCategories] = useState("");
+    const [makeupCategories, setMakeupCategories] = useState([]);
+    const [massageCategories, setMassageCategories] = useState([]);
+    const [cosmetologyCategories, setCosmetologyCategories] = useState([]);
+    const [eyebrowCategories, setEyebrowCategories] = useState([]);
+    const [tattooCategories, setTattooCategories] = useState([]);
+    const [aestheticsCategories, setAestheticsCategories] = useState([]);
     const [male, setMale] = useState(false);
     const [female, setFemale] = useState(false);
     const [email, setEmail] = useState("");
@@ -149,14 +154,17 @@ const CreateSalon = ({classes}) => {
         console.log(uploadedUrl)
       }
 
-      console.log( name, address, cityId, areaId, description, priceRange, masters,
-        hairCategories, nailsCategories, male, female, email, phone, uploadedUrl[0],
+      console.log( name, address, cityId, areaId, description, priceRange, masters, hairCategories, nailsCategories,
+        hairRemovalCategories, makeupCategories, massageCategories, eyebrowCategories, cosmetologyCategories,
+        tattooCategories, aestheticsCategories,
+        male, female, email, phone, uploadedUrl[0],
         uploadedUrl[1], uploadedUrl[2], uploadedUrl[3],
         uploadedUrl[4], uploadedUrl[5], uploadedUrl[6] );
       createSalon({variables: {
                    salonData: {
-                      name, address, cityId, areaId, description, priceRange, masters,
-                      hairCategories, nailsCategories, male, female, email, phone, photoMain: uploadedUrl[0],
+                      name, address, cityId, areaId, description, priceRange, masters, hairCategories, nailsCategories, 
+                      hairRemovalCategories, makeupCategories, massageCategories, eyebrowCategories, cosmetologyCategories,
+                      tattooCategories, aestheticsCategories, male, female, email, phone, photoMain: uploadedUrl[0],
                       photo1: uploadedUrl[1], photo2: uploadedUrl[2], photo3: uploadedUrl[3],
                       photo4: uploadedUrl[4], photo5: uploadedUrl[5], photo6: uploadedUrl[6] 
                   }}});
@@ -165,7 +173,7 @@ const CreateSalon = ({classes}) => {
     return(
       <div className={classes.container}>
         <Paper className={classes.paper}>
-            <Typography variant="headline">Add Salon</Typography>
+            <h3>Add Salon</h3>
             <Mutation
               mutation={CREATE_SALON_MUTATION}
               onCompleted={data => {
@@ -180,25 +188,27 @@ const CreateSalon = ({classes}) => {
               if (error) return <Error error={error} />;
                 return(
                   <form onSubmit={event => handleSubmit(event, createSalon)}>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth className={classes.field}>
                       <TextField
                       label="Name"
                       placeholder="Add Name"
                       onChange={event => setName(event.target.value)}
                       value={name}
-                      className={classes.textField}
+                      variant="outlined"
+                      // className={classes.textField}
                       />
                     </FormControl>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth className={classes.field}>
                       <TextField
                       label="Address"
                       placeholder="Add Address"
                       onChange={event => setAddress(event.target.value)}
                       value={address}
-                      className={classes.textField}
+                      variant="outlined"
+                      // className={classes.textField}
                       />
                     </FormControl>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth className={classes.field} >
                       <Query query={CITY_QUERY}>
                                 {({data, loading, error}) => {
                                   if (loading) return <Loading />;
@@ -207,7 +217,8 @@ const CreateSalon = ({classes}) => {
                                 
                                 return  <Autocomplete
                                           id="size-small-clearOnEsc"
-                                          clearOnEscape
+                                          //clearOnEscape
+                                          disableClearable
                                           size="small"
                                           options={categories}
                                           onChange={(event,value) => {
@@ -216,17 +227,17 @@ const CreateSalon = ({classes}) => {
                                           }}
                                           renderInput={(params) => (
                                             <TextField {...params} 
-                                            variant="standard" 
+                                            variant="outlined"  
                                             label="City" 
                                             // margin="normal" 
-                                            className={classes.textField}
+                                            // className={classes.textField}
                                             />
                                           )}
                                         />;
                                       }}
                       </Query>
                     </FormControl>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth className={classes.field}>
                       <Query query={AREA_QUERY}>
                                 {({data, loading, error}) => {
                                   if (loading) return <Loading />;
@@ -235,7 +246,8 @@ const CreateSalon = ({classes}) => {
                                 
                                 return  <Autocomplete
                                           id="size-small-clearOnEsc"
-                                          clearOnEscape
+                                          //clearOnEscape
+                                          disableClearable
                                           size="small"
                                           options={categories}
                                           onChange={(event,value) => {
@@ -245,17 +257,17 @@ const CreateSalon = ({classes}) => {
                                           }}
                                           renderInput={(params) => (
                                             <TextField {...params} 
-                                            variant="standard" 
+                                            variant="outlined" 
                                             label="Location" 
                                             // margin="normal" 
-                                            className={classes.textField}
+                                            // className={classes.textField}
                                             />
                                           )}
                                         />;
                                       }}
                       </Query>
                     </FormControl>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth className={classes.field}>
                     <TextField
                       multiline
                       rows="4"
@@ -263,10 +275,11 @@ const CreateSalon = ({classes}) => {
                       placeholder="Add Description"
                       onChange={event => setDescription(event.target.value)}
                       value={description}
-                      className={classes.textField}
+                      variant="outlined"
+                      // className={classes.textField}
                     />
                   </FormControl>
-                  <FormControl fullWidth>
+                  {/* <FormControl fullWidth>
                     <NativeSelect
                       value={priceRange}
                       onChange={event => {
@@ -275,14 +288,16 @@ const CreateSalon = ({classes}) => {
                       name="priceRange"
                       className={classes.selectEmpty}
                       inputProps={{ 'aria-label': 'priceRange' }}
+                      variant="outlined"  
                     >
                       <option value="1">$</option>
                       <option value="2">$$</option>
                       <option value="3">$$$</option>
                       <option value="4">$$$$</option>
                     </NativeSelect>
-                  </FormControl>
-                  <FormControl fullWidth>
+                  </FormControl> */}
+                  <h5>Select relevant services</h5>
+                  <FormControl fullWidth className={classes.field}>
                     <Query query={HAIR_QUERY}>
                       {({data, loading, error}) => {
                         if (loading) return <Loading />;
@@ -302,15 +317,16 @@ const CreateSalon = ({classes}) => {
                                 }}
                                 renderInput={(params) => (
                                   <TextField {...params} 
-                                  variant="standard" 
-                                  label="Hircut categories " 
-                                  placeholder="More haircut" />
+                                  variant="outlined" 
+                                  label="Haircut categories " 
+                                  placeholder="More haircut"
+                                  />
                                 )}
                               />;
                       }}
                     </Query>
                   </FormControl>
-                  <FormControl fullWidth>
+                  <FormControl fullWidth className={classes.field}>
                     <Query query={NAILS_QUERY}>
                       {({data, loading, error}) => {
                         if (loading) return <Loading />;
@@ -328,7 +344,7 @@ const CreateSalon = ({classes}) => {
                                 }}
                                 renderInput={(params) => (
                                   <TextField {...params} 
-                                  variant="standard" 
+                                  variant="outlined" 
                                   label="Nails categories " 
                                   placeholder="More nails" />
                                 )}
@@ -336,7 +352,189 @@ const CreateSalon = ({classes}) => {
                             }}
                       </Query>
                   </FormControl>
-                  <FormControl error={Boolean(fileError)}>
+                  <FormControl fullWidth className={classes.field}>
+                    <Query query={HAIR_REMOVAL_QUERY} className={classes.field}>
+                      {({data, loading, error}) => {
+                        if (loading) return <Loading />;
+                        if (error) return <Error error={error} />;
+                        const categories = data.hairRemovalCat.map(item => item.title);
+                      
+                      return  <Autocomplete
+                                multiple
+                                limitTags={3}
+                                id="size-small-standard-multi"
+                                size="small"
+                                options={categories}
+                                onChange={(event,value) => {
+                                  setHairRemovalCategories(data.hairRemovalCat.filter(item => value.includes(item.title)).map(item => item.id))
+                                }}
+                                renderInput={(params) => (
+                                  <TextField {...params} 
+                                  variant="outlined" 
+                                  label="Hair removal categories " 
+                                  placeholder="More hair removal" />
+                                )}
+                              />;
+                            }}
+                      </Query>
+                  </FormControl>
+                  <FormControl fullWidth className={classes.field}>
+                    <Query query={MAKEUP_QUERY} className={classes.field}>
+                      {({data, loading, error}) => {
+                        if (loading) return <Loading />;
+                        if (error) return <Error error={error} />;
+                        const categories = data.makeupCat.map(item => item.title);
+                      
+                      return  <Autocomplete
+                                multiple
+                                limitTags={3}
+                                id="size-small-standard-multi"
+                                size="small"
+                                options={categories}
+                                onChange={(event,value) => {
+                                  setMakeupCategories(data.makeupCat.filter(item => value.includes(item.title)).map(item => item.id))
+                                }}
+                                renderInput={(params) => (
+                                  <TextField {...params} 
+                                  variant="outlined" 
+                                  label="Makeup categories " 
+                                  placeholder="More makeup" />
+                                )}
+                              />;
+                            }}
+                      </Query>
+                  </FormControl>
+                  <FormControl fullWidth className={classes.field}>
+                    <Query query={MASSAGE_QUERY} className={classes.field}>
+                      {({data, loading, error}) => {
+                        if (loading) return <Loading />;
+                        if (error) return <Error error={error} />;
+                        const categories = data.massageCat.map(item => item.title);
+                      
+                      return  <Autocomplete
+                                multiple
+                                limitTags={3}
+                                id="size-small-standard-multi"
+                                size="small"
+                                options={categories}
+                                onChange={(event,value) => {
+                                  setMassageCategories(data.massageCat.filter(item => value.includes(item.title)).map(item => item.id))
+                                }}
+                                renderInput={(params) => (
+                                  <TextField {...params} 
+                                  variant="outlined" 
+                                  label="Massage categories " 
+                                  placeholder="More massage" />
+                                )}
+                              />;
+                            }}
+                      </Query>
+                  </FormControl>
+                  <FormControl fullWidth className={classes.field}>
+                    <Query query={EYEBROW_QUERY} className={classes.field}>
+                      {({data, loading, error}) => {
+                        if (loading) return <Loading />;
+                        if (error) return <Error error={error} />;
+                        const categories = data.eyebrowCat.map(item => item.title);
+                      
+                      return  <Autocomplete
+                                multiple
+                                limitTags={3}
+                                id="size-small-standard-multi"
+                                size="small"
+                                options={categories}
+                                onChange={(event,value) => {
+                                  setEyebrowCategories(data.eyebrowCat.filter(item => value.includes(item.title)).map(item => item.id))
+                                }}
+                                renderInput={(params) => (
+                                  <TextField {...params} 
+                                  variant="outlined" 
+                                  label="Eyebrow categories " 
+                                  placeholder="More eyebrow" />
+                                )}
+                              />;
+                            }}
+                      </Query>
+                  </FormControl>
+                  <FormControl fullWidth className={classes.field}>
+                    <Query query={COSMETOLOGY_QUERY} className={classes.field}>
+                      {({data, loading, error}) => {
+                        if (loading) return <Loading />;
+                        if (error) return <Error error={error} />;
+                        const categories = data.cosmetologyCat.map(item => item.title);
+                      
+                      return  <Autocomplete
+                                multiple
+                                limitTags={3}
+                                id="size-small-standard-multi"
+                                size="small"
+                                options={categories}
+                                onChange={(event,value) => {                              
+                                  setCosmetologyCategories(data.cosmetologyCat.filter(item => value.includes(item.title)).map(item => item.id))
+                                }}
+                                renderInput={(params) => (
+                                  <TextField {...params} 
+                                  variant="outlined" 
+                                  label="Cosmetology categories " 
+                                  placeholder="More cosmetology" />
+                                )}
+                              />;
+                            }}
+                      </Query>
+                  </FormControl>
+                  <FormControl fullWidth className={classes.field}>
+                    <Query query={TATTOO_QUERY}>
+                      {({data, loading, error}) => {
+                        if (loading) return <Loading />;
+                        if (error) return <Error error={error} />;
+                        const categories = data.tattooCat.map(item => item.title);
+                      
+                      return  <Autocomplete
+                                multiple
+                                limitTags={3}
+                                id="size-small-standard-multi"
+                                size="small"
+                                options={categories}
+                                onChange={(event,value) => {
+                                  setTattooCategories(data.tattooCat.filter(item => value.includes(item.title)).map(item => item.id))
+                                }}
+                                renderInput={(params) => (
+                                  <TextField {...params} 
+                                  variant="outlined" 
+                                  label="Tattoo categories " 
+                                  placeholder="More tattoo" />
+                                )}
+                              />;
+                            }}
+                      </Query>
+                  </FormControl>
+                  <FormControl fullWidth className={classes.field}>
+                    <Query query={AESTHETICS_QUERY} className={classes.field}>
+                      {({data, loading, error}) => {
+                        if (loading) return <Loading />;
+                        if (error) return <Error error={error} />;
+                        const categories = data.aestheticsCat.map(item => item.title);
+                      
+                      return  <Autocomplete
+                                multiple
+                                limitTags={3}
+                                id="size-small-standard-multi"
+                                size="small"
+                                options={categories}
+                                onChange={(event,value) => {
+                                  setAestheticsCategories(data.aestheticsCat.filter(item => value.includes(item.title)).map(item => item.id))
+                                }}
+                                renderInput={(params) => (
+                                  <TextField {...params} 
+                                  variant="outlined" 
+                                  label="Aesthetics categories " 
+                                  placeholder="More aesthetics" />
+                                )}
+                              />;
+                            }}
+                      </Query>
+                  </FormControl>
+                  <FormControl fullWidth className={classes.field} error={Boolean(fileError)}>
                     <input
                       id="photoMain"
                       required
@@ -348,6 +546,7 @@ const CreateSalon = ({classes}) => {
                     <label htmlFor="photoMain">
                       <Button
                         variant="outlined"
+                        size="small"
                         color={img0 ? "secondary" : "inherit"}
                         component="span"
                         className={classes.button}
@@ -358,7 +557,7 @@ const CreateSalon = ({classes}) => {
                       <FormHelperText>{fileError}</FormHelperText>
                     </label>
                   </FormControl>
-                  <FormControl error={Boolean(fileError)}>
+                  <FormControl fullWidth error={Boolean(fileError)}>
                     <input
                       id="photo1"
                       type="file"
@@ -369,6 +568,7 @@ const CreateSalon = ({classes}) => {
                     <label htmlFor="photo1">
                       <Button
                         variant="outlined"
+                        size="small"
                         color={photo1 ? "secondary" : "inherit"}
                         component="span"
                         className={classes.button}
@@ -379,7 +579,7 @@ const CreateSalon = ({classes}) => {
                       <FormHelperText>{fileError}</FormHelperText>
                     </label>
                   </FormControl>
-                  <FormControl error={Boolean(fileError)}>
+                  <FormControl fullWidth error={Boolean(fileError)}>
                     <input
                       id="photo2"
                       type="file"
@@ -390,6 +590,7 @@ const CreateSalon = ({classes}) => {
                     <label htmlFor="photo2">
                       <Button
                         variant="outlined"
+                        size="small"
                         color={photo2 ? "secondary" : "inherit"}
                         component="span"
                         className={classes.button}
@@ -400,7 +601,7 @@ const CreateSalon = ({classes}) => {
                       <FormHelperText>{fileError}</FormHelperText>
                     </label>
                   </FormControl>
-                  <FormControl error={Boolean(fileError)}>
+                  <FormControl fullWidth error={Boolean(fileError)}>
                     <input
                       id="photo3"
                       type="file"
@@ -411,6 +612,7 @@ const CreateSalon = ({classes}) => {
                     <label htmlFor="photo3">
                       <Button
                         variant="outlined"
+                        size="small"
                         color={photo3 ? "secondary" : "inherit"}
                         component="span"
                         className={classes.button}
@@ -421,9 +623,14 @@ const CreateSalon = ({classes}) => {
                       <FormHelperText>{fileError}</FormHelperText>
                     </label>
                   </FormControl>
-                  <FormControl fullWidth>
+                  <Box
+                    mt={1}
+                    justifyContent="center"
+                    display="flex"
+                  >
                   <Button
                     disabled={submitting}
+                    variant="outlined"
                     onClick={() => {
                                     setName("");
                                     setAddress("");
@@ -432,7 +639,9 @@ const CreateSalon = ({classes}) => {
                   >
                     Cancel
                   </Button>
+                  {/* <Box flexGrow={1} /> */}
                   <Button
+                    variant="outlined"
                     disabled={
                       submitting ||
                       !name.trim() ||
@@ -452,11 +661,8 @@ const CreateSalon = ({classes}) => {
                       "Add Salon"
                     )}
                   </Button>
-                  </FormControl>
+                  </Box>
                   </form>
-
-                  
-
 
                 );
               }}
@@ -559,7 +765,68 @@ const NAILS_QUERY = gql`
 }
 `;
 
+const HAIR_REMOVAL_QUERY = gql`
+{
+    hairRemovalCat{
+        id
+        title
+      }
+}
+`;
 
+const MAKEUP_QUERY = gql`
+{
+    makeupCat{
+        id
+        title
+      }
+}
+`;
+
+const MASSAGE_QUERY = gql`
+{
+    massageCat{
+        id
+        title
+      }
+}
+`;
+
+const EYEBROW_QUERY = gql`
+{
+    eyebrowCat{
+        id
+        title
+      }
+}
+`;
+
+const COSMETOLOGY_QUERY = gql`
+{
+    cosmetologyCat{
+        id
+        title
+      }
+}
+`;
+
+const TATTOO_QUERY = gql`
+{
+    tattooCat{
+        id
+        title
+      }
+}
+`;
+
+const AESTHETICS_QUERY = gql`
+{
+    aestheticsCat{
+        id
+        title
+      }
+}
+`;
 
 const styles = theme => ({
   container: {
@@ -591,13 +858,17 @@ const styles = theme => ({
     color: "green"
   },
   button: {
-    margin: theme.spacing.unit * 2
+    //margin: theme.spacing.unit * 2
+    margin: "0px"
   },
   icon: {
     marginLeft: theme.spacing.unit
   },
   input: {
     display: "none"
+  },
+  field: {
+    marginTop: "8px"
   },
   fab: {
     position: "fixed",

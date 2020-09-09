@@ -2,8 +2,8 @@ import React, {useState} from "react";
 import {Link} from "react-router-dom";
 
 // import Navbar from "../components/Partials/Navbar";
-import SearchSalons from "../components/Partials/SearchSalons";
-import Listings from "../components/Partials/Listings";
+import SearchSalons from "components/Partials/SearchSalons";
+import Listings from "components/Partials/Listings";
 
 import { ApolloConsumer, Query } from "@apollo/react-components";
 import gql from "graphql-tag";
@@ -16,6 +16,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Hidden from "@material-ui/core/Hidden";
+import Dialog from '@material-ui/core/Dialog';
+import IconButton from "@material-ui/core/IconButton";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 // core components
 import Header from "../components/Partials/Header.js";
 // import HeaderLinks from "../components/Partials/HeaderLinks.js";
@@ -36,15 +39,48 @@ const useStyles = makeStyles(presentationStyle);
 
 export default function Home() {
   const [searchResults, setSearchResults] = useState([]);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   React.useEffect(() => {
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
   });
   const classes = useStyles();
+
+  const [open, setOpen] = useState(false);
+
+  const handleSearchOpen = () => {
+    setOpen(true);
+  };
+
+  const handleSearchClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div>
-
+        <Dialog
+          fullScreen
+          open={open}
+          onClose={handleSearchClose}
+          //aria-labelledby="alert-dialog-title"
+          //aria-describedby="alert-dialog-description"
+        >
+        <Card raised className={classes.card}>
+          <CardBody formHorizontal>
+            <IconButton
+              color="inherit"
+              onClick={handleSearchClose}
+              style={{float:"right"}}
+            >
+              <ExitToAppIcon />
+            </IconButton>
+            <br/>
+            <br/>
+            <SearchSalons state={setSearchResults} setSearchOpen={setSearchOpen} /> 
+          </CardBody>
+        </Card>
+        </Dialog>
         <Parallax
             image={require("../assets/img/home_parallax.jpeg")}
             className={classes.parallax}
@@ -61,55 +97,67 @@ export default function Home() {
                   classes.textCenter
                 )}
               >
-                <h2 className={classes.brand}>Find your pearl in the ocean of beauty!!</h2>
-                <Hidden smDown implementation="css">
+                <br/>
+                <br/>
+                <br/>
+                <h2 className={classes.brand}>Find your pearl in the ocean of beauty</h2>
+                {/* <Hidden smDown implementation="css">
                   <h4 className={classes.brand}>
                   Bridging the gap between personalised salon services, professionals 
                   and online booking experiences, Mirvarim is the new one-stop-shop wellness and beauty 
                   treatment platform that provides a wealth of experts at our fingertips.
                   </h4>
-                </Hidden>
+                </Hidden> */}
               </GridItem>
-              {/* <GridItem
-                xs={12}
-                sm={12}
-                md={12}
-                className={classNames(classes.mlAuto, classes.mrAuto)}
-              >
-                <Card raised className={classes.card}>
-                  <CardBody formHorizontal>
-                    <SearchSalons state = {setSearchResults} /> 
-                  </CardBody>
-                </Card>
-              </GridItem>  */}
+
+               <div className={classNames(classes.container,classes.search)}>
+                <Hidden mdUp implementation="css"> 
+                <Button
+                  color="white"
+                  //justIcon
+                  simpler
+                  round
+                  onClick={handleSearchOpen}
+                >
+                  <i class="fas fa-search" > Search salon or service</i>
+                </Button>
+                </Hidden>
+                </div>
              </GridContainer>
-          </div>
+            </div>
         </Parallax> 
 
         {/* <div className={classNames(classes.main, classes.mainRaised)}> */}
         <div className={classes.main}>
-          <div className={classes.container}>
-              <GridItem
-                xs={12}
-                sm={12}
-                md={12}
-                className={classNames(classes.mlAuto, classes.mrAuto)}
-              >
-                <Card raised className={classes.card}>
-                  <CardBody formHorizontal>
-                    <SearchSalons state = {setSearchResults} /> 
-                  </CardBody>
-                </Card>
-              </GridItem> 
-         </div>
+          <Hidden smDown implementation="css">
+              <div className={classes.container}>
+                  <GridItem
+                    xs={12}
+                    sm={12}
+                    md={12}
+                    className={classNames(classes.mlAuto, classes.mrAuto)}
+                  >
+                    <Card raised className={classes.card}>
+                      <CardBody formHorizontal>
+                        <SearchSalons state={setSearchResults} setSearchOpen={setSearchOpen}/> 
+                      </CardBody>
+                    </Card>
+                  </GridItem> 
+            </div>
+          </Hidden>
             <Query query={SALON_QUERY}>
                 {({ data, loading, error }) => {
-                if (loading) return <div>Loading</div>;
-                if (error) return <div>Error</div>;
-                const featuredSalons = data.salons.filter(el => el.isFeatured == true)
-                console.log('salon list', data.salons);
-                console.log('featured salons', featuredSalons);
-                return <Listings listings={featuredSalons}/>;
+                  if (loading) return <div>Loading</div>;
+                  if (error) return <div>Error</div>;
+                  const featuredSalons = data.salons.filter(el => el.isFeatured == true)
+                  console.log('salon list', data.salons);
+                  console.log('featured salons', featuredSalons);
+                  return (
+                    <div>
+                    <h3 className={classes.title1}>Featured Salons</h3> 
+                    <Listings listings={featuredSalons}/>
+                    </div>
+                  )
                 }}
             </Query>
       <div className={classes.container}>

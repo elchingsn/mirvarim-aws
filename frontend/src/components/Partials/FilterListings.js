@@ -88,7 +88,7 @@ const FilterListings = ({listings}) =>{
                 {/* <a style={{color:"salmon", display:"inline"}}>More</a> */}
                 </GridItem>
                 
-                <GridItem xs={1} sm={1} md={1}> 
+                {/* <GridItem xs={1} sm={1} md={1}> 
                     <Tooltip
                       id="tooltip-top"
                       title="Saved to Wishlist"
@@ -108,7 +108,7 @@ const FilterListings = ({listings}) =>{
                         (<FavoriteIcon/>)}
                       </button>
                     </Tooltip>
-                </GridItem>
+                </GridItem> */}
             </GridContainer>
             <Divider/>
               {services[0] && (

@@ -49,7 +49,7 @@ const headerStyle = theme => ({
   container: {
     ...container,
     minHeight: "50px",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
     display: "flex",
     flexWrap: "nowrap"

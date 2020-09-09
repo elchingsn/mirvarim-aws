@@ -164,7 +164,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
     'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
-    'JWT_EXPIRATION_DELTA': timedelta(minutes=5),
+    'JWT_EXPIRATION_DELTA': timedelta(minutes=60),
     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),
 
     "JWT_ALLOW_ANY_CLASSES": [
@@ -184,9 +184,13 @@ GRAPHQL_JWT = {
     # "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
 }
 
-# not for production (not actual email, sends it to stdout)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
+# for production 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True  # TLS and SSL are mutually exclusive
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 ROOT_URLCONF = 'mirvarix.urls'
 
 TEMPLATES = [

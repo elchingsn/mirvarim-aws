@@ -215,7 +215,7 @@ import {
     },
     right: {
       padding: "15px 0",
-      margin: "0 30px",
+      margin: "0 20px",
       float: "right"
     },
     icon: {

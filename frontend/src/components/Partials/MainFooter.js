@@ -1,5 +1,6 @@
 /*eslint-disable*/
 import React from "react";
+import { withRouter } from 'react-router-dom';
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // @material-ui/core components
@@ -20,8 +21,15 @@ import styles from "assets/jss/mainFooterStyle.js";
 
 const useStyles = makeStyles(styles);
 
-export default function SectionFooter() {
+const SectionFooter = (props) => {
   const classes = useStyles();
+
+  const { currentUser } = props;
+
+  if(props.location.pathname.match(/partner/)){
+    return (null);
+  }
+
   return (
     <div className={classes.section}>
       
@@ -724,3 +732,5 @@ export default function SectionFooter() {
     </div>
   );
 }
+
+export default withRouter(SectionFooter);

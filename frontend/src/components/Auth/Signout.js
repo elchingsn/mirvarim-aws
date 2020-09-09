@@ -5,20 +5,22 @@ import ExitToApp from "@material-ui/icons/ExitToApp";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 
+export const handleSignout = client => {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      client.writeData({ data: { isLoggedIn: false } });
+      // console.log("Signed out user", client);
+      //client.clearStore()
+};
+
 const Signout = ({ classes }) => {
-  const handleSignout = client => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    client.writeData({ data: { isLoggedIn: false } });
-    console.log("Signed out user", client);
-  };
 
   return (
     <ApolloConsumer>
       {client => (
         <Button onClick={() => handleSignout(client)}>
           <Typography
-            variant="body1"
+            variant="body"
             className={classes.buttonText}
             color="secondary"
           >

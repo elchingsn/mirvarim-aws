@@ -157,6 +157,13 @@ const IS_LOGGED_IN_QUERY = gql`
   }
 `;
 
+cache.writeQuery({
+  query: IS_LOGGED_IN_QUERY,
+  data: {
+    isLoggedIn: !!localStorage.getItem("accessToken"),
+  },
+});
+
 const REFRESH_TOKEN_MUTATION = gql`
 mutation RefreshToken($freshToken: String!) {
   refreshToken(refreshToken: $freshToken) {

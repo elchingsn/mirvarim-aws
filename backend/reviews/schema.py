@@ -7,7 +7,7 @@ from django.core.files.storage import FileSystemStorage
 from PIL import Image
 import datetime 
 
-from .models import Review, Vote  
+from .models import Review, Vote, Like
 from salons.models import Salon
 
 class ReviewType(DjangoObjectType):  
@@ -19,16 +19,31 @@ class VoteType(DjangoObjectType):
     class Meta:
         model = Vote
 
+class LikeType(DjangoObjectType): 
+    class Meta:
+        model = Like
+
 #Query definition
 class Query(graphene.ObjectType):
-    reviews = graphene.List(ReviewType, id=graphene.Int(required=True))
-    votes = graphene.List(VoteType, id=graphene.Int(required=True))
+    reviews = graphene.List(ReviewType, id=graphene.Int(required=True),first=graphene.Int(),skip=graphene.Int())
+    votes = graphene.List(VoteType, email=graphene.String(required=True))
+    likes = graphene.List(LikeType, email=graphene.String(required=True))
 
-    def resolve_reviews(self, info, id):
-      return Review.objects.filter(salon__id=id)
+    def resolve_reviews(self, info, id, first=None, skip=None):
+      rw =  Review.objects.filter(salon__id=id)
+      if skip:
+          rw = rw[skip:]
+
+      if first:
+          rw = rw[:first]
+
+      return rw
     
-    def resolve_votes(self, info, id):
-      return Vote.objects.filter(voted_by__id=id)
+    def resolve_votes(self, info, email):
+      return Vote.objects.filter(voted_by__email=email)
+    
+    def resolve_likes(self, info, email):
+      return Like.objects.filter(liked_by__email=email)
 
 class ReviewInput(graphene.InputObjectType):
     salon_id = graphene.Int()
@@ -52,7 +67,7 @@ class CreateReview(graphene.Mutation):
         user = info.context.user
  
         if user.is_anonymous:
-            raise GraphQLError('Log in to add a track.')
+            raise GraphQLError('Log in to add a review.')
       
         salon_id = review_data.salon_id             
         salon_obj = Salon.objects.get(id=salon_id)
@@ -84,17 +99,56 @@ class CreateVote(graphene.Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise GraphQLError('Log in to add a track.')
+            raise GraphQLError('Log in to vote.')
                
         review_obj = Review.objects.get(id=review_id)
         vote = Vote(voted_by=user, review=review_obj, is_useful=is_useful, is_reported=is_reported)
         vote.save()
         return CreateVote(vote=vote)
 
-   
+class CreateLike(graphene.Mutation):
+    like = graphene.Field(LikeType)
+
+    class Arguments:
+        salon_id = graphene.Int()
+    
+    @staticmethod
+    def mutate(root,info,salon_id):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError('Log in to add a favorite.')
+               
+        salon_obj = Salon.objects.get(id=salon_id)
+        like = Like(liked_by=user, salon=salon_obj)
+        like.save()
+        return CreateLike(like=like)
+
+class DeleteLike(graphene.Mutation):
+    like_id = graphene.Int()
+
+    class Arguments:
+        like_id = graphene.Int(required=True)
+    
+    @staticmethod
+    def mutate(root,info,like_id):
+        user = info.context.user
+        like = Like.objects.get(id=like_id)
+
+        if like.liked_by != user:
+            raise GraphQLError('Not permitted to delete this like.')
+
+        like.delete()
+
+        return DeleteLike(like_id=like_id)
+
 class ReviewMutation(graphene.ObjectType):
     create_review = CreateReview.Field() 
     create_vote = CreateVote.Field() 
+    create_like = CreateLike.Field() 
+    delete_like = DeleteLike.Field() 
+
+
 
     
     
