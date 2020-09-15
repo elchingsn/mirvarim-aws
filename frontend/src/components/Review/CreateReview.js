@@ -5,6 +5,7 @@ import axios from "axios";
 import classNames from "classnames";
 
 import { ApolloConsumer, Query, Mutation } from "@apollo/react-components";
+import { useHistory } from 'react-router-dom';
 import gql from "graphql-tag";
 
 import { makeStyles } from "@material-ui/core/styles"; 
@@ -57,7 +58,8 @@ const Review = ({match})=>{
       window.scrollTo(0, 0);
       document.body.scrollTop = 0;
   }, []);
-  
+  const history = useHistory();
+
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
@@ -198,7 +200,10 @@ const Review = ({match})=>{
       reviewData: {
          salonId: salon_id,rating, question1, question2, question3,
          question4, question5, comment 
-    }}});
+    }}}).catch(err => {
+      console.error(err);
+      history.push('/login');
+    });
   }
 
   return(

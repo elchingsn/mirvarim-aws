@@ -71,8 +71,9 @@ const SearchSalons = ({state, setSearchOpen}) =>{
         event.preventDefault(); 
     };
 
-    // const { data: data_salon } = useQuery(SEARCH_SALONS_QUERY, {variables: {search}});
+    //const { data: data_salon } = useQuery(SEARCH_SALONS_QUERY, {variables: {search}});
     const { data: data_salon } = useQuery(SEARCH_SALONS_QUERY);
+    console.log(data_salon);
     const { data: data_area } = useQuery(AREA_QUERY, {variables: {location}});
     let options = [];
 
@@ -95,6 +96,8 @@ const SearchSalons = ({state, setSearchOpen}) =>{
           const search_set = [].concat(salon_set,hairService_set,nailsService_set,hairRemovalService_set,makeupService_set,
                               massageService_set,eyebrowService_set,cosmetologyService_set,tattooService_set,aestheticsService_set);
           if (search) { options = search_set.filter(el => el.toLowerCase().includes(search.toLowerCase()))};
+          console.log(search);
+          console.log(searchOptions);
           // when search field is cleared no drop down option will be visible
           search ? setSearchOptions(options) : setSearchOptions([]);
           if (salon_set.includes(search)) 
@@ -111,6 +114,9 @@ const SearchSalons = ({state, setSearchOpen}) =>{
           if (aestheticsService_set.includes(search)) {setCatValue("Aesthetics")}
         };
     }, [search]);
+
+    console.log(search);
+    console.log(searchOptions);
 
     useEffect(() => {   
       if (data_area) { 
@@ -281,47 +287,59 @@ const SearchSalons = ({state, setSearchOpen}) =>{
 };
     
 const SEARCH_SALONS_QUERY = gql`
-    query($search:String) {
-        salons(search: $search) {
+    query SEARH_SALON_OR_SERVICE {
+        salons {
             id
             name
-            city{
+            city {
+              id
               title
             }
             rating
             priceRange
             photoMain
             hairCategories {
+              id
               title
             }
             nailsCategories {
+              id
               title
             }
             hairRemovalCategories {
+              id
               title
             }
             makeupCategories {
+              id
               title
             }
             massageCategories {
+              id
               title
             }
             eyebrowCategories {
+              id
               title
             }
             cosmetologyCategories {
+              id
               title
             }
             tattooCategories {
+              id
               title
             }
             aestheticsCategories {
+              id
               title
             }
             hairserviceSet {
+              id
               title
             }
             nailsserviceSet {
+              id
               title
             }
         }

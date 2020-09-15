@@ -35,6 +35,9 @@ function Transition(props) {
 }
 
 const CreateSalon = ({classes}) => {
+
+    const history = useHistory();
+
     const [name, setName] = useState("");
     const [address, setAddress] = useState("");
     const [cityId, setCityId] = useState("");

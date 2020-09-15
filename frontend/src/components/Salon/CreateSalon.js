@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Mutation } from '@apollo/react-components';
 import { Query } from "@apollo/react-components";
 import { useMutation } from '@apollo/react-hooks';
+import { useHistory } from 'react-router-dom';
 import gql from "graphql-tag";
 import axios from "axios";
 import Cookies from 'js-cookie';
@@ -40,6 +41,9 @@ function Transition(props) {
 }
 
 const CreateSalon = ({classes}) => {
+
+    const history = useHistory();
+
     const [name, setName] = useState("");
     const [address, setAddress] = useState("");
     const [cityId, setCityId] = useState("");
@@ -167,7 +171,10 @@ const CreateSalon = ({classes}) => {
                       tattooCategories, aestheticsCategories, male, female, email, phone, photoMain: uploadedUrl[0],
                       photo1: uploadedUrl[1], photo2: uploadedUrl[2], photo3: uploadedUrl[3],
                       photo4: uploadedUrl[4], photo5: uploadedUrl[5], photo6: uploadedUrl[6] 
-                  }}});
+                  }}}).catch(err => {
+                    console.error(err);
+                    history.push('/login');
+                  });;
     };
 
     return(
@@ -648,7 +655,6 @@ const CreateSalon = ({classes}) => {
                       !address.trim() ||
                       !cityId ||
                       !areaId ||
-                      !priceRange ||
                       !description.trim() ||
                       !img0
                     }

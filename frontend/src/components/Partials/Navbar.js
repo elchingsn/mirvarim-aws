@@ -118,7 +118,8 @@ const Navbar = (props) => {
       );
     }
 
-    if((props.location.pathname.match(/activate/))||(props.location.pathname.match(/reset/))) {
+    if((props.location.pathname.match(/activate/))||(props.location.pathname.match(/reset/))
+        ||(props.location.pathname.match(/login/))) {
       return (
         <div>
           <Header

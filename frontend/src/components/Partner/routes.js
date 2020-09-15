@@ -45,6 +45,11 @@ const routes = [
     routes: [
       {
         exact: true,
+        path: "/partner/:id/salon/view",
+        component: lazy(() => import('components/Salon/ViewSalon'))
+      },      
+      {
+        exact: true,
         path: "/partner/:id/salon/create",
         component: lazy(() => import('components/Salon/CreateSalon'))
       },

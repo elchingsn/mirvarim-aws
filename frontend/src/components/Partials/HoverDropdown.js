@@ -36,6 +36,7 @@ const HoverDropdown = (props) => {
         setButtonon(true);
         if (!menuon){setMenuon(!menuon)}; 
         setAnchorEl(event.currentTarget);
+        console.log(props)
     };
 
     const handleMenuClick = () =>{
@@ -97,7 +98,9 @@ const HoverDropdown = (props) => {
   
     const onMenuItemClick = (category) =>{
       console.log({category})
-      //window.location.reload()
+      // if (window.location.pathname === "/salon") 
+      //   {window.location.reload()}
+      console.log(props)
     }
     return (
       // <div className={classes.root}>
@@ -118,7 +121,7 @@ const HoverDropdown = (props) => {
               onClick={handleButtonClick}
               onMouseEnter={handleButtonClick}
               onMouseLeave={handleButtonClose}
-              href="#x"
+              //href="#x"
               //onClick={e => e.preventDefault()}
               {...buttonProps}
               //style={{color:"white"}}

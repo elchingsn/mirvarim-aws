@@ -333,7 +333,7 @@ class UpdateSalon(graphene.Mutation):
         salon=Salon.objects.get(id=salon_id)
       
         if salon.created_by != user:
-            raise GraphQLError('Not permitted to update this salon.')
+            raise GraphQLError('Not permitted to update this salon.') 
       
         city_id = salon_data.city_id,
         area_id = salon_data.area_id,    
@@ -388,9 +388,9 @@ class UpdateSalon(graphene.Mutation):
           salon.makeup_categories.clear()
           for id in makeup_categories[0]:
             salon.makeup_categories.add(Makeup.objects.get(id=id))
-
+        
+        salon.massage_categories.clear()
         if massage_categories[0]:
-          salon.massage_categories.clear()
           for id in massage_categories[0]:
             salon.massage_categories.add(Massage.objects.get(id=id))
 
@@ -459,7 +459,7 @@ class UploadFile(graphene.Mutation):
         # save the file to s3 and get url
         s3_storage.save(upl_url, file)
         file_url = s3_storage.url(upl_url)
-        response = requests.get(file_url)
+        response = requests.get(file_url)  
 
         # open saved img and resize it before passing to createSalon
         img = Image.open(BytesIO(response.content))

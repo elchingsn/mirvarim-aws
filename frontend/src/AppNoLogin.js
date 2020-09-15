@@ -19,6 +19,7 @@ import Loading from "./components/Shared/Loading";
 import Error from "./components/Shared/Error";
 
 import Login from "components/Auth/Login"
+import Auth from "components/Auth"
 import Activate from "components/Auth/Activate"
 import PasswordReset from "components/Auth/PasswordReset"
 
@@ -30,15 +31,14 @@ const App = () => (
       <Navbar dropdownHoverColor="info" />
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route exact path="/login" component={Login} />
+        <Route exact path="/login" component={Auth} />
         <Route path="/activate/:token" component={Activate} />
         <Route path="/reset" component={PasswordReset} />
         <Route path="/reset/:token" component={PasswordReset} />
         <Route exact path="/salon" component={Salon} />
-        {/* <Route path="/profile/:id" component={Profile} /> */}
         <Route path="/salon/:id" component={SalonDetail} />
         {/* redirects not matched routes to home */}
-        {/* <Route render={() => <Redirect to="/" />} /> */}
+        <Route render={() => <Redirect to="/" />} />
       </Switch>
       <br/>
       <br/>

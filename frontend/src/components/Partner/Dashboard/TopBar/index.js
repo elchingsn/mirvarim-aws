@@ -67,7 +67,7 @@ const TopBar = ({
           ml={2}
           flexGrow={1}
         />
-        <Settings />
+        {/* <Settings /> */}
         <Box ml={2}>
           <Account user={user}/>
         </Box>

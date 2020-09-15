@@ -20,6 +20,7 @@ import FooterMenu from "components/Partials/FooterMenu"
 import Loading from "components/Shared/Loading";
 import Error from "components/Shared/Error"
 import Login from "components/Auth/Login"
+import Auth from "components/Auth"
 import Activate from "components/Auth/Activate"
 import PasswordReset from "components/Auth/PasswordReset"
 import routes, { renderRoutes } from 'components/Partner/routes.js';
@@ -44,7 +45,7 @@ const App = () => (
             <Navbar currentUser={currentUser} dropdownHoverColor="info" />
             <Switch>
               <Route exact path="/" component={Home} />
-              <Route exact path="/login" component={Login} />
+              <Route exact path="/login" component={Auth} />
               <Route path="/activate/:token" component={Activate} />
               <Route path="/reset/:token" component={PasswordReset} />
               <Route exact path="/salon" component={Salon} />
@@ -52,7 +53,6 @@ const App = () => (
               <Route path="/salon/:id" component={SalonDetail} />
               <Route path="/review/:id" component={CreateReview} />
               <Route exact path="/partner/:id" component={Partner} /> 
-              {/* <Route exact path="/partner/:id/salon/create" component={CreateSalon} />  */}
               {renderRoutes(routes)}
             </Switch>
             <br/>

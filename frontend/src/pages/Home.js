@@ -22,14 +22,15 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 // core components
 import Header from "../components/Partials/Header.js";
 // import HeaderLinks from "../components/Partials/HeaderLinks.js";
-import Parallax from "../components/Partials/Parallax.js";
-import Footer from "../components/Partials/Footer.js";
-import GridContainer from "../components/Partials/GridContainer.js";
-import GridItem from "../components/Partials/GridItem.js";
-import Button from "../components/Partials/Button.js";
-import Card from "../components/Partials/Card.js";
-import CardBody from "../components/Partials/CardBody.js";
-import CustomInput from "../components/Partials/CustomInput.js";
+import Parallax from "components/Partials/Parallax.js";
+import Footer from "components/Partials/Footer.js";
+import GridContainer from "components/Partials/GridContainer.js";
+import GridItem from "components/Partials/GridItem.js";
+import Button from "components/Partials/Button.js";
+import Card from "components/Partials/Card.js";
+import CardBody from "components/Partials/CardBody.js";
+import CustomInput from "components/Partials/CustomInput.js";
+import Features from "components/Partials/Features.js"
 // sections for this page
 
 
@@ -160,6 +161,23 @@ export default function Home() {
                   )
                 }}
             </Query>
+            <Query query={SALON_QUERY}>
+                {({ data, loading, error }) => {
+                  if (loading) return <div>Loading</div>;
+                  if (error) return <div>Error</div>;
+                  const latestSalons = data.salons.slice().sort((a,b) => new Date(b.listDate)-new Date(a.listDate)).slice(0,4)
+                  console.log(data.salons.slice().sort((a,b) => new Date(b.listDate)-new Date(a.listDate)))
+                  return (
+                    <div>
+                    <h3 className={classes.title1}>Latest Salons</h3> 
+                    <Listings listings={latestSalons}/>
+                    </div>
+                  )
+                }}
+            </Query>
+
+      <Features />
+
       <div className={classes.container}>
       {/* <h2 className={classes.title}>About us</h2> */}
         <p>
@@ -193,6 +211,7 @@ const SALON_QUERY = gql`
           rating
         }
         isFeatured
+        listDate
       }
 }
 `;

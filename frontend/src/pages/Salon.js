@@ -13,16 +13,25 @@ import Filter from "../components/Partials/Filter.js";
 
 
 import styles from "../assets/jss/salonStyle.js";
+import { areIntervalsOverlapping } from "date-fns";
 const useStyles = makeStyles(styles);
 
 const Salon=({location}) => {
     const classes = useStyles();
+
     // const [searchResults, setSearchResults] = useState([]);
 
     React.useEffect(() => {
         window.scrollTo(0, 0);
         document.body.scrollTop = 0;
       });
+
+    React.useEffect(() =>{
+      console.log(location.state);
+
+      return () => {console.log(location.state)}
+
+    })
     
     let initCatValue = ""
     let initServiceValue = ""
@@ -30,7 +39,6 @@ const Salon=({location}) => {
     let initCheckedCat = []
     let initValues = []
 
-    console.log(location.state)
     console.log(initCheckedCat);
 
     if (location.state) {
@@ -51,7 +59,7 @@ const Salon=({location}) => {
 
     return (
     <div>
-        {/* <Parallax
+        {/* <Parallax 
         image={require("../assets/img/salon_parallax.jpg")}
         className={classes.parallax}
         >

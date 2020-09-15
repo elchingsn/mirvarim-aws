@@ -201,7 +201,7 @@ export default function HeaderLinks(props) {
                     noLiPadding
                     navDropdown
                     hoverColor={dropdownHoverColor}
-                    buttonText = {t("Massage&Spa")} 
+                    buttonText = {t("Massage")} 
                     dropdownList={categories} 
                     buttonProps={{
                       className: classes.navLink,
@@ -222,7 +222,7 @@ export default function HeaderLinks(props) {
                     noLiPadding
                     navDropdown
                     hoverColor={dropdownHoverColor}
-                    buttonText = {t("Eyebrow/lashes")} 
+                    buttonText = {t("Eyebrow")} 
                     dropdownList={categories} 
                     buttonProps={{
                       className: classes.navLink,
@@ -264,7 +264,7 @@ export default function HeaderLinks(props) {
                     noLiPadding
                     navDropdown
                     hoverColor={dropdownHoverColor}
-                    buttonText = {t("Tattoo/Piercing")} 
+                    buttonText = {t("Tattoo")} 
                     dropdownList={categories} 
                     buttonProps={{
                       className: classes.navLink,

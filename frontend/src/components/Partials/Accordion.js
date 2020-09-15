@@ -1,109 +1,86 @@
-import React from "react";
-// nodejs library to set properties for components
-import PropTypes from "prop-types";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import React, { useState, useRef, useEffect } from 'react'
+import withStyles from "@material-ui/core/styles/withStyles";
 
-// @material-ui/icons
-import ExpandMore from "@material-ui/icons/ExpandMore";
 
-import styles from "../../assets/jss/accordionStyle.js";
+const Accordion = ({classes, title, children}) => {
+  const [active, setActive] = useState(true)
+  const contentRef = useRef(null)
 
-const useStyles = makeStyles(styles);
+  useEffect(() => {
+    contentRef.current.style.maxHeight = active ? `${contentRef.current.scrollHeight}px` : '0px'
+  }, [contentRef, active])
 
-export default function Accordion(props) {
-  const [active, setActive] = React.useState(
-    props.active.length === undefined ? [props.active] : props.active
-  );
-  const [single] = React.useState(
-    props.active.length === undefined ? true : false
-  );
-  const handleChange = panel => () => {
-    let newArray;
+  const toogleActive = () => {
+    setActive(!active)
+  }
 
-    if (single) {
-      if (active[0] === panel) {
-        newArray = [];
-      } else {
-        newArray = [panel];
-      }
-    } else {
-      if (active.indexOf(panel) === -1) {
-        newArray = [...active, panel];
-      } else {
-        newArray = [...active];
-        newArray.splice(active.indexOf(panel), 1);
-      }
-    }
-    setActive(newArray);
-  };
-  const { collapses, activeColor } = props;
-  const classes = useStyles();
+  const titleStyle = {
+    fontWeight: 600,
+    fontSize: '14px',
+  }
+
   return (
-    <div className={classes.root}>
-      {collapses.map((prop, key) => {
-        return (
-          <ExpansionPanel
-            expanded={active === key || active.indexOf(key) !== -1}
-            onChange={handleChange(key)}
-            key={key}
-            classes={{
-              root: classes.expansionPanel,
-              expanded: classes.expansionPanelExpanded
-            }}
+    <div className={classes.section}>
+      <button className={classes.title} onClick={toogleActive}>
+        {title}
+        <span className={active ? classes.rotate: classes.icon}>
           >
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMore/>}
-              classes={{
-                root: `${classes.expansionPanelSummary} ${
-                  classes[activeColor + "ExpansionPanelSummary"]
-                }`,
-                expanded: `${classes.expansionPanelSummaryExpaned} ${
-                  classes[activeColor + "ExpansionPanelSummaryExpaned"]
-                }`,
-                content: classes.expansionPanelSummaryContent,
-                expandIcon: classes.expansionPanelSummaryExpandIcon
-              }}
-            >
-              <h4 className={classes.title}>{prop.title}</h4>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails className={classes.expansionPanelDetails}>
-              {prop.content}
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-        );
-      })}
+        </span>
+      </button>
+
+      <div
+        ref={contentRef}
+        className={classes.content}
+      >
+        {children}
+      </div>
     </div>
-  );
+  )
 }
 
-Accordion.defaultProps = {
-  active: -1,
-  activeColor: "primary"
-};
+const styles = theme => ({
+  container: {
+    display: "flex",
+    flexWrap: "wrap",
+    maxWidth:"700px",
+    marginLeft:"auto",
+    marginRight:"auto",
+    alignItems:"center"
+  },
+  section: {
+    display: "flex",
+    flexDirection: "column",
+    paddingBottom: "10px"
+  },
+  title: {
+    backgroundColor: "white",
+    fontSize: "16px",
+    padding: "0px",
+    color: "#002984",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    border: "none",
+    outline: "none",
+    transition: "backgroundColor 0.6s ease"
+  },
+  icon: {
+    marginLeft: "auto",
+    marginRight: "15px",
+    transition: "transform 0.6s ease"
+  },  
+  rotate: {
+    marginLeft: "auto",
+    marginRight: "15px",
+    transition: "transform 0.6s ease",
+    transform: "rotate(90deg)"
+  },
+  content: {
+    backgroundColor: "white",
+    overflow: "hidden",
+    transition: "maxHeight 0.6s ease"
+  }
+});
 
-Accordion.propTypes = {
-  // index of the default active collapse
-  active: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.arrayOf(PropTypes.number)
-  ]),
-  collapses: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      content: PropTypes.node
-    })
-  ).isRequired,
-  activeColor: PropTypes.oneOf([
-    "primary",
-    "secondary",
-    "warning",
-    "danger",
-    "success",
-    "info",
-    "rose"
-  ])
-};
+
+export default withStyles(styles)(Accordion)

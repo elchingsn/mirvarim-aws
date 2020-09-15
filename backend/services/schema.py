@@ -157,6 +157,7 @@ class NailsServiceInput(graphene.InputObjectType):
     categoryId = graphene.Int()
     title = graphene.String() 
     description = graphene.String() 
+    duration = graphene.Int()
     price = graphene.Int()
     promotion_price = graphene.Int()
 
@@ -164,29 +165,29 @@ class CreateNailsService(graphene.Mutation):
     nailsService = graphene.Field(NailsServiceType)
 
     class Arguments:
-        nailsServiceData = NailsServiceInput(required=True)
+        serviceData = NailsServiceInput(required=True)
     
     @staticmethod
-    def mutate(root,info,nailsServiceData):
+    def mutate(root,info,serviceData):
         user = info.context.user
  
         if user.is_anonymous:
             raise GraphQLError('Log in to add a track.')
       
-        salonId = nailsServiceData.salonId             
+        salonId = serviceData.salonId             
         salon_obj = Salon.objects.get(id=salonId)
 
-        categoryId = nailsServiceData.categoryId             
+        categoryId = serviceData.categoryId             
         nails_obj = Nails.objects.get(id=categoryId)
          
         nailsService = NailsService.objects.create(
                                       salon = salon_obj,
                                       category = nails_obj,
-                                      posted_by = user,
-                                      title = nailsServiceData.title,
-                                      description = nailsServiceData.description,
-                                      price = nailsServiceData.price,
-                                      promotion_price = nailsServiceData.promotion_price
+                                      title = serviceData.title,
+                                      description = serviceData.description,
+                                      duration = serviceData.duration,
+                                      price = serviceData.price,
+                                      promotion_price = serviceData.promotion_price
                                       )
 
         return CreateNailsService(nailsService=nailsService)
@@ -196,6 +197,7 @@ class HairRemovalServiceInput(graphene.InputObjectType):
     categoryId = graphene.Int()
     title = graphene.String() 
     description = graphene.String() 
+    duration = graphene.Int()
     price = graphene.Int()
     promotion_price = graphene.Int()
 
@@ -203,29 +205,29 @@ class CreateHairRemovalService(graphene.Mutation):
     hairRemovalService = graphene.Field(HairRemovalServiceType)
 
     class Arguments:
-        hairRemovalServiceData = HairRemovalServiceInput(required=True)
+        serviceData = HairRemovalServiceInput(required=True)
     
     @staticmethod
-    def mutate(root,info,hairRemovalServiceData):
+    def mutate(root,info,serviceData):
         user = info.context.user
  
         if user.is_anonymous:
             raise GraphQLError('Log in to add a track.')
       
-        salonId = hairRemovalServiceData.salonId             
+        salonId = serviceData.salonId             
         salon_obj = Salon.objects.get(id=salonId)
 
-        categoryId = hairRemovalServiceData.categoryId             
+        categoryId = serviceData.categoryId             
         hairRemoval_obj = HairRemoval.objects.get(id=categoryId)
          
         hairRemovalService = HairRemovalService.objects.create(
                                       salon = salon_obj,
                                       category = hairRemoval_obj,
-                                      posted_by = user,
-                                      title = hairRemovalServiceData.title,
-                                      description = hairRemovalServiceData.description,
-                                      price = hairRemovalServiceData.price,
-                                      promotion_price = hairRemovalServiceData.promotion_price
+                                      title = serviceData.title,
+                                      description = serviceData.description,
+                                      duration = serviceData.duration,
+                                      price = serviceData.price,
+                                      promotion_price = serviceData.promotion_price
                                       )
 
         return CreateHairRemovalService(hairRemovalService=hairRemovalService)
@@ -235,6 +237,7 @@ class MakeupServiceInput(graphene.InputObjectType):
     categoryId = graphene.Int()
     title = graphene.String() 
     description = graphene.String() 
+    duration = graphene.Int()
     price = graphene.Int()
     promotion_price = graphene.Int()
 
@@ -242,29 +245,29 @@ class CreateMakeupService(graphene.Mutation):
     makeupService = graphene.Field(MakeupServiceType)
 
     class Arguments:
-        makeupServiceData = MakeupServiceInput(required=True)
+        serviceData = MakeupServiceInput(required=True)
     
     @staticmethod
-    def mutate(root,info,makeupServiceData):
+    def mutate(root,info,serviceData):
         user = info.context.user
  
         if user.is_anonymous:
             raise GraphQLError('Log in to add a track.')
       
-        salonId = makeupServiceData.salonId             
+        salonId = serviceData.salonId             
         salon_obj = Salon.objects.get(id=salonId)
 
-        categoryId = makeupServiceData.categoryId             
+        categoryId = serviceData.categoryId             
         makeup_obj = Makeup.objects.get(id=categoryId)
          
         makeupService = MakeupService.objects.create(
                                       salon = salon_obj,
                                       category = makeup_obj,
-                                      posted_by = user,
-                                      title = makeupServiceData.title,
-                                      description = makeupServiceData.description,
-                                      price = makeupServiceData.price,
-                                      promotion_price = makeupServiceData.promotion_price
+                                      title = serviceData.title,
+                                      description = serviceData.description,
+                                      duration = serviceData.duration,
+                                      price = serviceData.price,
+                                      promotion_price = serviceData.promotion_price
                                       )
 
         return CreateMakeupService(makeupService=makeupService)
@@ -274,6 +277,7 @@ class MassageServiceInput(graphene.InputObjectType):
     categoryId = graphene.Int()
     title = graphene.String() 
     description = graphene.String() 
+    duration = graphene.Int()
     price = graphene.Int()
     promotion_price = graphene.Int()
 
@@ -281,29 +285,29 @@ class CreateMassageService(graphene.Mutation):
     massageService = graphene.Field(MassageServiceType)
 
     class Arguments:
-        massageServiceData = MassageServiceInput(required=True)
+        serviceData = MassageServiceInput(required=True)
     
     @staticmethod
-    def mutate(root,info,massageServiceData):
+    def mutate(root,info,serviceData):
         user = info.context.user
  
         if user.is_anonymous:
             raise GraphQLError('Log in to add a track.')
       
-        salonId = massageServiceData.salonId             
+        salonId = serviceData.salonId             
         salon_obj = Salon.objects.get(id=salonId)
 
-        categoryId = massageServiceData.categoryId             
+        categoryId = serviceData.categoryId             
         massage_obj = Massage.objects.get(id=categoryId)
          
         massageService = MassageService.objects.create(
                                       salon = salon_obj,
                                       category = massage_obj,
-                                      posted_by = user,
-                                      title = massageServiceData.title,
-                                      description = massageServiceData.description,
-                                      price = massageServiceData.price,
-                                      promotion_price = massageServiceData.promotion_price
+                                      title = serviceData.title,
+                                      description = serviceData.description,
+                                      duration = serviceData.duration,
+                                      price = serviceData.price,
+                                      promotion_price = serviceData.promotion_price
                                       )
 
         return CreateMassageService(massageService=massageService)
@@ -313,6 +317,7 @@ class EyebrowServiceInput(graphene.InputObjectType):
     categoryId = graphene.Int()
     title = graphene.String() 
     description = graphene.String() 
+    duration = graphene.Int()
     price = graphene.Int()
     promotion_price = graphene.Int()
 
@@ -320,29 +325,29 @@ class CreateEyebrowService(graphene.Mutation):
     eyebrowService = graphene.Field(EyebrowServiceType)
 
     class Arguments:
-        eyebrowServiceData = EyebrowServiceInput(required=True)
+        serviceData = EyebrowServiceInput(required=True)
     
     @staticmethod
-    def mutate(root,info,eyebrowServiceData):
+    def mutate(root,info,serviceData):
         user = info.context.user
  
         if user.is_anonymous:
             raise GraphQLError('Log in to add a track.')
       
-        salonId = eyebrowServiceData.salonId             
+        salonId = serviceData.salonId             
         salon_obj = Salon.objects.get(id=salonId)
 
-        categoryId = eyebrowServiceData.categoryId             
+        categoryId = serviceData.categoryId             
         eyebrow_obj = Eyebrow.objects.get(id=categoryId)
          
         eyebrowService = EyebrowService.objects.create(
                                       salon = salon_obj,
                                       category = eyebrow_obj,
-                                      posted_by = user,
-                                      title = eyebrowServiceData.title,
-                                      description = eyebrowServiceData.description,
-                                      price = eyebrowServiceData.price,
-                                      promotion_price = eyebrowServiceData.promotion_price
+                                      title = serviceData.title,
+                                      description = serviceData.description,
+                                      duration = serviceData.duration,
+                                      price = serviceData.price,
+                                      promotion_price = serviceData.promotion_price
                                       )
 
         return CreateEyebrowService(eyebrowService=eyebrowService)
@@ -352,36 +357,37 @@ class CosmetologyServiceInput(graphene.InputObjectType):
     categoryId = graphene.Int()
     title = graphene.String() 
     description = graphene.String() 
+    duration = graphene.Int()
     price = graphene.Int()
     promotion_price = graphene.Int()
 
 class CreateCosmetologyService(graphene.Mutation):
-    cosmetologyService = graphene.Field(CosmetologyServiceType)
+    service = graphene.Field(CosmetologyServiceType)
 
     class Arguments:
-        cosmetologyServiceData = CosmetologyServiceInput(required=True)
+        serviceData = CosmetologyServiceInput(required=True)
     
     @staticmethod
-    def mutate(root,info,cosmetologyServiceData):
+    def mutate(root,info,serviceData):
         user = info.context.user
  
         if user.is_anonymous:
             raise GraphQLError('Log in to add a track.')
       
-        salonId = cosmetologyServiceData.salonId             
+        salonId = serviceData.salonId             
         salon_obj = Salon.objects.get(id=salonId)
 
-        categoryId = cosmetologyServiceData.categoryId             
+        categoryId = serviceData.categoryId             
         cosmetology_obj = Cosmetology.objects.get(id=categoryId)
          
         cosmetologyService = CosmetologyService.objects.create(
                                       salon = salon_obj,
                                       category = cosmetology_obj,
-                                      posted_by = user,
-                                      title = cosmetologyServiceData.title,
-                                      description = cosmetologyServiceData.description,
-                                      price = cosmetologyServiceData.price,
-                                      promotion_price = cosmetologyServiceData.promotion_price
+                                      title = serviceData.title,
+                                      description = serviceData.description,
+                                      duration = serviceData.duration,
+                                      price = serviceData.price,
+                                      promotion_price = serviceData.promotion_price
                                       )
 
         return CreateCosmetologyService(cosmetologyService=cosmetologyService)
@@ -391,6 +397,7 @@ class TattooServiceInput(graphene.InputObjectType):
     categoryId = graphene.Int()
     title = graphene.String() 
     description = graphene.String() 
+    duration = graphene.Int()
     price = graphene.Int()
     promotion_price = graphene.Int()
 
@@ -398,29 +405,29 @@ class CreateTattooService(graphene.Mutation):
     tattooService = graphene.Field(TattooServiceType)
 
     class Arguments:
-        tattooServiceData = TattooServiceInput(required=True)
+       serviceData = TattooServiceInput(required=True)
     
     @staticmethod
-    def mutate(root,info,tattooServiceData):
+    def mutate(root,info,serviceData):
         user = info.context.user
  
         if user.is_anonymous:
             raise GraphQLError('Log in to add a track.')
       
-        salonId = tattooServiceData.salonId             
+        salonId = serviceData.salonId             
         salon_obj = Salon.objects.get(id=salonId)
 
-        categoryId = tattooServiceData.categoryId             
+        categoryId = serviceData.categoryId             
         tattoo_obj = Tattoo.objects.get(id=categoryId)
          
         tattooService = TattooService.objects.create(
                                       salon = salon_obj,
                                       category = tattoo_obj,
-                                      posted_by = user,
-                                      title = tattooServiceData.title,
-                                      description = tattooServiceData.description,
-                                      price = tattooServiceData.price,
-                                      promotion_price = tattooServiceData.promotion_price
+                                      title = serviceData.title,
+                                      description = serviceData.description,
+                                      duration = serviceData.duration,
+                                      price = serviceData.price,
+                                      promotion_price = serviceData.promotion_price
                                       )
 
         return CreateTattooService(tattooService=tattooService)
@@ -430,6 +437,7 @@ class AestheticsServiceInput(graphene.InputObjectType):
     categoryId = graphene.Int()
     title = graphene.String() 
     description = graphene.String() 
+    duration = graphene.Int()
     price = graphene.Int()
     promotion_price = graphene.Int()
 
@@ -437,29 +445,29 @@ class CreateAestheticsService(graphene.Mutation):
     aestheticsService = graphene.Field(AestheticsServiceType)
 
     class Arguments:
-        aestheticsServiceData = AestheticsServiceInput(required=True)
+        serviceData = AestheticsServiceInput(required=True)
     
-    @staticmethod
-    def mutate(root,info,aestheticsServiceData):
+    @staticmethod 
+    def mutate(root,info,serviceData):
         user = info.context.user
  
         if user.is_anonymous:
             raise GraphQLError('Log in to add a track.')
       
-        salonId = aestheticsServiceData.salonId             
+        salonId = serviceData.salonId             
         salon_obj = Salon.objects.get(id=salonId)
 
-        categoryId = aestheticsServiceData.categoryId             
+        categoryId = serviceData.categoryId             
         aesthetics_obj = Aesthetics.objects.get(id=categoryId)
          
         aestheticsService = AestheticsService.objects.create(
                                       salon = salon_obj,
                                       category = aesthetics_obj,
-                                      posted_by = user,
-                                      title = aestheticsServiceData.title,
-                                      description = aestheticsServiceData.description,
-                                      price = aestheticsServiceData.price,
-                                      promotion_price = aestheticsServiceData.promotion_price
+                                      title = serviceData.title,
+                                      description = serviceData.description,
+                                      duration = serviceData.duration,
+                                      price = serviceData.price,
+                                      promotion_price = serviceData.promotion_price
                                       )
 
         return CreateAestheticsService(aestheticsService=aestheticsService)

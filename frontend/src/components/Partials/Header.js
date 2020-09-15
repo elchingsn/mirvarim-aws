@@ -105,7 +105,7 @@ export default function Header(props) {
           >
             <Close />
           </IconButton>
-          <div className={classes.appResponsive}>{links2}</div>
+          <div onClick={handleDrawerToggle} className={classes.appResponsive}>{links2}</div>
           <div className={classes.appResponsive}>{links1}</div>
         </Drawer>
       </Hidden>

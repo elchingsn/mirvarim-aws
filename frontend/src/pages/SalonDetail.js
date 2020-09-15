@@ -2,6 +2,7 @@ import React, {useState, useContext, useRef} from "react";
 import {Link} from "react-router-dom";
 import classNames from "classnames";
 import ImageGallery from "react-image-gallery";
+import { useHistory } from 'react-router-dom';
 
 import {Query, Mutation} from "@apollo/react-components";
 import { ApolloProvider, useQuery, useMutation } from "@apollo/react-hooks";
@@ -79,6 +80,7 @@ const SalonDetail=({match}) => {
     const classes = useStyles();
     const currentUser = useContext(UserContext);
     console.log(currentUser)
+    const history = useHistory();
 
     const [open, setOpen] = useState(false);
     const [colorSelect, setColorSelect] = useState("0");
@@ -157,13 +159,19 @@ const SalonDetail=({match}) => {
 
     const handleCreateLike = (createLike) =>{
       setFavorite(true);
-      createLike({variables: {salonId: id}}).catch(err => console.error(err));
+      createLike({variables: {salonId: id}}).catch(err => {
+        console.error(err);
+        history.push('/login')
+      });
     }
 
     const handleDeleteLike = (deleteLike) =>{
       setFavorite(false);
       console.log('likeID',likeId);
-      deleteLike({variables: { likeId }}).catch(err => console.error(err));
+      deleteLike({variables: { likeId }}).catch(err => { 
+        console.error(err);
+        history.push('/login')
+      });
     }
 
     // const handleUpdateCacheUp = (cache, { data: { createLike } }) => {
@@ -646,6 +654,7 @@ const SalonDetail=({match}) => {
                         if (loading) return <div>Loading</div>;
                         if (error) return <div>Error</div>;
                         // calculations on data returned from query
+                        // if (data.reviews.length >5 ) {setLoadButton(true)}
                         const ratingList = data.reviews.map(node => node.rating)
                         const countReviews = ratingList.length
                         const ratedFive = ratingList.filter(x => x==5).length
@@ -659,23 +668,38 @@ const SalonDetail=({match}) => {
                         const progressTwo = ratedTwo*100/countReviews 
                         const progressOne= ratedOne*100/countReviews
                         const avgRating = ((ratedFive*5+ratedFour*4+ratedThree*3+ratedTwo*2+ratedOne*1)/countReviews).toFixed(1)
+                        console.log(avgRating, !Number.isNaN(parseFloat(avgRating)))
                         return (
                           <div>
                           {smallViewSize ?
                           ( <GridContainer className={classes.paddingTLR}>
-                                <GridItem xs={3} sm={2}>
-                                <Box display="flex" justifyContent="center">
-                                  <Box> <h1>{avgRating}</h1> </Box>
-                                </Box>
-                                </GridItem>
-                                <GridItem xs={4} sm={3}>
-                                <Box display="flex" justifyContent="center">
-                                  <Box> <Rating value={avgRating} precision={0.1} readOnly/> </Box>
-                                </Box>
-                                <Box display="flex" justifyContent="center">
-                                  <Box> <div>{countReviews} reviews</div> </Box>
-                                </Box>
-                                </GridItem>
+                                { (Number.isNaN(parseFloat(avgRating))) ? (
+                                  <GridItem xs={7} sm={5}>
+                                  <Box display="flex" justifyContent="center">
+                                    <Box> <Rating value={avgRating} precision={0.1} readOnly/> </Box>
+                                  </Box>
+                                  <Box display="flex" justifyContent="center">
+                                    <Box> <div>{countReviews} reviews</div> </Box>
+                                  </Box>
+                                  </GridItem>
+                                  ) : (
+                                    <>
+                                    <GridItem xs={3} sm={2}>
+                                    <Box display="flex" justifyContent="center">
+                                      <Box> <h1>{avgRating}</h1> </Box>
+                                    </Box>
+                                    </GridItem>
+                                    <GridItem xs={4} sm={3}>
+                                    <Box display="flex" justifyContent="center">
+                                      <Box> <Rating value={avgRating} precision={0.1} readOnly/> </Box>
+                                    </Box>
+                                    <Box display="flex" justifyContent="center">
+                                      <Box> <div>{countReviews} reviews</div> </Box>
+                                    </Box>
+                                    </GridItem>
+                                    </>
+                                  )}
+
                                 <RateButton xs="5" sm="7" md="2"/>
 
                             <GridItem xs={12} sm={12} className={classes.marginLR}>
@@ -696,9 +720,12 @@ const SalonDetail=({match}) => {
                             <GridItem sm={12} md={4} className={classNames(classes.paddingLR)}>
                               <GridContainer>
                                 <GridItem sm={2} md={12}>
-                                <Box display="flex" justifyContent="center">
-                                  <Box> <h1>{avgRating}</h1> </Box>
-                                </Box>
+                                  <br/>
+                                  { (!Number.isNaN(parseFloat(avgRating))) && (
+                                      <Box display="flex" justifyContent="center">
+                                        <Box> <h1>{avgRating}</h1> </Box>
+                                      </Box>
+                                  )}
                                 </GridItem>
                                 <GridItem sm={2} md={12}>
                                 <Box display="flex" justifyContent="center">
@@ -736,11 +763,11 @@ const SalonDetail=({match}) => {
                     </GridItem>
                   </GridContainer> */}
                   
-                  {review_data && 
+                  {review_data  &&
                   (<GridContainer>                    
                     <GridItem md={12} sm={12} className={classNames(classes.paddingLR)}>
                         <ReviewList reviews={review_data.reviews || []}/>
-                        { loadButton &&(
+                        { loadButton && (review_data.reviews.length > 4) && (
                         <Button  
                           round 
                           simple 

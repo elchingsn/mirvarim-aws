@@ -125,17 +125,16 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
       items: [
         {
           title: 'Salons',
-          href: `/partner/${user.id}/salon/browse`,
+          href: `/partner/${user.id}/salon`,
           icon: BusinessCenterIcon,
           items: [
             {
               title: 'Browse Salon',
-              href: `/partner/${user.id}/salon/browse`
+              href: `/partner/${user.id}/salon/view`
             },
             {
               title: 'Create Salon',
               href: `/partner/${user.id}/salon/create`
-              // href: `/partner/salon/create`
             },
             {
               title: 'Update Salon',

@@ -31,12 +31,14 @@ import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
 import FormHelperText from '@material-ui/core/FormHelperText';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Checkbox from '@material-ui/core/Checkbox';
 
 import { UserContext } from "App.js"
 import { useTranslation } from 'react-i18next';
 import NumberFormat from 'react-number-format';
 import Error from "../Shared/Error"; 
 import Loading from "../Shared/Loading";
+import { useHistory } from 'react-router-dom';
 
 //import styles from "../assets/jss/salonDetailStyle.js";
 
@@ -76,11 +78,11 @@ NumberFormatCustom.propTypes = {
 
 const ServiceForm = ({serviceMutation, catType, data_salon}) => {
   const classes = formStyles();
+  const history = useHistory();
 
-  const [title, setTitle] = useState("");
-  const [address, setAddress] = useState("");
-  const [price, setPrice] = useState("");
+  const [promo, setPromo] = React.useState(false);
   const [submitting, setSubmitting] = useState(false);
+
 
   const [serviceData, setServiceData] = useState({
     salonId: data_salon.id,
@@ -101,7 +103,10 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
     serviceMutation({variables: { serviceData: {salonId: serviceData.salonId, categoryId: serviceData.categoryId,
       title: serviceData.title, description: serviceData.description, duration: serviceData.duration,
       price: serviceData.price, promotionPrice: serviceData.promotionPrice }
-    }});
+    }}).catch(err => {
+      console.error(err);
+      history.push('/login');
+    });;
   };
 
   return(
@@ -169,6 +174,16 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
         }}
       />
     </FormControl>
+    <Checkbox
+        checked={promo}
+        color="primary"
+        onChange={() => {
+          setPromo(!promo);
+          setServiceData({ ...serviceData, promotionPrice: 0 })
+        }}
+        inputProps={{ 'aria-label': 'primary checkbox' }}
+      />
+    {promo && (
     <FormControl fullWidth className={classes.field}>
         <TextField
         label="Promotion price"
@@ -182,7 +197,7 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
         }}
       />
     </FormControl>
-
+    )}
       <Box
         mt={1}
         justifyContent="center"
@@ -191,10 +206,7 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
       <Button
         disabled={submitting}
         variant="outlined"
-        onClick={() => {
-                        setTitle("");
-                        setAddress("");
-                        }}
+        onClick={() => setServiceData({ ...serviceData, title: "", description: "", price: "" })}
         className={classes.cancel}
       >
         Cancel
@@ -204,7 +216,8 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
         variant="outlined"
         disabled={
           submitting ||
-          !serviceData.title.trim()
+          !serviceData.title.trim() ||
+          !serviceData.price
         }
         type="submit"
         className={classes.save}
@@ -212,7 +225,7 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
         {submitting ? (
           <CircularProgress className={classes.save} size={24} />
         ) : (
-          "Add Salon"
+          "Add Service"
         )}
       </Button>
       </Box>
@@ -220,9 +233,8 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
   )
 } 
 
-const CategoryServices = ({catValue, catType, data_salon}) => {
+const CategoryServices = ({catValue, data_salon, setOpen}) => {
   const { t, i18n } = useTranslation();
-  const [open, setOpen] = useState(false);
 
   switch (catValue) {
     case t("category types", {returnObjects: true})["HairType"]:
@@ -240,19 +252,187 @@ const CategoryServices = ({catValue, catType, data_salon}) => {
           {(createHairService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm serviceMutation={createHairService} catType={catType} data_salon={data_salon} />
+              <ServiceForm serviceMutation={createHairService} catType="hairCategories" data_salon={data_salon} />
+            );
+          }}
+        </Mutation>
+      );   
+    case t("category types", {returnObjects: true})["NailsType"]:
+      return(
+        <Mutation
+          mutation={CREATE_NAILS_SERVICE_MUTATION}
+          onCompleted={data => {
+          console.log({ data });
+          //setSubmitting(false);
+          setOpen(true);
+          }}
+          // update={handleUpdateCache}
+          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
+        >
+          {(createNailsService, { loading, error }) => {
+          if (error) return <Error error={error} />;
+            return(
+              <ServiceForm serviceMutation={createNailsService} catType="nailsCategories" data_salon={data_salon} />
             );
           }}
         </Mutation>
       );          
+    case t("category types", {returnObjects: true})["HairRemovalType"]:
+      return(
+        <Mutation
+          mutation={CREATE_HAIR_REMOVAL_SERVICE_MUTATION}
+          onCompleted={data => {
+          console.log({ data });
+          //setSubmitting(false);
+          setOpen(true);
+          }}
+          // update={handleUpdateCache}
+          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
+        >
+          {(createHairRemovalService, { loading, error }) => {
+          if (error) return <Error error={error} />;
+            return(
+              <ServiceForm serviceMutation={createHairRemovalService} catType="hairRemovalCategories" data_salon={data_salon} />
+            );
+          }}
+        </Mutation>
+      );          
+    case t("category types", {returnObjects: true})["MakeupType"]:
+      return(
+        <Mutation
+          mutation={CREATE_MAKEUP_SERVICE_MUTATION}
+          onCompleted={data => {
+          console.log({ data });
+          //setSubmitting(false);
+          setOpen(true);
+          }}
+          // update={handleUpdateCache}
+          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
+        >
+          {(createMakeupService, { loading, error }) => {
+          if (error) return <Error error={error} />;
+            return(
+              <ServiceForm serviceMutation={createMakeupService} catType="makeupCategories" data_salon={data_salon} />
+            );
+          }}
+        </Mutation>
+      );   
+    case t("category types", {returnObjects: true})["MassageType"]:
+      return(
+        <Mutation
+          mutation={CREATE_MASSAGE_SERVICE_MUTATION}
+          onCompleted={data => {
+          console.log({ data });
+          //setSubmitting(false);
+          setOpen(true);
+          }}
+          // update={handleUpdateCache}
+          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
+        >
+          {(createMassageService, { loading, error }) => {
+          if (error) return <Error error={error} />;
+            return(
+              <ServiceForm serviceMutation={createMassageService} catType="massageCategories" data_salon={data_salon} />
+            );
+          }}
+        </Mutation>
+      );          
+    case t("category types", {returnObjects: true})["EyebrowType"]:
+      return(
+        <Mutation
+          mutation={CREATE_EYEBROW_SERVICE_MUTATION}
+          onCompleted={data => {
+          console.log({ data });
+          //setSubmitting(false);
+          setOpen(true);
+          }}
+          // update={handleUpdateCache}
+          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
+        >
+          {(createEyebrowService, { loading, error }) => {
+          if (error) return <Error error={error} />;
+            return(
+              <ServiceForm serviceMutation={createEyebrowService} catType="eyebrowCategories" data_salon={data_salon} />
+            );
+          }}
+        </Mutation>
+      );          
+    case t("category types", {returnObjects: true})["CosmetologyType"]:
+      return(
+        <Mutation
+          mutation={CREATE_COSMETOLOGY_SERVICE_MUTATION}
+          onCompleted={data => {
+          console.log({ data });
+          //setSubmitting(false);
+          setOpen(true);
+          }}
+          // update={handleUpdateCache}
+          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
+        >
+          {(createCosmetologyService, { loading, error }) => {
+          if (error) return <Error error={error} />;
+            return(
+              <ServiceForm serviceMutation={createCosmetologyService} catType="cosmetologyCategories" data_salon={data_salon} />
+            );
+          }}
+        </Mutation>
+      );   
+    case t("category types", {returnObjects: true})["TattooType"]:
+      return(
+        <Mutation
+          mutation={CREATE_TATTOO_SERVICE_MUTATION}
+          onCompleted={data => {
+          console.log({ data });
+          //setSubmitting(false);
+          setOpen(true);
+          }}
+          // update={handleUpdateCache}
+          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
+        >
+          {(createTattooService, { loading, error }) => {
+          if (error) return <Error error={error} />;
+            return(
+              <ServiceForm serviceMutation={createTattooService} catType="tattooCategories" data_salon={data_salon} />
+            );
+          }}
+        </Mutation>
+      );          
+    case t("category types", {returnObjects: true})["AestheticsType"]:
+      return(
+        <Mutation
+          mutation={CREATE_AESTHETICS_SERVICE_MUTATION}
+          onCompleted={data => {
+          console.log({ data });
+          //setSubmitting(false);
+          setOpen(true);
+          }}
+          // update={handleUpdateCache}
+          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
+        >
+          {(createAestheticsService, { loading, error }) => {
+          if (error) return <Error error={error} />;
+            return(
+              <ServiceForm serviceMutation={createAestheticsService} catType="aestheticsCategories" data_salon={data_salon} />
+            );
+          }}
+        </Mutation>
+      );                
     default:
       return null;
   }
 }
 
 const CreateService = ({classes}) => {
-
   const currentUser = useContext(UserContext);
+  if (!currentUser.salonSet[0]) {
+    return <div> No salon added. Please add a salon</div>
+  } else {
+    return <CreateServiceForm classes={classes} currentUser={currentUser} />
+  }
+}
+
+const CreateServiceForm = ({classes, currentUser}) => {
+
   const userId = currentUser.id;
   const data_salon = currentUser.salonSet[0];
   const salonId = data_salon.id;
@@ -275,9 +455,8 @@ const CreateService = ({classes}) => {
   const category_set = [...new Set(_category_set.map((key) => t("category types", {returnObjects: true})[key]))];
   console.log('service cat', category_set);
 
-   
-
   const [catValue, setCatValue] = useState("");
+  const [open, setOpen] = useState(false);
   //const [hairCategories, setHairCategories] = useState([]);
 
   const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
@@ -313,8 +492,30 @@ const CreateService = ({classes}) => {
                   )}
                 />
               </FormControl>     
-              <CategoryServices data_salon={data_salon} catValue={catValue} catType="hairCategories"/>    
+              <CategoryServices data_salon={data_salon} catValue={catValue} setOpen={setOpen}/>    
       </Paper>
+      <Dialog
+          open={open}
+          disableBackdropClick={true}
+          TransitionComponent={Transition}
+          >
+            <DialogTitle>
+              Service successfully created!
+            </DialogTitle>
+            <DialogActions>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                <Link to={`/partner/${userId}/salon/view`}>
+                  Back to salon page
+                </Link>
+              </Button>
+            </DialogActions>
+        </Dialog>
     </div>
   )};
 
@@ -336,6 +537,149 @@ const CREATE_HAIR_SERVICE_MUTATION = gql`
   }
 `;
 
+const CREATE_NAILS_SERVICE_MUTATION = gql`
+  mutation($serviceData:NailsServiceInput!) {
+    createNailsService(serviceData: $serviceData) {
+      nailsService {
+          id
+        salon {
+          id
+          name
+        }
+        category {
+          id 
+          title
+        }
+      }
+    }
+  }
+`;
+
+const CREATE_HAIR_REMOVAL_SERVICE_MUTATION = gql`
+  mutation($serviceData:HairRemovalServiceInput!) {
+    createHairRemovalService(serviceData: $serviceData) {
+      hairRemovalService {
+          id
+        salon {
+          id
+          name
+        }
+        category {
+          id 
+          title
+        }
+      }
+    }
+  }
+`;
+
+const CREATE_MAKEUP_SERVICE_MUTATION = gql`
+  mutation($serviceData:MakeupServiceInput!) {
+    createMakeupService(serviceData: $serviceData) {
+      makeupService {
+          id
+        salon {
+          id
+          name
+        }
+        category {
+          id 
+          title
+        }
+      }
+    }
+  }
+`;
+
+const CREATE_MASSAGE_SERVICE_MUTATION = gql`
+  mutation($serviceData:MassageServiceInput!) {
+    createMassageService(serviceData: $serviceData) {
+      massageService {
+          id
+        salon {
+          id
+          name
+        }
+        category {
+          id 
+          title
+        }
+      }
+    }
+  }
+`;
+
+const CREATE_EYEBROW_SERVICE_MUTATION = gql`
+  mutation($serviceData:EyebrowServiceInput!) {
+    createEyebrowService(serviceData: $serviceData) {
+      eyebrowService {
+          id
+        salon {
+          id
+          name
+        }
+        category {
+          id 
+          title
+        }
+      }
+    }
+  }
+`;
+
+const CREATE_COSMETOLOGY_SERVICE_MUTATION = gql`
+  mutation($serviceData:CosmetologyServiceInput!) {
+    createCosmetologyService(serviceData: $serviceData) {
+      cosmetologyService {
+          id
+        salon {
+          id
+          name
+        }
+        category {
+          id 
+          title
+        }
+      }
+    }
+  }
+`;
+
+const CREATE_TATTOO_SERVICE_MUTATION = gql`
+  mutation($serviceData:TattooServiceInput!) {
+    createTattooService(serviceData: $serviceData) {
+      tattooService {
+          id
+        salon {
+          id
+          name
+        }
+        category {
+          id 
+          title
+        }
+      }
+    }
+  }
+`;
+
+const CREATE_AESTHETICS_SERVICE_MUTATION = gql`
+  mutation($serviceData:AestheticsServiceInput!) {
+    createAestheticsService(serviceData: $serviceData) {
+      aestheticsService {
+          id
+        salon {
+          id
+          name
+        }
+        category {
+          id 
+          title
+        }
+      }
+    }
+  }
+`;
 
 const styles = theme => ({
   container: {

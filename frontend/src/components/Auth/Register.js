@@ -32,13 +32,21 @@ const Register = ({ classes, setNewUser }) => {
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
-  const [open, setOpen] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [failureOpen, setFailureOpen] = useState({
+    open: false,
+    message: "",
+    label: ""
+  });
   const [role, setRole] = useState("1");
+  const [err, setErr] = useState({});
 
   const handleSubmit = (event, register) => {
     event.preventDefault();
     register();
   };
+
+  console.log('failure',failureOpen);
 
   return (
     <div className={classes.root}>
@@ -53,10 +61,22 @@ const Register = ({ classes, setNewUser }) => {
           variables={{ username, email, role, password1, password2 }}
           onCompleted={data => {
             console.log({ data });
-            setOpen(true);
+            if (data.register.success) {
+              setSuccessOpen(true) 
+            }
+             else {
+            //   const err = data.register.errors.map(e => e.map(e => e.message))
+               console.log('err', data.register.errors);
+               setErr(data.register.errors);
+            //   setFailureOpen({ 
+            //     ...failureOpen, 
+            //     open: false, 
+            //     message: data.register.errors.map(e => e.map(e => e.message))})
+            }
           }}
         >
           {(register, { loading, error }) => {
+            console.log('error', err);
             return (
               <form
                 onSubmit={event => handleSubmit(event, register)}
@@ -84,6 +104,7 @@ const Register = ({ classes, setNewUser }) => {
                     id="username"
                     onChange={event => setUsername(event.target.value)}
                   />
+                  <h6 className={classes.error}>{err["username"]&&err["username"][0].message}</h6>                  
                 </FormControl>
                 <FormControl margin="normal" required fullWidth>
                   <InputLabel htmlFor="email">Email</InputLabel>
@@ -92,6 +113,7 @@ const Register = ({ classes, setNewUser }) => {
                     type="email"
                     onChange={event => setEmail(event.target.value)}
                   />
+                  <h6 className={classes.error}>{err["email"]&&err["email"][0].message}</h6>
                 </FormControl>
                 <FormControl margin="normal" required fullWidth>
                   <InputLabel htmlFor="password1">Password</InputLabel>
@@ -100,6 +122,7 @@ const Register = ({ classes, setNewUser }) => {
                     type="password"
                     onChange={event => setPassword1(event.target.value)}
                   />
+                  <h6 className={classes.error}>{err["password1"]&&err["password1"][0].message}</h6>
                 </FormControl>
                 <FormControl margin="normal" required fullWidth>
                   <InputLabel htmlFor="password2">Confirm Password</InputLabel>
@@ -108,6 +131,7 @@ const Register = ({ classes, setNewUser }) => {
                     type="password"
                     onChange={event => setPassword2(event.target.value)}
                   />
+                  <h6 className={classes.error}>{err["password2"]&&err["password2"][0].message}</h6>
                 </FormControl>
                 <Button
                   type="submit"
@@ -144,7 +168,7 @@ const Register = ({ classes, setNewUser }) => {
 
       {/* Success Dialog */}
       <Dialog
-        open={open}
+        open={successOpen}
         disableBackdropClick={true}
         TransitionComponent={Transition}
       >
@@ -165,6 +189,29 @@ const Register = ({ classes, setNewUser }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog
+        open={failureOpen.open}
+        disableBackdropClick={true}
+        TransitionComponent={Transition}
+      >
+        <DialogTitle>
+          <VerifiedUserTwoTone className={classes.icon} />
+          New Account
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>User successfully created!</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => setNewUser(false)}
+          >
+            Login
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </div>
   );
 };
@@ -230,6 +277,9 @@ const styles = theme => ({
     padding: "0px 2px 2px 0px",
     verticalAlign: "middle",
     color: "green"
+  },
+  error: {
+    color: "red"
   }
 });
 

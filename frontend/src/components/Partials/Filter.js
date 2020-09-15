@@ -47,11 +47,6 @@ import Button from "./Button.js";
 import Clearfix from "./Clearfix.js";
 
 import salonImage from "../../assets/img/salon1.jpeg"
-// import color1 from "assets/img/examples/color1.jpg";
-// import color3 from "assets/img/examples/color3.jpg";
-// import color2 from "assets/img/examples/color2.jpg";
-// import dg3 from "assets/img/dg3.jpg";
-// import dg1 from "assets/img/dg1.jpg";
 
 import styles from "../../assets/jss/filterStyle.js";
 import { node } from "prop-types";
@@ -60,9 +55,13 @@ import { useTranslation } from 'react-i18next';
 const useStyles = makeStyles(styles);
 
 export default function Filter({initCatValue, initCheckedCat, initServiceValue, initAreaValue}) {
+  
+  console.log('filter', initCatValue)
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t, i18n } = useTranslation();
 
+  const [booking, setBooking] = useState(false);
+  const [promo, setPromo] = useState(false);
   const [area, setArea] = useState([]);
   const [hair, setHair] = useState([]);
   const [nails, setNails] = useState([]);
@@ -100,16 +99,6 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   // const { data:hair_data } = useQuery(HAIR_QUERY);
   // const { data:nails_data } = useQuery(NAILS_QUERY);
 
-  // React.useEffect(() => {
-  //   if (area_data) {setArea(area_data.area.map(item => item.title))}
-  //   if (hair_data) {setHair(hair_data.hairCat.map(item => item.title))}
-  //   if (nails_data) {setNails(nails_data.nailsCat.map(item => item.title))}
-  // },[area_data, hair_data, nails_data])
-
-  // console.log(area);
-  // console.log(hair);
-  // console.log(nails);
-
   useEffect(() => {
     if(initCatValue) {setCatDisplay(false)};
     if(initAreaValue) {setArea(initAreaValue.split())};
@@ -118,6 +107,22 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   useEffect(() => {
     (areaSelected)? setAreaTitle(`Area (${areaSelected} selected)`) : setAreaTitle("Area");
   }, [areaSelected]);
+
+  useEffect(() => {
+    console.log('component did update')
+    setHair([]);
+    setNails([]);
+    setHairRemoval([]);
+    setMakeup([]);
+    setMassage([]);
+    setEyebrow([]);    
+    setCosmetology([]); 
+    setTattoo([]);    
+    setAesthetics([]);      
+    setCatValue(initCatValue);
+    if(initCatValue) { setTimeout(() => setCatDisplay(false), 1000) };
+    setCurrentPage(1);
+  }, [initCatValue])
 
   // React.useEffect(() => {
   //   (hairSelected)? setHairTitle(`Hair Services (${hairSelected} selected)`) : setHairTitle("Hair Services");
@@ -171,7 +176,6 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
       newCheckedCat.splice(currentIndex, 1);
     }
     setCheckedCat(newCheckedCat);
-    console.log('new cat', newCheckedCat);
     console.log('checked cat', checkedCat);
     setCurrentPage(1);
   };
@@ -179,8 +183,9 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   const classes = useStyles(); 
 
   const CategoryServices = ({catValue}) => {
+    console.log('catvalue', catValue)
     switch (catValue) {
-      case "Hair":
+      case t("Hair"):
         return(
           <div className={classes.paddingTB}>
             <FormControl component="fieldset" >
@@ -359,7 +364,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
             </FormControl>
           </div>
         );
-        case "Massage":
+        case t("Massage"):
           return(
             <div className={classes.paddingTB}>
               <FormControl component="fieldset" >
@@ -616,6 +621,23 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                       justIcon
                       size="sm"
                       className={classes.pullRight + " " + classes.refineButton}
+                      onClick={() => {
+                        setCatDisplay(true);
+                        setCatValue("");
+                        setCheckedCat([]);
+                        setPromo(false);
+                        setBooking(false);                        
+                        setArea([]);
+                        setHair([]);
+                        setNails([]);
+                        setHairRemoval([]);
+                        setMakeup([]);
+                        setMassage([]);
+                        setEyebrow([]);    
+                        setCosmetology([]); 
+                        setTattoo([]);    
+                        setAesthetics([]);                            
+                      }}
                     >
                       <Cached />
                     </Button>
@@ -627,9 +649,9 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                 <FormControlLabel
                   control={
                     <Checkbox
-                      tabIndex={-1}
-                      //onClick={() => handleToggle(1)}
-                      checked={false}
+                      //tabIndex={-1}
+                      onClick={() => setPromo(!promo)}
+                      checked={promo}
                       checkedIcon={
                         <Check className={classes.checkedIcon} />
                       }
@@ -648,9 +670,8 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                 <FormControlLabel
                   control={
                     <Checkbox
-                      tabIndex={-1}
-                      //onClick={() => handleToggle(2)}
-                      checked={true}
+                      onClick={() => setBooking(!booking)}
+                      checked={booking}
                       checkedIcon={
                         <Check className={classes.checkedIcon} />
                       }
@@ -711,7 +732,12 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                       <FormControlLabel value="Nails" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Nails" />
                       <FormControlLabel value="Hair Removal" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Hair Removal" />
                       <FormControlLabel value="Makeup" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Makeup" />
-                      <FormControlLabel value="Massage" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Massage" />
+                      <FormControlLabel value={t("Massage")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Massage")} />
+                      <FormControlLabel value="Eyebrow" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Eyebrow" />
+                      <FormControlLabel value="Cosmetology" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Cosmetology" />
+                      <FormControlLabel value="Tattoo" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Tattoo" />
+                      <FormControlLabel value="Aesthetics" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Aesthetics" />
+
                     </RadioGroup>
                   </FormControl>) : 
                   (<div>
@@ -725,6 +751,13 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                           setCheckedCat([]);
                           setHair([]);
                           setNails([]);
+                          setHairRemoval([]);
+                          setMakeup([]);
+                          setMassage([]);
+                          setEyebrow([]);    
+                          setCosmetology([]); 
+                          setTattoo([]);    
+                          setAesthetics([]);                            
                         }}
                       >
                         X
@@ -736,78 +769,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                 <Divider/>
                 <CategoryServices catValue={catValue}/>
 
-
-
-{/* 
-                <div>        
-                <Accordion
-                  active={[0,1,2,3]}
-                  activeColor="info"
-                  collapses={[
-                    // {
-                    //   title: "Price Range",
-                    //   content: (
-                    //     <CardBody className={classes.cardBodyRefine}>
-                    //       <span
-                    //         className={classNames(
-                    //           classes.pullLeft,
-                    //           classes.priceSlider
-                    //         )}
-                    //       >
-                    //         €{priceRange[0]}
-                    //       </span>
-                    //       <span
-                    //         className={classNames(
-                    //           classes.pullRight,
-                    //           classes.priceSlider
-                    //         )}
-                    //       >
-                    //         €{priceRange[1]}
-                    //       </span>
-                    //       <br />
-                    //       <br />
-                    //       <div id="sliderRegular" className="slider-rose" />
-                    //     </CardBody>
-                    //   )
-                    // },
-                    {
-                      title: `${nailsTitle}`,
-                      content: (
-                        <div>
-                          <div>
-                            <Query query={NAILS_QUERY}>
-                              {({data, loading, error}) => {
-                                if (loading) return <Loading />;
-                                if (error) return <Error error={error} />;
-                                const categories = data.nailsCat.map(item => item.title);
-                              
-                              return  <Autocomplete
-                                        multiple
-                                        limitTags={3}
-                                        id="size-small-standard-multi"
-                                        size="small"
-                                        options={categories}
-                                        onChange={(event,value) => {
-                                          setNails(value);
-                                          setNailsSelected(value.length);
-                                        }}
-                                        renderInput={(params) => (
-                                          <TextField {...params} 
-                                          variant="standard" 
-                                          label="Nails categories " 
-                                          placeholder="More nails" />
-                                        )}
-                                      />;
-                                    }}
-                            </Query>
-                          </div>
-                        </div>
-                      )
-                    }
-                  ]}
-                />
-                </div> */}
-                </CardBody>
+              </CardBody>
             </Card>
             </div>
             </Hidden>
@@ -832,13 +794,51 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                   <Close />
                 </IconButton>
                 <div className={classes.container}>
+
+                  <h4 className={classes.cardTitle + " " + classes.textLeft}>
+                    Reset filter
+                    <Tooltip
+                      id="tooltip-top"
+                      title="Reset Filter"
+                      placement="top"
+                      classes={{ tooltip: classes.tooltip }}
+                    >
+                      <Button
+                        link
+                        justIcon
+                        size="sm"
+                        className={classes.pullRight + " " + classes.refineButton}
+                        onClick={() => {
+                          setCatDisplay(true);
+                          setCatValue("");
+                          setCheckedCat([]);
+                          setPromo(false);
+                          setBooking(false);
+                          setArea([]);
+                          setHair([]);
+                          setNails([]);
+                          setHairRemoval([]);
+                          setMakeup([]);
+                          setMassage([]);
+                          setEyebrow([]);    
+                          setCosmetology([]); 
+                          setTattoo([]);    
+                          setAesthetics([]);                            
+                        }}
+                      >
+                        <Cached />
+                      </Button>
+                    </Tooltip>
+                    <Clearfix />
+                  </h4>
+                  <Divider/>
+
                   <div className={classes.paddingTB}>
                     <FormControlLabel
                       control={
                         <Checkbox
-                          tabIndex={-1}
-                          //onClick={() => handleToggle(1)}
-                          checked={false}
+                          onClick={() => setPromo(!promo)}
+                          checked={promo}
                           checkedIcon={
                             <Check className={classes.checkedIcon} />
                           }
@@ -857,9 +857,8 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                     <FormControlLabel
                       control={
                         <Checkbox
-                          tabIndex={-1}
-                          //onClick={() => handleToggle(2)}
-                          checked={true}
+                          onClick={() => setBooking(!booking)}
+                          checked={booking}
                           checkedIcon={
                             <Check className={classes.checkedIcon} />
                           }
@@ -934,6 +933,13 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                               setCheckedCat([]);
                               setHair([]);
                               setNails([]);
+                              setHairRemoval([]);
+                              setMakeup([]);
+                              setMassage([]);
+                              setEyebrow([]);    
+                              setCosmetology([]); 
+                              setTattoo([]);    
+                              setAesthetics([]);                                                            
                             }}
                           >
                             X
@@ -951,7 +957,9 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
 
           <GridItem xs={12} sm={12} md={8} lg={9}>
             {/* <GridContainer> */}
-              <Query query={FILTERED_SALONS_QUERY} variables={{area, hair, nails}} fetchPolicy='network-only'>
+              <Query query={FILTERED_SALONS_QUERY} 
+                variables={{area, hair, nails, makeup, massage, eyebrow, cosmetology, tattoo, aesthetics}} 
+                fetchPolicy='network-only'>
                 {({data, loading, error}) => {
                   if (loading) return <Loading />;
                   if (error) return <Error error={error} />;
@@ -990,12 +998,26 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
 }
 
 const FILTERED_SALONS_QUERY = gql`
-query ($area:[String],
-       $hair:[String],
-       $nails:[String]) {
+query(
+      $area:[String],
+      $hair:[String],
+      $nails:[String]
+      $makeup:[String],
+      $massage:[String],
+      $eyebrow:[String],
+      $cosmetology:[String],
+      $tattoo:[String],
+      $aesthetics:[String]
+      ) {
     salonsFiltered(area: $area,
                    hair: $hair,
-                   nails: $nails) {
+                   nails: $nails
+                   makeup: $makeup,
+                   massage: $massage,
+                   eyebrow: $eyebrow,
+                   cosmetology: $cosmetology,
+                   tattoo: $tattoo,
+                   aesthetics: $aesthetics) {
         id
         name
         address
