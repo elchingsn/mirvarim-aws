@@ -82,7 +82,7 @@ export default function HeaderLinks(props) {
 
   const { currentUser } = props;
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const [dashboard, setDashboard] = useState(false);
   // const [form, setForm] = useState(false);
   // const [fbUser, setFbUser] = useState("");
@@ -91,11 +91,11 @@ export default function HeaderLinks(props) {
   const { t, i18n } = useTranslation();
 
   const handleLoginOpen = () => {
-    setOpen(true);
+    setLoginOpen(true);
   };
 
   const handleLoginClose = () => {
-    setOpen(false);
+    setLoginOpen(false);
   };
 
   const handleDashboardOpen = () => {
@@ -217,12 +217,12 @@ export default function HeaderLinks(props) {
             </ListItem>
             </List>
             <Dialog
-              open={open}
+              open={loginOpen}
               onClose={handleLoginClose}
               //aria-labelledby="alert-dialog-title" 
               //aria-describedby="alert-dialog-description"
             >
-              <Auth/>
+              <Auth setLoginOpen={setLoginOpen} />
             </Dialog>
             </div>)
         }   

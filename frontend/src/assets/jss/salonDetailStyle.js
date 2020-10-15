@@ -148,7 +148,10 @@ import {
       marginTop: "20px"
     },
     pullRight: {
-      float: "right"
+      float: "right",
+      position: "absolute",
+      bottom: "10px",
+      right: "0px"
     },
     cardCategory: {
       textAlign: "center",
@@ -256,7 +259,8 @@ import {
       animation: "moveDown 0.5s ease-in-out",
     },
     priceContainer: {
-      display: "inline-flex"
+      display: "inline-flex",
+      textTransform: "capitalize"
     },
     price: {
       fontSize: "15px",

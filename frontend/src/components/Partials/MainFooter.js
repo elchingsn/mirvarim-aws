@@ -1,6 +1,6 @@
 /*eslint-disable*/
 import React from "react";
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from "react-router-dom";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // @material-ui/core components
@@ -52,11 +52,12 @@ const SectionFooter = (props) => {
                   </ListItem>
                   <ListItem className={classes.inlineBlock}>
                     <a
-                      href="#about us"
                       target="_blank"
                       className={classes.block}
                     >
-                      About us
+                      <Link to="/privacy">
+                        Privacy Policy
+                      </Link>
                     </a>
                   </ListItem>
                   <ListItem className={classes.inlineBlock}>

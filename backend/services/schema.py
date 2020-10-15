@@ -7,7 +7,7 @@ from django.core.files.storage import FileSystemStorage
 from PIL import Image
 import datetime 
 
-from salons.models import Salon, Hair, Nails, HairRemoval, Makeup, Massage, Eyebrow, Cosmetology, Tattoo, Aesthetics, City, Area
+from salons.models import Salon, Master, Hair, Nails, HairRemoval, Makeup, Massage, Eyebrow, Cosmetology, Tattoo, Aesthetics, City, Area
 from .models import HairService, NailsService, HairRemovalService, MassageService, MakeupService, EyebrowService, CosmetologyService, TattooService, AestheticsService
 
 class HairServiceType(DjangoObjectType):   
@@ -115,6 +115,7 @@ class Query(graphene.ObjectType):
 class HairServiceInput(graphene.InputObjectType):
     salonId = graphene.Int()
     categoryId = graphene.Int()
+    masterIds = graphene.List(graphene.String)
     title = graphene.String() 
     description = graphene.String() 
     duration = graphene.Int()
@@ -143,18 +144,24 @@ class CreateHairService(graphene.Mutation):
         hairService = HairService.objects.create(
                                       salon = salon_obj,
                                       category = hair_obj,
-                                      title = serviceData.title,
+                                      title = serviceData.title.title(),
                                       description = serviceData.description,
                                       duration = serviceData.duration,
                                       price = serviceData.price,
                                       promotion_price = serviceData.promotion_price
                                       )
+        
+        masterIds = serviceData.masterIds
+        if masterIds[0]:
+          for id in masterIds[0]:
+            hairService.master.add(Master.objects.get(id=id))
 
         return CreateHairService(hairService=hairService)
 
 class NailsServiceInput(graphene.InputObjectType):
     salonId = graphene.Int()
     categoryId = graphene.Int()
+    masterIds = graphene.List(graphene.String)
     title = graphene.String() 
     description = graphene.String() 
     duration = graphene.Int()
@@ -190,11 +197,17 @@ class CreateNailsService(graphene.Mutation):
                                       promotion_price = serviceData.promotion_price
                                       )
 
+        masterIds = serviceData.masterIds
+        if masterIds[0]:
+          for id in masterIds[0]:
+            nailsService.master.add(Master.objects.get(id=id))                                      
+
         return CreateNailsService(nailsService=nailsService)
 
 class HairRemovalServiceInput(graphene.InputObjectType):
     salonId = graphene.Int()
     categoryId = graphene.Int()
+    masterIds = graphene.List(graphene.String)
     title = graphene.String() 
     description = graphene.String() 
     duration = graphene.Int()
@@ -230,11 +243,17 @@ class CreateHairRemovalService(graphene.Mutation):
                                       promotion_price = serviceData.promotion_price
                                       )
 
+        masterIds = serviceData.masterIds
+        if masterIds[0]:
+          for id in masterIds[0]:
+            hairRemovalService.master.add(Master.objects.get(id=id))
+
         return CreateHairRemovalService(hairRemovalService=hairRemovalService)
 
 class MakeupServiceInput(graphene.InputObjectType):
     salonId = graphene.Int()
     categoryId = graphene.Int()
+    masterIds = graphene.List(graphene.String)
     title = graphene.String() 
     description = graphene.String() 
     duration = graphene.Int()
@@ -270,11 +289,17 @@ class CreateMakeupService(graphene.Mutation):
                                       promotion_price = serviceData.promotion_price
                                       )
 
+        masterIds = serviceData.masterIds
+        if masterIds[0]:
+          for id in masterIds[0]:
+            makeupService.master.add(Master.objects.get(id=id))                                      
+
         return CreateMakeupService(makeupService=makeupService)
 
 class MassageServiceInput(graphene.InputObjectType):
     salonId = graphene.Int()
     categoryId = graphene.Int()
+    masterIds = graphene.List(graphene.String)
     title = graphene.String() 
     description = graphene.String() 
     duration = graphene.Int()
@@ -310,11 +335,17 @@ class CreateMassageService(graphene.Mutation):
                                       promotion_price = serviceData.promotion_price
                                       )
 
+        masterIds = serviceData.masterIds
+        if masterIds[0]:
+          for id in masterIds[0]:
+            massageService.master.add(Master.objects.get(id=id))
+
         return CreateMassageService(massageService=massageService)
 
 class EyebrowServiceInput(graphene.InputObjectType):
     salonId = graphene.Int()
     categoryId = graphene.Int()
+    masterIds = graphene.List(graphene.String)
     title = graphene.String() 
     description = graphene.String() 
     duration = graphene.Int()
@@ -350,11 +381,17 @@ class CreateEyebrowService(graphene.Mutation):
                                       promotion_price = serviceData.promotion_price
                                       )
 
+        masterIds = serviceData.masterIds
+        if masterIds[0]:
+          for id in masterIds[0]:
+            eyebrowService.master.add(Master.objects.get(id=id))
+
         return CreateEyebrowService(eyebrowService=eyebrowService)
 
 class CosmetologyServiceInput(graphene.InputObjectType):
     salonId = graphene.Int()
     categoryId = graphene.Int()
+    masterIds = graphene.List(graphene.String)
     title = graphene.String() 
     description = graphene.String() 
     duration = graphene.Int()
@@ -390,11 +427,17 @@ class CreateCosmetologyService(graphene.Mutation):
                                       promotion_price = serviceData.promotion_price
                                       )
 
+        masterIds = serviceData.masterIds
+        if masterIds[0]:
+          for id in masterIds[0]:
+            cosmetologyService.master.add(Master.objects.get(id=id))
+            
         return CreateCosmetologyService(cosmetologyService=cosmetologyService)
 
 class TattooServiceInput(graphene.InputObjectType):
     salonId = graphene.Int()
     categoryId = graphene.Int()
+    masterIds = graphene.List(graphene.String)
     title = graphene.String() 
     description = graphene.String() 
     duration = graphene.Int()
@@ -430,11 +473,17 @@ class CreateTattooService(graphene.Mutation):
                                       promotion_price = serviceData.promotion_price
                                       )
 
+        masterIds = serviceData.masterIds
+        if masterIds[0]:
+          for id in masterIds[0]:
+            tattooService.master.add(Master.objects.get(id=id))
+
         return CreateTattooService(tattooService=tattooService)
 
 class AestheticsServiceInput(graphene.InputObjectType):
     salonId = graphene.Int()
     categoryId = graphene.Int()
+    masterIds = graphene.List(graphene.String)
     title = graphene.String() 
     description = graphene.String() 
     duration = graphene.Int()
@@ -469,6 +518,11 @@ class CreateAestheticsService(graphene.Mutation):
                                       price = serviceData.price,
                                       promotion_price = serviceData.promotion_price
                                       )
+
+        masterIds = serviceData.masterIds
+        if masterIds[0]:
+          for id in masterIds[0]:
+            aestheticsService.master.add(Master.objects.get(id=id))
 
         return CreateAestheticsService(aestheticsService=aestheticsService)
 

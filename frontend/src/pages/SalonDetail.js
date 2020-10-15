@@ -31,8 +31,9 @@ import GridItem from "../components/Partials/GridItem.js";
 import Card from "../components/Partials/Card.js";
 import CardBody from "../components/Partials/CardBody.js";
 import Filter from "../components/Partials/Filter.js";
-import Accordion from "components/Partials/Accordion.js";
 import Button from "components/Partials/Button.js";
+import Booking from "components/Partials/Booking.js";
+import Accordion from "components/Partials/Accordion"
 
 import Loading from "components/Shared/Loading";
 import Error from "components/Shared/Error";
@@ -76,10 +77,46 @@ const RatingDistribution = ({value, progress, quantity}) => {
   );
   }
 
+
+const Service = ({title, duration, promotionPrice, price }) => {
+  const classes = useStyles();
+
+  return (
+    <CardFooter style={{paddingTop:"5px",paddingBottom:"10px",paddingLeft:"0px"}}>
+        <>
+        <div className={classes.priceContainer}>
+          {title}
+        </div>
+        <div style={{paddingLeft:"15px"}}>
+          &nbsp;
+          <i className="far fa-clock">&nbsp;{duration} min</i>
+        </div>
+        <div className={classNames(classes.stats, classes.mlAuto)}>
+          {promotionPrice ? (
+          <>
+          <span className={classNames(classes.priceOld)}>
+            {" "}
+            AZN {price}
+          </span>
+          <span className={classNames(classes.price, classes.priceNew)}>
+            {" "}
+            AZN {promotionPrice}
+          </span>
+          </> ) : (
+          <span className={classNames(classes.price)}>
+            {" "}
+            AZN {price}
+          </span>
+          )}
+        </div>
+        </>
+    </CardFooter>
+  )
+}  
+
 const SalonDetail=({match}) => {
     const classes = useStyles();
     const currentUser = useContext(UserContext);
-    console.log(currentUser)
     const history = useHistory();
 
     const [open, setOpen] = useState(false);
@@ -89,12 +126,11 @@ const SalonDetail=({match}) => {
     const [isFavorite, setFavorite] = useState(false)
     const [likeId, setLikeId] = useState("")
     const [loadButton, setLoadButton] = useState(true)
+    const [bookingDialog, setBookingDialog] = useState(false)
  
     const id = match.params.id;
     const API_BASE = `${process.env.REACT_APP_API_BASE}/media`;
-    console.log(id);
-
-    // const { isSticky, element } = Sticky()
+    //console.log(id);
 
     React.useEffect(() => {
         window.scrollTo(0, 0);
@@ -150,7 +186,6 @@ const SalonDetail=({match}) => {
 
     const handleScrollTo = (elRef) =>{
       const el = elRef.current ? elRef.current : elRef;
-      console.log(el);
       el.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
@@ -167,7 +202,7 @@ const SalonDetail=({match}) => {
 
     const handleDeleteLike = (deleteLike) =>{
       setFavorite(false);
-      console.log('likeID',likeId);
+      //console.log('likeID',likeId);
       deleteLike({variables: { likeId }}).catch(err => { 
         console.error(err);
         history.push('/login')
@@ -200,7 +235,7 @@ const SalonDetail=({match}) => {
                     const {salonSelected} = cache.readQuery({ query: SELECTED_SALON_QUERY, variables: {id} });
                     console.log('salonData', salonSelected);
                     salonSelected[0].likeSet = [...salonSelected[0].likeSet, createLike.like];
-                    console.log('cache update',salonSelected);
+                    //console.log('cache update',salonSelected);
                     cache.writeQuery({ query: SELECTED_SALON_QUERY, variables: {id}, data: {salonSelected} });              
                   }}
                   refetchQueries={() => [{ query: PROFILE_QUERY, variables: {id:currentUser.id} }]}
@@ -228,7 +263,7 @@ const SalonDetail=({match}) => {
                 update={(cache, { data: { deleteLike } }) => {
                   const {salonSelected} = cache.readQuery({ query: SELECTED_SALON_QUERY, variables: {id} });
                   salonSelected[0].likeSet = salonSelected[0].likeSet.filter(({id}) => id != deleteLike.likeId);
-                  console.log('cache update',salonSelected);
+                  //console.log('cache update',salonSelected);
                   cache.writeQuery({ query: SELECTED_SALON_QUERY, variables: {id}, data: {salonSelected} });              
                 }}
                 refetchQueries={() => [{ query: PROFILE_QUERY, variables: {id:currentUser.id} }]}
@@ -351,7 +386,7 @@ const SalonDetail=({match}) => {
         {({ data, loading, error }) => {
             if (loading) return <Loading />;
             if (error) return <Error error={error} />;
-            console.log(data.salonSelected[0]);
+            //console.log(data.salonSelected[0]);
             console.log('favorite',isFavorite);
             if ((currentUser) && (data.salonSelected[0].likeSet[0])){
               data.salonSelected[0].likeSet.map(node => {
@@ -363,7 +398,6 @@ const SalonDetail=({match}) => {
                 }
               })
             } 
-            console.log('likeID',likeId);
             const salon = data.salonSelected[0];
             const hairServices = salon.hairserviceSet
             const nailsServices = salon.nailsserviceSet
@@ -418,68 +452,59 @@ const SalonDetail=({match}) => {
                         <GridItem xs={10} sm={10} className={classes.paddingL}>
                           <h2 className={classes.title}>{salon.name}</h2>
                           <h5>{salon.address}</h5>
-                          <GridContainer className={classes.pickSize}>
-                          {/* <GridItem md={6} sm={6} xs={12}>
-                              <label>Opening Hours</label>
-                              <FormControl
-                              fullWidth
-                              className={classes.selectFormControl}
-                              >
-                              <Select
-                                  MenuProps={{
-                                  className: classes.selectMenu
-                                  }}
-                                  classes={{
-                                  select: classes.select
-                                  }}
-                                  value={colorSelect}
-                                  onChange={event => setColorSelect(event.target.value)}
-                                  inputProps={{
-                                  name: "colorSelect",
-                                  id: "color-select"
-                                  }}
-                              >
-                                  <MenuItem
-                                  classes={{
-                                      root: classes.selectMenuItem,
-                                      selected: classes.selectMenuItemSelected
-                                  }}
-                                  value="0"
-                                  >
-                                  9.00-13.00
-                                  </MenuItem>
-                                  <MenuItem
-                                  classes={{
-                                      root: classes.selectMenuItem,
-                                      selected: classes.selectMenuItemSelected
-                                  }}
-                                  value="1"
-                                  >
-                                  13.00-18.00
-                                  </MenuItem>
-                                  <MenuItem
-                                  classes={{
-                                      root: classes.selectMenuItem,
-                                      selected: classes.selectMenuItemSelected
-                                  }}
-                                  value="2"
-                                  >
-                                  18.00-22.00
-                                  </MenuItem>
-                              </Select>
-                              </FormControl>
-                          </GridItem> */}
-
-                          <GridItem md={6} sm={6} xs={12}>
+                      </GridItem>
+                      <FavoriteButton xs="2" sm="2" md="2"/>
+                          <GridItem md={6} sm={6} xs={6} className={classes.paddingL}>
                               <Rating name="read-only" size="small" value={salon.rating} readOnly />
                               <h5>View all reviews</h5>
                             </GridItem>
-                          </GridContainer>
-                      </GridItem>
-                      <FavoriteButton xs="2" sm="2" md="2"/>
-                      </GridContainer>):
+                            <GridItem md={6} sm={6} xs={6} className={classes.pullRight}>
+                              {currentUser
+                                ? (<div>
+                                    <Button 
+                                      color="primary"
+                                      round
+                                      onClick={() => setBookingDialog(true)}
+                                    >
+                                        Book &nbsp; <DateRangeIcon />
+                                    </Button>
+                                    <Dialog
+                                      fullScreen
+                                      open={bookingDialog}
+                                      onClose={() => setBookingDialog(false)}
+                                      //aria-labelledby="alert-dialog-title" 
+                                      //aria-describedby="alert-dialog-description"
+                                    >
+                                      <Booking 
+                                        services={services} 
+                                        salon={salon} 
+                                        currentUser={currentUser} 
+                                        setBookingDialog={setBookingDialog}
+                                      />
+                                    </Dialog>
+                                  </div>)
+                                : (<div>
+                                  <Button 
+                                    color="primary"
+                                    round
+                                    onClick={() => setOpen(true)}
+                                  >
+                                      Book &nbsp; <DateRangeIcon />
+                                  </Button>
+                                  <Dialog
+                                    open={bookingDialog}
+                                    onClose={() => setOpen(false)}
+                                    //aria-labelledby="alert-dialog-title" 
+                                    //aria-describedby="alert-dialog-description"
+                                  >
+                                    <Auth/>
+                                  </Dialog>
+                                </div>)
+                                }
+                          </GridItem> 
+                          </GridContainer> ):
                   (<GridContainer>
-                  <GridItem md={6} sm={6} className={classes.paddingTLR}>
+                  <GridItem md={7} sm={7} className={classes.paddingTLR}>
                     <ImageGallery
                     showFullscreenButton={true}
                     showPlayButton={false}      
@@ -487,60 +512,10 @@ const SalonDetail=({match}) => {
                     items={images}
                     />
                 </GridItem>
-                <GridItem md={5} sm={5} className={classes.paddingL}>
+                <GridItem md={4} sm={4} className={classes.paddingL}>
                     <h2 className={classes.title}>{salon.name}</h2>
                     <h5>{salon.address}</h5>
                     <GridContainer className={classes.pickSize}>
-                    {/* <GridItem md={6} sm={6}>
-                        <label>Opening Hours</label>
-                        <FormControl
-                        fullWidth
-                        className={classes.selectFormControl}
-                        >
-                        <Select
-                            MenuProps={{
-                            className: classes.selectMenu
-                            }}
-                            classes={{
-                            select: classes.select
-                            }}
-                            value={colorSelect}
-                            onChange={event => setColorSelect(event.target.value)}
-                            inputProps={{
-                            name: "colorSelect",
-                            id: "color-select"
-                            }}
-                        >
-                            <MenuItem
-                            classes={{
-                                root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
-                            }}
-                            value="0"
-                            >
-                            9.00-13.00
-                            </MenuItem>
-                            <MenuItem
-                            classes={{
-                                root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
-                            }}
-                            value="1"
-                            >
-                            13.00-18.00
-                            </MenuItem>
-                            <MenuItem
-                            classes={{
-                                root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
-                            }}
-                            value="2"
-                            >
-                            18.00-22.00
-                            </MenuItem>
-                        </Select>
-                        </FormControl>
-                    </GridItem> */}
 
                     <GridItem md={6} sm={6}>
                         <Rating name="read-only" size="small" value={salon.rating} readOnly />
@@ -548,21 +523,53 @@ const SalonDetail=({match}) => {
                       </GridItem>
 
                     <GridItem md={6} sm={6} className={classes.pullRight}>
-                    <Button color="primary" round>
-                        Make a reservation &nbsp; <DateRangeIcon />
-                    </Button>
-                    </GridItem> 
-                    </GridContainer>
-
-
-                    {/* <GridContainer className={classes.pullRight}>
-                    <Button round color="rose">
-                        Add to Cart &nbsp; <ShoppingCart />
-                    </Button>
-                    </GridContainer> */}
+                      {currentUser
+                        ? (<div>
+                            <Button 
+                              color="primary"
+                              round
+                              onClick={() => setBookingDialog(true)}
+                            >
+                                Book &nbsp; <DateRangeIcon />
+                            </Button>
+                            <Dialog
+                              open={bookingDialog}
+                              onClose={() => setBookingDialog(false)}
+                              //aria-labelledby="alert-dialog-title" 
+                              //aria-describedby="alert-dialog-description"
+                            >
+                              <Booking 
+                                services={services} 
+                                salon={salon} 
+                                currentUser={currentUser} 
+                                setBookingDialog={setBookingDialog}
+                              />
+                            </Dialog>
+                          </div>)
+                        : (<div>
+                          <Button 
+                            color="primary"
+                            round
+                            onClick={() => setOpen(true)}
+                          >
+                              Book &nbsp; <DateRangeIcon />
+                          </Button>
+                          <Dialog
+                            open={bookingDialog}
+                            onClose={() => setOpen(false)}
+                            //aria-labelledby="alert-dialog-title" 
+                            //aria-describedby="alert-dialog-description"
+                          >
+                            <Auth/>
+                          </Dialog>
+                        </div>)
+                        }
+                  </GridItem> 
+                  </GridContainer>
                 </GridItem>
                 <FavoriteButton xs="2" sm="1" md="1"/>
-                </GridContainer>)}
+                </GridContainer>
+              )}
                 </div>
               </div>
 
@@ -597,53 +604,113 @@ const SalonDetail=({match}) => {
                   <GridContainer>
                     <GridItem md={12} sm={12} className={classNames(classes.paddingLR,classes.paddingT)}>
                     <p style={{fontSize:"18px", color:"inherit"}}>Services</p>
-                        {/* <Accordion
-                          //active={0}
-                          activeColor="info"
-                          collapses={[
-                              {
-                              title: "",
-                              content: ( */}
-                                <div>
-                                {services.map(service => (
-                                <>
-                                <CardFooter style={{paddingTop:"5px",paddingBottom:"5px",paddingLeft:"0px"}}>
-                                    <>
-                                    <div className={classes.priceContainer}>
-                                      {service.title} 
-                                    </div>
-                                    <div style={{paddingLeft:"15px"}}>
-                                      &nbsp;  
-                                      <i className="far fa-clock">&nbsp;{service.duration} min</i>
-                                    </div>
-                                    <div className={classNames(classes.stats, classes.mlAuto)}>
-                                      {service.promotionPrice ? (
-                                      <>
-                                      <span className={classNames(classes.priceOld)}>
-                                        {" "}
-                                        AZN {service.price}
-                                      </span>
-                                      <span className={classNames(classes.price, classes.priceNew)}>
-                                        {" "}
-                                        AZN {service.promotionPrice}
-                                      </span>
-                                      </> ) : (
-                                      <span className={classNames(classes.price)}>
-                                        {" "}
-                                        AZN {service.price}
-                                      </span> 
-                                      )}
-                                    </div>
-                                    </>
-                            </CardFooter>
-                            <Divider/>
-                            </>
-                            ))}
+                      {hairServices[0] && (
+                        <Accordion title="Hair Services">
+                          {hairServices.map(service => (
+                            <div>
+                            <Service 
+                              title={service.title} 
+                              duration={service.duration} 
+                              price={service.price} 
+                              promotionPrice={service.promotionPrice} />
+                            <Divider />
+                            </div> 
+                          ))}
+                        </Accordion>
+                      )}
+                      {nailsServices[0] && (
+                        <Accordion title="Nails Services">
+                          {nailsServices.map(service => (
+                            <div>
+                            <Service 
+                              title={service.title} 
+                              duration={service.duration} 
+                              price={service.price} 
+                              promotionPrice={service.promotionPrice} />
+                            <Divider />
+                            </div> 
+                          ))}
+                        </Accordion>
+                      )}
+                      {hairRemovalServices[0] && (
+                        <Accordion title="Hair Removal Services">
+                          {hairRemovalServices.map(service => (
+                            <div>
+                            <Service 
+                              title={service.title} 
+                              duration={service.duration} 
+                              price={service.price} 
+                              promotionPrice={service.promotionPrice} />
+                            <Divider />
+                            </div> 
+                          ))}
+                        </Accordion>
+                      )}                                            
+                      {makeupServices[0] && (
+                        <Accordion title="Makeup Services">
+                          {makeupServices.map(service => (
+                            <div>
+                            <Service 
+                              title={service.title} 
+                              duration={service.duration} 
+                              price={service.price} 
+                              promotionPrice={service.promotionPrice} />
+                            <Divider />
+                            </div> 
+                          ))}
+                        </Accordion>
+                      )}
+                      {massageServices[0] && (
+                        <Accordion title="Massage Services">
+                          {massageServices.map(service => (
+                            <div>
+                            <Service 
+                              title={service.title} 
+                              duration={service.duration} 
+                              price={service.price} 
+                              promotionPrice={service.promotionPrice} />
+                            <Divider />
+                            </div> 
+                          ))}
+                        </Accordion>
+                      )}                      
+                      {/* <div>
+                        {services.map(service => (
+                        <>
+                        <CardFooter style={{paddingTop:"5px",paddingBottom:"5px",paddingLeft:"0px"}}>
+                            <>
+                            <div className={classes.priceContainer}>
+                              {service.title} 
                             </div>
-                              {/* )
-                              }
-                          ]}
-                        /> */}
+                            <div style={{paddingLeft:"15px"}}>
+                              &nbsp;  
+                              <i className="far fa-clock">&nbsp;{service.duration} min</i>
+                            </div>
+                            <div className={classNames(classes.stats, classes.mlAuto)}>
+                              {service.promotionPrice ? (
+                              <>
+                              <span className={classNames(classes.priceOld)}>
+                                {" "}
+                                AZN {service.price}
+                              </span>
+                              <span className={classNames(classes.price, classes.priceNew)}>
+                                {" "}
+                                AZN {service.promotionPrice}
+                              </span>
+                              </> ) : (
+                              <span className={classNames(classes.price)}>
+                                {" "}
+                                AZN {service.price}
+                              </span> 
+                              )}
+                            </div>
+                            </>
+                    </CardFooter>
+                    <Divider/>
+                    </>
+                    ))}
+                    </div> */}
+            
                     </GridItem>
                   </GridContainer>
                   </div>
@@ -863,7 +930,47 @@ query selected_salon ($id:Int!) {
           title
           price
           promotionPrice
+          duration 
+        }
+        eyebrowserviceSet {
+          id
+          title
+          price
+          promotionPrice
           duration
+        }     
+        cosmetologyserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }
+        tattooserviceSet { 
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }
+        aestheticsserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }       
+        masterSet {
+          id
+          masterName
+          bookingSet {
+            id
+            customerName
+            customerEmail
+            serviceTitle
+            start
+            end
+          }  
         }
         likeSet {
           id

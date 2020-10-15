@@ -36,7 +36,7 @@ import Loading from "components/Shared/Loading";
 import Error from "components/Shared/Error";
 import Auth from "components/Auth"
 
-import Sticky from 'utils/sticky/Sticky.js';
+// import Sticky from 'utils/sticky/Sticky.js';
 
 import { UserContext, ME_QUERY } from "App";
 import {PROFILE_QUERY} from "pages/Profile";
@@ -111,13 +111,14 @@ const Service = ({title, duration, promotionPrice, price }) => {
         </>
     </CardFooter>
   )
-
 }
+
 const ViewSalon=() => {
+    const classes = useStyles()
     const currentUser = useContext(UserContext);
     console.log(currentUser)
     if (!currentUser.salonSet[0]) {
-        return <div> No salon added. Please add a salon</div>
+        return <div className={classes.paddingTLR}> No salon added. Please add a salon</div>
     } else {
       return <BrowseSalon currentUser={currentUser} />
     }
@@ -147,6 +148,7 @@ const BrowseSalon = ({currentUser}) => {
   const aboutRef = useRef(null);
   const servicesRef = useRef(null);
   const reviewRef = useRef(null);
+  const masterRef = useRef(null);
 
   const { data: review_data, fetchMore } = useQuery(
     REVIEW_QUERY,
@@ -183,9 +185,12 @@ const BrowseSalon = ({currentUser}) => {
         handleScrollTo(aboutRef);
         break;
       case 1:
+        handleScrollTo(masterRef);
+        break;
+      case 2:
         handleScrollTo(servicesRef);
         break;
-      case 2: handleScrollTo(reviewRef);
+      case 3: handleScrollTo(reviewRef);
     }
   };
 
@@ -325,6 +330,7 @@ const BrowseSalon = ({currentUser}) => {
                       aria-label="full width tabs example"
                     >
                       <Tab label="About" />
+                      <Tab label="Masters" />
                       <Tab label="Services" />
                       <Tab label="Reviews" />
                   </Tabs>
@@ -337,6 +343,28 @@ const BrowseSalon = ({currentUser}) => {
                     </ShowMoreText>
                   </GridItem>
                 </GridContainer>
+                </div>
+
+                <div className={classNames(classes.tab, classes.mainRaised)} ref={masterRef}>
+                  <GridContainer>
+                    <GridItem md={12} sm={12} className={classNames(classes.paddingLR, classes.paddingT)}>
+                      <p style={{fontSize:"18px", color:"inherit"}}> Masters </p>
+                      {salon.masterSet.map(master => (
+                        <CardFooter style={{paddingTop:"5px",paddingBottom:"10px",paddingLeft:"0px"}}>
+                        <>
+                          <div className={classes.priceContainer}>
+                            {master.masterName}
+                          </div>
+                          <div style={{paddingLeft:"15px"}}>
+                            &nbsp;
+                            <i className="fas fa-mobile-alt">&nbsp;{master.masterPhone}</i>
+                          </div>
+                          <Divider />
+                        </> 
+                        </CardFooter>
+                      ))}
+                    </GridItem>
+                  </GridContainer>
                 </div>
 
                 <div className={classNames(classes.tab, classes.mainRaised)} ref={servicesRef}>
@@ -590,6 +618,12 @@ query selected_salon ($id:Int!) {
         photo4
         photo5
         photo6
+        masterSet {
+          id
+          masterName
+          masterEmail
+          masterPhone
+        }
         hairserviceSet {
           id
           title

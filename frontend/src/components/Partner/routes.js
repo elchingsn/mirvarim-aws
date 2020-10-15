@@ -60,13 +60,28 @@ const routes = [
       },
       {
         exact: true,
-        path: "/partner/:id/reports/main",
+        path: "/partner/:id/master/add",
+        component: lazy(() => import('components/Master/AddMaster'))
+      },
+      {
+        exact: true,
+        path: "/partner/:id/master/edit",
+        component: lazy(() => import('components/Master/UpdateMaster'))
+      },
+      {
+        exact: true,
+        path: "/partner/:id/report", 
         component: lazy(() => import('components/Partner/Dashboard/views/reports/ReportView'))
       },
       {
         exact: true,
         path: "/partner/:id/service/create",
         component: lazy(() => import('components/Service/CreateService')) 
+      },
+      {
+        exact: true,
+        path: "/partner/:id/calendar",
+        component: lazy(() => import('components/Partner/Dashboard/views/calendar/CalendarView')) 
       },
       // {
       //   exact: true,

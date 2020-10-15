@@ -120,9 +120,10 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
     setTattoo([]);    
     setAesthetics([]);      
     setCatValue(initCatValue);
+    setCheckedCat(initCheckedCat);
     if(initCatValue) { setTimeout(() => setCatDisplay(false), 1000) };
     setCurrentPage(1);
-  }, [initCatValue])
+  }, [initCatValue, initCheckedCat])
 
   // React.useEffect(() => {
   //   (hairSelected)? setHairTitle(`Hair Services (${hairSelected} selected)`) : setHairTitle("Hair Services");
@@ -165,7 +166,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   //   return function cleanup() {};
   // });
 
-  const {data} = useQuery(FILTERED_SALONS_QUERY, {variables:{area, hair, nails}}, { fetchPolicy: 'network-only' });
+  // const {data} = useQuery(FILTERED_SALONS_QUERY, {variables:{area, hair, nails}}, { fetchPolicy: 'network-only' });
     
   const handleCatToggle = value => {
     const currentIndex = checkedCat.indexOf(value);
@@ -191,7 +192,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
             <FormControl component="fieldset" >
             <FormLabel component="legend" className={classes.paddingB}>{t("Hair Services")}</FormLabel>
             <FormGroup>
-            <Query query={HAIR_QUERY} fetchPolicy='network-only'>
+            <Query query={HAIR_QUERY}>
               {({data, loading, error}) => {
                 if (loading) return <Loading />;
                 if (error) return <Error error={error} />;

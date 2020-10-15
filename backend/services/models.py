@@ -1,9 +1,10 @@
 from django.db import models
 from datetime import datetime
-from salons.models import Salon, Hair, Nails, HairRemoval, Massage, Makeup, Eyebrow, Cosmetology, Tattoo, Aesthetics
+from salons.models import Salon, Master, Hair, Nails, HairRemoval, Massage, Makeup, Eyebrow, Cosmetology, Tattoo, Aesthetics
 
 class HairService(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
+    master = models.ManyToManyField(Master, blank=True)
     category = models.ForeignKey(Hair, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -18,6 +19,7 @@ class HairService(models.Model):
 
 class NailsService(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
+    master = models.ManyToManyField(Master, blank=True)
     category = models.ForeignKey(Nails, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -32,6 +34,7 @@ class NailsService(models.Model):
 
 class HairRemovalService(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
+    master = models.ManyToManyField(Master, blank=True)
     category = models.ForeignKey(HairRemoval, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -46,6 +49,7 @@ class HairRemovalService(models.Model):
     
 class MassageService(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
+    master = models.ManyToManyField(Master, blank=True)
     category = models.ForeignKey(Massage, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -60,6 +64,7 @@ class MassageService(models.Model):
     
 class MakeupService(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
+    master = models.ManyToManyField(Master, blank=True)
     category = models.ForeignKey(Makeup, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -71,6 +76,7 @@ class MakeupService(models.Model):
 
 class EyebrowService(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
+    master = models.ManyToManyField(Master, blank=True)
     category = models.ForeignKey(Eyebrow, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -82,6 +88,7 @@ class EyebrowService(models.Model):
 
 class CosmetologyService(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
+    master = models.ManyToManyField(Master, blank=True)
     category = models.ForeignKey(Cosmetology, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -93,6 +100,7 @@ class CosmetologyService(models.Model):
 
 class TattooService(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
+    master = models.ManyToManyField(Master, blank=True)
     category = models.ForeignKey(Tattoo, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -104,6 +112,7 @@ class TattooService(models.Model):
 
 class AestheticsService(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
+    master = models.ManyToManyField(Master, blank=True)
     category = models.ForeignKey(Aesthetics, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)

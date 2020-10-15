@@ -2,6 +2,8 @@ from datetime import datetime
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 PRICE_CHOICES = ((1, '$'), (2, '$$'), (3, '$$$'),(4, '$$$$'),)
@@ -113,7 +115,7 @@ class Salon(models.Model):
     male = models.BooleanField(default=True)
     female = models.BooleanField(default=True)
     email = models.EmailField(max_length=200)
-    phone = models.CharField(max_length=20)
+    phone = models.CharField(max_length=25)
     photo_main = models.ImageField(upload_to='photos/%Y/%m/%d/')
     photo_1 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
     photo_2 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
@@ -124,7 +126,7 @@ class Salon(models.Model):
     created_by = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE)
     is_published = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
-    booking = models.BooleanField(default=False)
+    appointment = models.BooleanField(default=False)
     payment = models.BooleanField(default=False)
     list_date = models.DateTimeField(default=datetime.now, blank=True)
 
@@ -140,6 +142,38 @@ class Salon(models.Model):
 
 #     def __str__(self):
 #       return self.name
+
+class Master(models.Model):
+  salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
+  master_name = models.CharField(max_length=50, blank=True)
+  master_email = models.EmailField(max_length=200, blank=True)
+  master_phone = models.CharField(max_length=25, blank=True)
+  # photo = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+  # hair_services = models.ManyToManyField(HairService, blank=True) 
+  def __str__(self):
+    return self.master_name
+
+class Booking(models.Model):
+  master = models.ForeignKey(Master, on_delete=models.CASCADE)
+  customer = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE)
+  customer_name = models.CharField(max_length=50, blank=True)
+  customer_email = models.EmailField(max_length=200, null=True, blank=True)
+  customer_mobile = models.CharField(max_length=25, null=True, blank=True)
+  # service title provides information about service, service content type complicates booking form in front end
+  # service_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+  # service_object_id = models.PositiveIntegerField(null=True, blank=True)
+  # content_object = GenericForeignKey('service_content_type', 'service_object_id')
+  service_title = models.CharField(max_length=50, blank=True)
+  service_price = models.PositiveIntegerField(null=True, blank=True)
+  start = models.DateTimeField()
+  end = models.DateTimeField()
+ 
+
+
+
+
+
+
 
       
    

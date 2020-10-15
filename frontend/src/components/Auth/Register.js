@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Mutation } from '@apollo/react-components';
 import gql from "graphql-tag";
+import { useTranslation } from 'react-i18next';
 
 import withStyles from "@material-ui/core/styles/withStyles";
 import Typography from "@material-ui/core/Typography";
@@ -22,12 +23,15 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import NativeSelect from '@material-ui/core/NativeSelect';
 
 import Error from "../Shared/Error";
+import { SubjectTwoTone } from "@material-ui/icons";
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
 const Register = ({ classes, setNewUser }) => {
+
+  const { t, i18n } = useTranslation();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
@@ -54,7 +58,7 @@ const Register = ({ classes, setNewUser }) => {
         <Avatar className={classes.avatar}>
           <Gavel />
         </Avatar>
-        <Typography variant="headline">Register</Typography>
+        <Typography variant="headline">{t("Register")}</Typography>
 
         <Mutation
           mutation={REGISTER_MUTATION}
@@ -92,14 +96,14 @@ const Register = ({ classes, setNewUser }) => {
                     className={classes.selectEmpty}
                     inputProps={{ 'aria-label': 'role' }}
                   >
-                    <option value="1">User</option>
-                    <option value="2">Freelancer</option>
-                    <option value="3">Salon</option>
+                    <option value="1">{t("User")}</option>
+                    <option value="2">{t("Freelancer")}</option>
+                    <option value="3">{t("Salon")}</option>
                   </NativeSelect>
-                  <FormHelperText>Register as User or Salon</FormHelperText>
+                  <FormHelperText>{t("Register as User or Salon")}</FormHelperText>
                 </FormControl>
                 <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="username">Username</InputLabel>
+                  <InputLabel htmlFor="username">{t("Username")}</InputLabel>
                   <Input
                     id="username"
                     onChange={event => setUsername(event.target.value)}
@@ -107,7 +111,7 @@ const Register = ({ classes, setNewUser }) => {
                   <h6 className={classes.error}>{err["username"]&&err["username"][0].message}</h6>                  
                 </FormControl>
                 <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="email">Email</InputLabel>
+                  <InputLabel htmlFor="email">{t("Email")}</InputLabel>
                   <Input
                     id="email"
                     type="email"
@@ -116,7 +120,7 @@ const Register = ({ classes, setNewUser }) => {
                   <h6 className={classes.error}>{err["email"]&&err["email"][0].message}</h6>
                 </FormControl>
                 <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="password1">Password</InputLabel>
+                  <InputLabel htmlFor="password1">{t("Password")}</InputLabel>
                   <Input
                     id="password1"
                     type="password"
@@ -125,7 +129,7 @@ const Register = ({ classes, setNewUser }) => {
                   <h6 className={classes.error}>{err["password1"]&&err["password1"][0].message}</h6>
                 </FormControl>
                 <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="password2">Confirm Password</InputLabel>
+                  <InputLabel htmlFor="password2">{t("Confirm Password")}</InputLabel>
                   <Input
                     id="password2"
                     type="password"
@@ -155,7 +159,7 @@ const Register = ({ classes, setNewUser }) => {
                   variant="outlined"
                   fullWidth
                 >
-                  Previous user? Log in here
+                  {t("Existing user? Log in here")}
                 </Button>
 
                 {/* Error Handling */}
@@ -174,10 +178,10 @@ const Register = ({ classes, setNewUser }) => {
       >
         <DialogTitle>
           <VerifiedUserTwoTone className={classes.icon} />
-          New Account
+          {t("New Account")}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>User successfully created!</DialogContentText>
+          <DialogContentText>{t("User successfully created!")}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button
@@ -185,7 +189,7 @@ const Register = ({ classes, setNewUser }) => {
             variant="contained"
             onClick={() => setNewUser(false)}
           >
-            Login
+            {t("Login")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -196,10 +200,10 @@ const Register = ({ classes, setNewUser }) => {
       >
         <DialogTitle>
           <VerifiedUserTwoTone className={classes.icon} />
-          New Account
+          {t("New Account")}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>User successfully created!</DialogContentText>
+          <DialogContentText>{t("User successfully created!")}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button
@@ -207,7 +211,7 @@ const Register = ({ classes, setNewUser }) => {
             variant="contained"
             onClick={() => setNewUser(false)}
           >
-            Login
+            {t("Login")}
           </Button>
         </DialogActions>
       </Dialog>

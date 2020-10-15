@@ -1,9 +1,11 @@
-import React from "react";
+import React from 'react';
 
-const ReportView = () => {
+export default function Report() {
 
-  return ( <div> Report is here </div>)
+
+  return (
+    <div>
+      Report is here
+   </div>
+  );
 }
-
-export default ReportView;
-

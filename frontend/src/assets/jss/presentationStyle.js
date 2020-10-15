@@ -24,7 +24,7 @@ const presentationStyle = {
   },
   mainRaised,
   parallax: {
-    height: "39vh",
+    height: "37vh",
     overflow: "hidden"
   },
   container: {

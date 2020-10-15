@@ -19,6 +19,7 @@ import {
 import ReceiptIcon from '@material-ui/icons/ReceiptOutlined';
 import PieChartIcon from '@material-ui/icons/PieChart';
 import BusinessCenterIcon from '@material-ui/icons/BusinessCenter';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import NavItem from './NavItem';
 
 function renderNavItems({
@@ -116,7 +117,7 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
         {
           title: 'Dashboard',
           icon: PieChartIcon,
-          href: '/app/reports/dashboard'
+          href: `/partner/${user.id}/report`
         }
       ]
     },
@@ -125,7 +126,7 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
       items: [
         {
           title: 'Salons',
-          href: `/partner/${user.id}/salon`,
+          href: `/partner/${user.id}/salon/view`,
           icon: BusinessCenterIcon,
           items: [
             {
@@ -143,14 +144,33 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
           ]
         },
         {
-          title: 'Services',
-          href: `/partner/salon/:id/services`,
+          title: 'Masters',
+          href: `/partner/${user.id}/master/view`,
           icon: BusinessCenterIcon,
           items: [
+            // {
+            //   title: 'View Masters',
+            //   href: `/partner/${user.id}/master/view`
+            // },
             {
-              title: 'Browse Services',
-              href: `/partner/${user.id}/service`
+              title: 'Add Master',
+              href: `/partner/${user.id}/master/add`
             },
+            {
+              title: 'Update Master',
+              href: `/partner/${user.id}/master/edit`
+            }
+          ]
+        },
+        {
+          title: 'Services',
+          href: `/partner/salon/:id/service/view`,
+          icon: BusinessCenterIcon,
+          items: [
+            // {
+            //   title: 'Browse Services',
+            //   href: `/partner/${user.id}/service/view`
+            // },
             {
               title: 'Create Service',
               href: `/partner/${user.id}/service/create`
@@ -162,8 +182,17 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
             }
           ]
         }
-
       ]
+    },
+    {
+      subheader: 'Applications',
+      items: [
+        {
+          title: 'Calendar',
+          href: `/partner/${user.id}/calendar`,
+          icon: ReceiptIcon
+        }
+      ]  
     }
   ];
   

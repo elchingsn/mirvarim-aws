@@ -22,8 +22,6 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 import Gavel from "@material-ui/icons/Gavel";
@@ -39,14 +37,13 @@ import NumberFormat from 'react-number-format';
 import Error from "../Shared/Error"; 
 import Loading from "../Shared/Loading";
 import { useHistory } from 'react-router-dom';
+import {ME_QUERY} from "App.js"
 
 //import styles from "../assets/jss/salonDetailStyle.js";
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
-
-
 
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props;
@@ -87,6 +84,7 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
   const [serviceData, setServiceData] = useState({
     salonId: data_salon.id,
     categoryId: "1", 
+    masterIds: [],
     title: '',
     description: '',
     duration: 30,
@@ -100,14 +98,19 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
   
   
     console.log( "inputs", serviceData);
-    serviceMutation({variables: { serviceData: {salonId: serviceData.salonId, categoryId: serviceData.categoryId,
-      title: serviceData.title, description: serviceData.description, duration: serviceData.duration,
-      price: serviceData.price, promotionPrice: serviceData.promotionPrice }
-    }}).catch(err => {
+    // serviceMutation({variables: { serviceData: {salonId: serviceData.salonId, categoryId: serviceData.categoryId,
+    //   title: serviceData.title, description: serviceData.description, duration: serviceData.duration,
+    //   price: serviceData.price, promotionPrice: serviceData.promotionPrice }
+    // }}).catch(err => {
+    //   console.error(err);
+    //   history.push('/login');
+    // });
+    serviceMutation({variables: { serviceData: serviceData }}).catch(err => {
       console.error(err);
       history.push('/login');
-    });;
+    });
   };
+  console.log( "inputs", serviceData);
 
   return(
     <form onSubmit={event => handleSubmit(event, serviceMutation)}>
@@ -125,7 +128,7 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
             variant="outlined"  
             label="Subcategory" 
             />
-            )}
+          )}
         />
       </FormControl>
       <FormControl fullWidth className={classes.field}>
@@ -137,6 +140,28 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
         variant="outlined"
         />
       </FormControl>
+      <FormControl fullWidth required className={classes.field}>
+        <Autocomplete
+          multiple
+          limitTags={3}
+          id="size-small-standard-multi"
+          size="small"
+          options={data_salon.masterSet.map(item => item.masterName)}
+          onChange={(event,value) => {
+                    setServiceData({
+                      ...serviceData, 
+                      masterIds: data_salon.masterSet.filter(item => value.includes(item.masterName)).map(item => item.id)
+                    })                      
+          }}
+          renderInput={(params) => (
+            <TextField {...params} 
+            variant="outlined" 
+            label="Choose masters" 
+            placeholder="More masters"
+          />
+          )}
+        />
+      </FormControl>
       <FormControl fullWidth className={classes.field}>
         <TextField
         label="Description"
@@ -144,6 +169,8 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
         onChange={(event) => setServiceData({ ...serviceData, description:event.target.value })}
         value={serviceData.description}
         variant="outlined"
+        multiline
+        rowsMax={3}
         />
       </FormControl>
       <FormControl fullWidth className={classes.field}>
@@ -206,7 +233,7 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
       <Button
         disabled={submitting}
         variant="outlined"
-        onClick={() => setServiceData({ ...serviceData, title: "", description: "", price: "" })}
+        onClick={() => setServiceData({ ...serviceData,title:"",masterIds:[],description:"",price:"" })}
         className={classes.cancel}
       >
         Cancel
@@ -217,7 +244,8 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
         disabled={
           submitting ||
           !serviceData.title.trim() ||
-          !serviceData.price
+          !serviceData.price ||
+          serviceData.masterIds.length == 0
         }
         type="submit"
         className={classes.save}
@@ -233,7 +261,7 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
   )
 } 
 
-const CategoryServices = ({catValue, data_salon, setOpen}) => {
+const CategoryServices = ({catValue, data_salon, setOpen, userId}) => {
   const { t, i18n } = useTranslation();
 
   switch (catValue) {
@@ -247,8 +275,8 @@ const CategoryServices = ({catValue, data_salon, setOpen}) => {
           setOpen(true);
           }}
           // update={handleUpdateCache}
-          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
-        >
+          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
+          >
           {(createHairService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
@@ -267,8 +295,8 @@ const CategoryServices = ({catValue, data_salon, setOpen}) => {
           setOpen(true);
           }}
           // update={handleUpdateCache}
-          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
-        >
+          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
+          >
           {(createNailsService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
@@ -287,8 +315,8 @@ const CategoryServices = ({catValue, data_salon, setOpen}) => {
           setOpen(true);
           }}
           // update={handleUpdateCache}
-          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
-        >
+          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
+          >
           {(createHairRemovalService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
@@ -307,8 +335,8 @@ const CategoryServices = ({catValue, data_salon, setOpen}) => {
           setOpen(true);
           }}
           // update={handleUpdateCache}
-          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
-        >
+          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
+          >
           {(createMakeupService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
@@ -327,8 +355,8 @@ const CategoryServices = ({catValue, data_salon, setOpen}) => {
           setOpen(true);
           }}
           // update={handleUpdateCache}
-          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
-        >
+          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
+          >
           {(createMassageService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
@@ -347,8 +375,8 @@ const CategoryServices = ({catValue, data_salon, setOpen}) => {
           setOpen(true);
           }}
           // update={handleUpdateCache}
-          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
-        >
+          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
+          >
           {(createEyebrowService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
@@ -367,8 +395,8 @@ const CategoryServices = ({catValue, data_salon, setOpen}) => {
           setOpen(true);
           }}
           // update={handleUpdateCache}
-          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
-        >
+          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
+          >
           {(createCosmetologyService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
@@ -387,8 +415,8 @@ const CategoryServices = ({catValue, data_salon, setOpen}) => {
           setOpen(true);
           }}
           // update={handleUpdateCache}
-          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
-        >
+          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
+          >
           {(createTattooService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
@@ -407,8 +435,8 @@ const CategoryServices = ({catValue, data_salon, setOpen}) => {
           setOpen(true);
           }}
           // update={handleUpdateCache}
-          // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
-        >
+          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
+          >
           {(createAestheticsService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
@@ -492,7 +520,7 @@ const CreateServiceForm = ({classes, currentUser}) => {
                   )}
                 />
               </FormControl>     
-              <CategoryServices data_salon={data_salon} catValue={catValue} setOpen={setOpen}/>    
+              <CategoryServices data_salon={data_salon} catValue={catValue} setOpen={setOpen} userId={userId}/>    
       </Paper>
       <Dialog
           open={open}

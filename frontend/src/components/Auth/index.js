@@ -4,11 +4,11 @@ import withRoot from "../../withRoot";
 import Login from "./Login";
 import Register from "./Register";
 
-export default withRoot(() => {
+export default withRoot(( {setLoginOpen} ) => {
   const [newUser, setNewUser] = useState(false);
   return newUser ? (
-    <Register setNewUser={setNewUser} />
+    <Register setNewUser={setNewUser} setLoginOpen={setLoginOpen}/>
   ) : (
-    <Login setNewUser={setNewUser} />
+    <Login setNewUser={setNewUser} setLoginOpen={setLoginOpen}/>
   );
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Mutation } from '@apollo/react-components';
 import { Query } from "@apollo/react-components";
@@ -31,6 +31,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import CircularProgress from "@material-ui/core/CircularProgress";
 
+import { UserContext } from "App";
 import Error from "../Shared/Error"; 
 import Loading from "../Shared/Loading";
 
@@ -41,9 +42,20 @@ function Transition(props) {
 }
 
 const CreateSalon = ({classes}) => {
+    const currentUser = useContext(UserContext);
+    if (currentUser.salonSet[0]) {
+        return (
+          <div className={classes.container}>
+            <div className={classes.field}> This account has already added a salon. Please, contact us if you want to delete your salon. </div>
+          </div>
+        ) 
+    } else {
+      return <AddSalonForm classes={classes} />
+    }
+}
 
+const AddSalonForm = ({ classes }) => {
     const history = useHistory();
-
     const [name, setName] = useState("");
     const [address, setAddress] = useState("");
     const [cityId, setCityId] = useState("");

@@ -1,5 +1,7 @@
 import React from "react";
 import { ApolloConsumer, useQuery } from "@apollo/react-hooks";
+import { useTranslation } from 'react-i18next';
+
 import withStyles from "@material-ui/core/styles/withStyles";
 import ExitToApp from "@material-ui/icons/ExitToApp";
 import Typography from "@material-ui/core/Typography";
@@ -14,7 +16,7 @@ export const handleSignout = client => {
 };
 
 const Signout = ({ classes }) => {
-
+  const { t, i18n } = useTranslation();
   return (
     <ApolloConsumer>
       {client => (
@@ -24,7 +26,7 @@ const Signout = ({ classes }) => {
             className={classes.buttonText}
             color="secondary"
           >
-            Signout
+            {t("Signout")}
           </Typography>
           <ExitToApp className={classes.buttonIcon} color="secondary" />
         </Button>

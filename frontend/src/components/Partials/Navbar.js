@@ -103,22 +103,22 @@ const Navbar = (props) => {
       return (
         <div>
           <Header
-                //brand="MIRVARIM"
-                color="darkSlateBlue"   
-                // fixed
-                // changeColorOnScroll={{
-                //     height: 400,
-                //     color: "darkSlateBlue"
-                //   }}  
-                // 
-                links1 = {<UserLinks currentUser={currentUser} />}
-                links2 = {<HeaderLinks dropdownHoverColor={dropdownHoverColor} />}
+            //brand="MIRVARIM"
+            color="darkSlateBlue"   
+            // fixed
+            // changeColorOnScroll={{
+            //     height: 400,
+            //     color: "darkSlateBlue"
+            //   }}  
+            // 
+            links1 = {<UserLinks currentUser={currentUser} />}
+            links2 = {<HeaderLinks dropdownHoverColor={dropdownHoverColor} />}
           />
         </div>
       );
     }
 
-    if((props.location.pathname.match(/activate/))||(props.location.pathname.match(/reset/))
+    if((props.location.pathname.match(/activate/))||(props.location.pathname.match(/password-reset/))
         ||(props.location.pathname.match(/login/))) {
       return (
         <div>
@@ -137,233 +137,51 @@ const Navbar = (props) => {
       );
     }
 
+    if(props.location.pathname === "/") {
+      return (
+        <div>
+        <Header
+          brand="MIRVARIM"
+          color="transparent"   
+          fixed
+          changeColorOnScroll={{
+              height: 210,
+              color: "darkSlateBlue"
+            }}
+          links1 = {<UserLinks currentUser={currentUser} dropdownHoverColor={dropdownHoverColor} />}
+          links2 = {<HeaderLinks currentUser={currentUser} dropdownHoverColor={dropdownHoverColor} />}
+        />
+        </div>
+      );
+    }
+
 
     return(
-
-    <div>
-       <Header
-            brand="MIRVARIM"
-            color="transparent"   
-            fixed
-            changeColorOnScroll={{
-                height: 210,
-                color: "darkSlateBlue"
-              }}
-            links1 = {<UserLinks currentUser={currentUser} dropdownHoverColor={dropdownHoverColor} />}
-            links2 = {<HeaderLinks currentUser={currentUser} dropdownHoverColor={dropdownHoverColor} />}
-
-            // links={
-            //   <div className={classes.collapse}>
-            //     <List className={classes.list + " " + classes.mlAuto}>
-
-            //         <ListItem className={classes.listItem}>
-            //         <Query query={HAIR_QUERY}>
-            //             {({ data, loading, error }) => {
-            //             if (loading) return <Loading />;
-            //             if (error) return <Error error={error} />;
-            //             const categories = data.hairCat;
-
-            //             return <HoverDropdown 
-            //                 noLiPadding
-            //                 navDropdown
-            //                 hoverColor={dropdownHoverColor}
-            //                 buttonText = {t("Hair")} 
-            //                 dropdownList={categories} 
-            //                 buttonProps={{
-            //                   className: classes.navLink,
-            //                   color: "transparent"
-            //                 }}
-            //                 />;
-            //             }}
-            //         </Query>
-            //         </ListItem>
-
-            //         <ListItem className={classes.listItem}>
-            //         <Query query={NAILS_QUERY}>
-            //             {({ data, loading, error }) => {
-            //             if (loading) return <Loading />;
-            //             if (error) return <Error error={error} />;
-            //             const categories = data.nailsCat;
-
-            //             return <HoverDropdown 
-            //                 noLiPadding
-            //                 navDropdown
-            //                 hoverColor={dropdownHoverColor}
-            //                 buttonText = "Nails" 
-            //                 dropdownList={categories} 
-            //                 buttonProps={{
-            //                   className: classes.navLink,
-            //                   color: "transparent"
-            //                 }}
-            //                 />;
-            //             }}
-            //         </Query>
-            //         </ListItem>
-
-            //         <ListItem className={classes.listItem}>
-            //         <Query query={HAIR_REMOVAL_QUERY}>
-            //             {({ data, loading, error }) => {
-            //             if (loading) return <Loading />;
-            //             if (error) return <Error error={error} />;
-            //             const categories = data.hairRemovalCat;
-
-            //             return <HoverDropdown 
-            //                 noLiPadding
-            //                 navDropdown
-            //                 hoverColor={dropdownHoverColor}
-            //                 buttonText = "Hair Removal" 
-            //                 dropdownList={categories} 
-            //                 buttonProps={{
-            //                   className: classes.navLink,
-            //                   color: "transparent"
-            //                 }}
-            //                 />;
-            //             }}
-            //         </Query>
-            //         </ListItem>
-
-            //         <ListItem className={classes.listItem}>
-            //         <Query query={MAKEUP_QUERY}>
-            //             {({ data, loading, error }) => {
-            //             if (loading) return <Loading />;
-            //             if (error) return <Error error={error} />;
-            //             const categories = data.makeupCat;
-
-            //             return <HoverDropdown 
-            //                 noLiPadding
-            //                 navDropdown
-            //                 hoverColor={dropdownHoverColor}
-            //                 buttonText = "Makeup" 
-            //                 dropdownList={categories} 
-            //                 buttonProps={{
-            //                   className: classes.navLink,
-            //                   color: "transparent"
-            //                 }}
-            //                 />;
-            //             }}
-            //         </Query>
-            //         </ListItem>
-
-            //         <ListItem className={classes.listItem}>
-            //         <Query query={MASSAGE_QUERY}>
-            //             {({ data, loading, error }) => {
-            //             if (loading) return <Loading />;
-            //             if (error) return <Error error={error} />;
-            //             const categories = data.massageCat;
-
-            //             return <HoverDropdown 
-            //                 noLiPadding
-            //                 navDropdown
-            //                 hoverColor={dropdownHoverColor}
-            //                 buttonText = {t("Massage")} 
-            //                 dropdownList={categories} 
-            //                 buttonProps={{
-            //                   className: classes.navLink,
-            //                   color: "transparent"
-            //                 }}
-            //                 />;
-            //             }}
-            //         </Query>
-            //         </ListItem> 
-            //         <ListItem>
-            //         </ListItem>  
-            //         <ListItem>
-            //           <FormControl className={classes.formControl}>
-            //             <Select
-            //               labelId="demo-simple-select-outlined-label"
-            //               id="demo-simple-select-outlined"
-            //               value={flag}
-            //               onChange={(event) => changeLang(event.target.value)}
-            //               label="Age"
-            //             >
-            //               <MenuItem value="aze">
-            //                 <img src={aze_flag} style={{width: 30, height: 30}}/>
-            //               </MenuItem>
-            //               <MenuItem value="ru">
-            //                 <img src={ru_flag} style={{width: 30, height: 30}}/>
-            //               </MenuItem>
-            //               <MenuItem value="en">
-            //                 <img src={en_flag} style={{width: 30, height: 30}}/>
-            //               </MenuItem>
-            //             </Select>
-            //           </FormControl>
-            //         </ListItem>  
-
-            //       </List>
-
-            //     {/* Auth User Info */}
-            //     {currentUser
-            //      ? (<div style={{float:"right"}}>                   
-            //         <Link to={"/partner"} className={classes.grow}>
-            //         <Button className={classes.listItem} variant="outlined"
-            //           onClick={(e)=> e.preventDefault}>
-            //           <h5 style={{margin:"5px"}}>List your salon</h5>
-            //         </Button>
-            //         </Link>
-            //         <Link to={`/profile/${currentUser.id}`} className={classes.grow}>
-            //         <Typography variant="headline" className={classes.username} noWrap>
-            //         {currentUser.username}
-            //         </Typography>
-            //         </Link>
-            //         <Signout /> 
-            //         </div>  
-            //       )
-            //      : (<div>
-            //         <Link to={"/partner"} className={classes.grow}>
-            //         <Button className={classes.listItem} variant="outlined"
-            //           onClick={(e)=> e.preventDefault}>
-            //           <h5 style={{margin:"5px"}}>List your salon</h5>
-            //         </Button>
-            //         </Link>
-            //         <Button className={classes.username} size="small" 
-            //         onClick={handleLoginOpen}>Login/Register</Button>
-            //         <Dialog
-            //           open={open}
-            //           onClose={handleLoginClose}
-            //           //aria-labelledby="alert-dialog-title"
-            //           //aria-describedby="alert-dialog-description"
-            //         >
-            //           <Auth/>
-            //         </Dialog>
-            //         </div>)
-            //     }
-                       
-            //     {/* <List className={classes.list + " " + classes.mlAuto}>
-            //         <ListItem className={classes.listItem}>
-            //         <Button
-            //             color="transparent"
-            //             href="https://twitter.com"
-            //             target="_blank"
-            //             className={classes.navLink + " " + classes.navLinkJustIcon}
-            //         >
-            //             <i className={"fab fa-twitter"} />
-            //         </Button>
-            //         </ListItem>
-            //         <ListItem className={classes.listItem}>
-            //         <Button
-            //             color="transparent"
-            //             href="https://www.facebook.com/"
-            //             target="_blank"
-            //             className={classes.navLink + " " + classes.navLinkJustIcon}
-            //         >
-            //             <i className={"fab fa-facebook"} />
-            //         </Button>
-            //         </ListItem>
-            //         <ListItem className={classes.listItem}>
-            //         <Button
-            //             color="transparent"
-            //             href="https://www.instagram.com/"
-            //             target="_blank"
-            //             className={classes.navLink + " " + classes.navLinkJustIcon}
-            //         >
-            //             <i className={"fab fa-instagram"} />
-            //         </Button>
-            //         </ListItem>
-            //     </List> */}
-            //   </div>
-            // }
-            />
-    </div>
+      <div>
+        {/* <Header
+          brand="MIRVARIM"
+          color="transparent"   
+          fixed
+          changeColorOnScroll={{
+              height: 210,
+              color: "darkSlateBlue"
+            }}
+          links1 = {<UserLinks currentUser={currentUser} dropdownHoverColor={dropdownHoverColor} />}
+          links2 = {<HeaderLinks currentUser={currentUser} dropdownHoverColor={dropdownHoverColor} />}
+        /> */}
+          <Header
+            //brand="MIRVARIM"
+            color="darkSlateBlue"   
+            // fixed
+            // changeColorOnScroll={{
+            //     height: 400,
+            //     color: "darkSlateBlue"
+            //   }}  
+            // 
+            links1 = {<UserLinks currentUser={currentUser} />}
+            links2 = {<HeaderLinks dropdownHoverColor={dropdownHoverColor} />}
+          />
+      </div>
     );
 };
 

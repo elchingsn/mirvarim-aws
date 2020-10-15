@@ -702,7 +702,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                       justifyContent="center"
                       display="flex"
                     >
-                    <Link to={`/partner/${salonId}`}>
+                    <Link to={`/partner/${userId}/salon/view`}>
                       <Button
                         disabled={submitting}
                         variant="outlined"

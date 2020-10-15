@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Mutation } from '@apollo/react-components';
 import gql from "graphql-tag";
 import {Link} from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 import withStyles from "@material-ui/core/styles/withStyles";
 import Typography from "@material-ui/core/Typography";
@@ -44,6 +45,7 @@ const Activate = ({ classes, match }) => {
 
 const Verify = ({verifyAccount}) => {
 
+  const { t, i18n } = useTranslation();
   const [vdata, setVdata] = useState({})
 
   React.useEffect(() => {
@@ -55,10 +57,13 @@ const Verify = ({verifyAccount}) => {
   return (
     <div>
     {vdata&&vdata.success 
-    ? (<Typography>Account successfully verified!</Typography>) 
-    : (vdata&&vdata.errors ? (<Typography>{vdata.errors.nonFieldErrors[0].message}</Typography>) : (<div>Please try again</div>))}
+    ? (<Typography>{t("Account successfully verified!")}</Typography>) 
+    : (vdata&&vdata.errors ? (<Typography>{vdata.errors.nonFieldErrors[0].message}</Typography>) : (<div>{t("Please try again")}</div>))}
+    <Link to="/reset">
+      {t("Change password")}
+    </Link>
     <Link to="/">
-      Return to the main page.
+      {t("Return to the main page")}
     </Link>
     </div>
   )

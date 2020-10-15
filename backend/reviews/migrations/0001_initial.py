@@ -11,8 +11,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('salons', '0007_auto_20200520_1453'),
     ]
 
     operations = [
@@ -24,7 +22,7 @@ class Migration(migrations.Migration):
                 ('comment', models.TextField(blank=True)),
                 ('post_date', models.DateTimeField(blank=True, default=datetime.datetime.now)),
                 ('salon', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='salons.Salon')),
-                ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('posted_by', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
@@ -34,7 +32,7 @@ class Migration(migrations.Migration):
                 ('is_useful', models.BooleanField()),
                 ('is_reported', models.BooleanField()),
                 ('review', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='reviews.Review')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('posted_by', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

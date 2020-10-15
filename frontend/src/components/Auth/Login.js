@@ -3,7 +3,8 @@ import FacebookLogin from 'react-facebook-login';
 import { Mutation } from '@apollo/react-components';
 import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import gql from "graphql-tag";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 import withStyles from "@material-ui/core/styles/withStyles";
 import Typography from "@material-ui/core/Typography";
@@ -28,11 +29,13 @@ function Transition(props) {
 }
 
 // login component
-const Login = ({ classes, setNewUser }) => {
+const Login = ({ classes, setNewUser, setLoginOpen }) => {
 
+  const { t, i18n } = useTranslation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
+  const history = useHistory();
 
   // handle login form submission
   const handleSubmit = async (event, tokenAuth, client) => {
@@ -42,6 +45,9 @@ const Login = ({ classes, setNewUser }) => {
       localStorage.setItem("accessToken", res.data.tokenAuth.token);
       localStorage.setItem("refreshToken", res.data.tokenAuth.refreshToken);
       client.writeData({ data: { isLoggedIn: true } });
+      if(window.location.pathname.includes('login')){
+        history.push('/');
+      }
     } else {
       setOpen(true)
     }
@@ -84,6 +90,9 @@ const Login = ({ classes, setNewUser }) => {
       localStorage.setItem("accessToken", register.token);
       localStorage.setItem("refreshToken", register.refreshToken);
       client.writeData({ data: { isLoggedIn: true } });
+      if(window.location.pathname.includes('login')){
+        history.push('/');
+      }
     }});
   const client = useApolloClient();
 
@@ -147,12 +156,12 @@ const Login = ({ classes, setNewUser }) => {
           className={classes.button}
           onClick={handleFBLogin}
         >
-          Continue with Facebook
+          {t("Continue with Facebook")}
         </Button>
         <Avatar className={classes.avatar}>
           <Lock />
         </Avatar>
-        <Typography variant="title">Login as Existing User</Typography>
+        <Typography variant="title">{t("Login as Existing User")}</Typography>
 
         <Mutation mutation={LOGIN_MUTATION} variables={{ username, password }}>
           {(tokenAuth, { loading, error, called, client }) => {
@@ -162,7 +171,7 @@ const Login = ({ classes, setNewUser }) => {
                 className={classes.form}
               >
                 <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="username">Username</InputLabel>
+                  <InputLabel htmlFor="username">{t("Username")}</InputLabel>
                   <Input
                     id="username"
                     value={username}
@@ -171,7 +180,7 @@ const Login = ({ classes, setNewUser }) => {
                 </FormControl>
 
                 <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="password">Password</InputLabel>
+                  <InputLabel htmlFor="password">{t("Password")}</InputLabel>
                   <Input
                     id="password"
                     type="password"
@@ -195,11 +204,11 @@ const Login = ({ classes, setNewUser }) => {
                   variant="outlined"
                   fullWidth
                 >
-                  New user? Register here
+                  {t("New user? Register here")}
                 </Button>
                 <br/>
                 <Link to="/reset">
-                  <h6 >Forgot password?</h6>
+                  <h6 onClick={()=>setLoginOpen(false)}>{t("Forgot password?")}</h6>
                 </Link>
 
                 {/* Error Handling */}
@@ -216,10 +225,10 @@ const Login = ({ classes, setNewUser }) => {
         TransitionComponent={Transition}
       >
         <DialogTitle>
-          Invalid credentials. 
+          {t("Invalid credentials.")} 
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>Either username or password is wrong. Try again.</DialogContentText>
+          <DialogContentText>{t("Either username or password is wrong. Try again.")}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button
@@ -231,7 +240,7 @@ const Login = ({ classes, setNewUser }) => {
               setPassword("");
             }}
           >
-            Login
+            {t("Login")}
           </Button>
         </DialogActions>
       </Dialog>

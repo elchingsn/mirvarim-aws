@@ -24,7 +24,7 @@ const Accordion = ({classes, title, children}) => {
       <button className={classes.title} onClick={toogleActive}>
         {title}
         <span className={active ? classes.rotate: classes.icon}>
-          >
+          &gt;
         </span>
       </button>
 

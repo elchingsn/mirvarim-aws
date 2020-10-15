@@ -11,8 +11,12 @@ from resizeimage import resizeimage
 import datetime
 import requests
 import os
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth import get_user_model
 
-from .models import Salon, Hair, Nails, HairRemoval, Makeup, Massage, Eyebrow, Cosmetology, Tattoo, Aesthetics, City, Area
+
+from .models import Salon, Master, Hair, Nails, HairRemoval, Makeup, Massage, Eyebrow, Cosmetology, Tattoo, Aesthetics, City, Area, Booking
+from services.models import HairService, NailsService, HairRemovalService, MassageService, MakeupService, EyebrowService, CosmetologyService, TattooService, AestheticsService
 
 class HairType(DjangoObjectType):
     class Meta:
@@ -63,10 +67,19 @@ class SalonType(DjangoObjectType):
         model = Salon
         convert_choices_to_enum = False
 
+class MasterType(DjangoObjectType): 
+    class Meta:
+        model = Master
+
+class BookingType(DjangoObjectType): 
+    class Meta:
+        model = Booking
+
 
 #Query definition
 class Query(graphene.ObjectType):
     salons = graphene.List(SalonType, search=graphene.String())
+    bookings = graphene.List(BookingType, id=graphene.String(), email=graphene.String())
     salons_filtered = graphene.List(SalonType, 
                                     area=graphene.List(graphene.String),
                                     hair=graphene.List(graphene.String),
@@ -143,6 +156,13 @@ class Query(graphene.ObjectType):
         
         return Salon.objects.all()
     
+    def resolve_bookings(self, info, id=None, email=None):
+      if id:
+        return Booking.objects.filter(salon__id=int(id))
+      if email:
+        return Booking.objects.filter(customer__email=email)
+      
+      return Booking.objects.all()
 
     def resolve_salon_selected(self, info, id):
         return Salon.objects.filter(id=id)
@@ -226,7 +246,7 @@ class CreateSalon(graphene.Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise GraphQLError('Log in to add a track.')
+            raise GraphQLError('Log in to add a salon.')
       
         city_id = salon_data.city_id,
         area_id = salon_data.area_id,    
@@ -418,6 +438,162 @@ class UpdateSalon(graphene.Mutation):
         
         return UpdateSalon(salon=salon)
 
+class MasterInput(graphene.InputObjectType):
+    salon_id = graphene.String()
+    name = graphene.String()
+    email = graphene.String()
+    phone = graphene.String()
+
+class AddMaster(graphene.Mutation):
+    master = graphene.Field(MasterType)
+
+    class Arguments:
+      master_data = MasterInput(required=True)
+    
+    @staticmethod
+    def mutate(root,info,master_data):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError('Log in to add a master.')      
+             
+        salon_obj = Salon.objects.get(id=int(master_data.salon_id))
+            
+        master = Master.objects.create(
+                                      salon = salon_obj,
+                                      master_name = master_data.name.title(),
+                                      master_email = master_data.email,
+                                      master_phone = master_data.phone,
+                                      )
+        return AddMaster(master=master)
+
+class UpdateMaster(graphene.Mutation):
+    master = graphene.Field(MasterType)
+
+    class Arguments:
+      master_id = graphene.Int(required=True)
+      master_data = MasterInput(required=True)
+    
+    @staticmethod
+    def mutate(root,info,master_id,master_data):
+        user = info.context.user
+        master=Master.objects.get(id=master_id)
+
+        if user.is_anonymous:
+            raise GraphQLError('Log in to update booking.')
+        master.master_name = master_data.name.title()
+        master.master_email = master_data.email
+        master.master_phone = master_data.phone
+     
+        master.save()
+        return UpdateMaster(master=master)
+
+class DeleteMaster(graphene.Mutation):
+    master = graphene.Field(MasterType)
+
+    class Arguments:
+      master_id = graphene.Int(required=True)
+    
+    @staticmethod
+    def mutate(root,info,master_id):
+        user = info.context.user
+        master=Master.objects.get(id=master_id)
+
+        if user.is_anonymous:
+            raise GraphQLError('Log in to delete master.')
+                
+        master.delete()
+        return DeleteMaster(master=master)
+
+class BookingInput(graphene.InputObjectType):
+    master_id = graphene.String()
+    customer_name = graphene.String()
+    customer_email = graphene.String()
+    customer_mobile = graphene.String()
+    # service_type = graphene.String()
+    # service_id = graphene.Int()
+    service_title = graphene.String()
+    service_price = graphene.Int()
+    start = graphene.DateTime()
+    duration = graphene.Int()
+
+class CreateBooking(graphene.Mutation):
+    booking = graphene.Field(BookingType)
+
+    class Arguments:
+      booking_data = BookingInput(required=True)
+    
+    @staticmethod
+    def mutate(root,info,booking_data):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError('Log in to add a booking.')
+              
+        # def service_model(type, service_id):
+        #   if type == "HairServiceType":
+        #     return ContentType.objects.get_for_model(HairService.objects.get(id=service_id))
+        #   if type == "NailsServiceType":
+        #     return ContentType.objects.get_for_model(NailsService.objects.get(id=service_id))
+          
+        master_obj = Master.objects.get(id=int(booking_data.master_id))
+            
+        booking = Booking.objects.create(
+                                      master = master_obj,
+                                      customer = user,
+                                      customer_name = booking_data.customer_name,
+                                      customer_email = booking_data.customer_email,
+                                      customer_mobile = booking_data.customer_mobile,
+                                      # service_content_type = service_model(booking_data.service_type, booking_data.service_id),
+                                      # service_object_id = booking_data.service_id,
+                                      service_title = booking_data.service_title,
+                                      service_price = booking_data.service_price,
+                                      start = booking_data.start,
+                                      end = booking_data.start + datetime.timedelta(minutes=booking_data.duration)
+                                      )
+        return CreateBooking(booking=booking)
+
+class UpdateBooking(graphene.Mutation):
+    booking = graphene.Field(BookingType)
+
+    class Arguments:
+      booking_id = graphene.Int(required=True)
+      booking_data = BookingInput(required=True)
+    
+    @staticmethod
+    def mutate(root,info,booking_id,booking_data):
+        user = info.context.user
+        booking=Booking.objects.get(id=booking_id)
+
+        if user.is_anonymous:
+            raise GraphQLError('Log in to update booking.')
+        # duration = booking.end - booking.start
+        booking.customer_name = booking_data.customer_name
+        booking.customer_mobile = booking_data.customer_mobile
+        booking.start = booking_data.start     
+        booking.end = booking_data.start + datetime.timedelta(minutes=booking_data.duration)
+        
+        booking.save()
+        return UpdateBooking(booking=booking)
+
+class DeleteBooking(graphene.Mutation):
+    booking = graphene.Field(BookingType)
+
+    class Arguments:
+      booking_id = graphene.Int(required=True)
+    
+    @staticmethod
+    def mutate(root,info,booking_id):
+        user = info.context.user
+        booking=Booking.objects.get(id=booking_id)
+
+        if user.is_anonymous:
+            raise GraphQLError('Log in to delete booking.')
+                
+        booking.delete()
+        return DeleteBooking(booking=booking)
+
+
 
 class UploadFile(graphene.Mutation):
     class Arguments:
@@ -478,6 +654,12 @@ class UploadFile(graphene.Mutation):
 class SalonMutation(graphene.ObjectType):
     create_salon = CreateSalon.Field() 
     update_salon = UpdateSalon.Field() 
+    create_booking = CreateBooking.Field()
+    update_booking = UpdateBooking.Field()
+    delete_booking = DeleteBooking.Field()
+    add_master = AddMaster.Field()
+    update_master = UpdateMaster.Field()
+    delete_master = DeleteMaster.Field()
     upload_img = UploadFile.Field()
 
     

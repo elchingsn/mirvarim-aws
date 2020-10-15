@@ -41,11 +41,22 @@ const useStyles = makeStyles(presentationStyle);
 export default function Home() {
   const [searchResults, setSearchResults] = useState([]);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [smallViewSize, setSmallViewSize] = useState(window.innerWidth<960)
 
   React.useEffect(() => {
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
   });
+
+
+  React.useEffect(() => {
+    window.addEventListener("resize", () => setSmallViewSize(window.innerWidth<960));
+    return () => {
+      window.removeEventListener("resize", () => setSmallViewSize(window.innerWidth<960));
+
+    };
+  },[window.innerWidth]);
+
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
@@ -83,7 +94,7 @@ export default function Home() {
         </Card>
         </Dialog>
         <Parallax
-            image={require("../assets/img/home_parallax.jpeg")}
+            image={`${smallViewSize ? require("assets/img/home_parallax.jpeg") : require("assets/img/p_home2.jpg")}`}
             className={classes.parallax}
         >
             <div className={classes.container}>
@@ -99,9 +110,27 @@ export default function Home() {
                 )}
               >
                 <br/>
-                <br/>
-                <br/>
-                <h2 className={classes.brand}>Find your pearl in the ocean of beauty</h2>
+                <Hidden smDown implementation="css">
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <div className={classes.container}>
+                        <GridItem
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          className={classNames(classes.mlAuto, classes.mrAuto)}
+                        >
+                          <Card raised className={classes.card}>
+                            <CardBody formHorizontal>
+                              <SearchSalons state={setSearchResults} setSearchOpen={setSearchOpen}/> 
+                            </CardBody>
+                          </Card>
+                        </GridItem> 
+                  </div>
+                </Hidden>
+                {/* <h2 className={classes.brand}>Find your pearl in the ocean of beauty</h2> */}
                 {/* <Hidden smDown implementation="css">
                   <h4 className={classes.brand}>
                   Bridging the gap between personalised salon services, professionals 
@@ -130,7 +159,7 @@ export default function Home() {
 
         {/* <div className={classNames(classes.main, classes.mainRaised)}> */}
         <div className={classes.main}>
-          <Hidden smDown implementation="css">
+          {/* <Hidden smDown implementation="css">
               <div className={classes.container}>
                   <GridItem
                     xs={12}
@@ -145,7 +174,7 @@ export default function Home() {
                     </Card>
                   </GridItem> 
             </div>
-          </Hidden>
+          </Hidden> */}
             <Query query={SALON_QUERY}>
                 {({ data, loading, error }) => {
                   if (loading) return <div>Loading</div>;

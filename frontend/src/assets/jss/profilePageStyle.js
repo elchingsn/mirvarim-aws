@@ -74,7 +74,8 @@ const profilePageStyle = {
     ...mrAuto
   },
   collections: {
-    marginTop: "20px"
+    marginTop: "15px",
+    marginBottom: "15px"
   },
   cardBody: {
     display: "flex",

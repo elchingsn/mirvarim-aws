@@ -13,6 +13,7 @@ import SalonDetail from "./pages/SalonDetail";
 import Partner from "./pages/Partner";
 import CreateReview from "components/Review/CreateReview";
 import CreateSalon from "components/Salon/CreateSalon";
+import Privacy from "pages/Privacy"
 
 import Navbar from "components/Partials/Navbar";
 import MainFooter from "components/Partials/MainFooter"
@@ -23,6 +24,7 @@ import Login from "components/Auth/Login"
 import Auth from "components/Auth"
 import Activate from "components/Auth/Activate"
 import PasswordReset from "components/Auth/PasswordReset"
+import SendPasswordReset from "components/Auth/SendPasswordReset"
 import routes, { renderRoutes } from 'components/Partner/routes.js';
 
 export const UserContext = React.createContext();
@@ -47,12 +49,15 @@ const App = () => (
               <Route exact path="/" component={Home} />
               <Route exact path="/login" component={Auth} />
               <Route path="/activate/:token" component={Activate} />
-              <Route path="/reset/:token" component={PasswordReset} />
+              <Route path="/reset" component={SendPasswordReset} />
+              <Route path="/password-reset/:token" component={PasswordReset} />
               <Route exact path="/salon" component={Salon} />
               <Route path="/profile/:id" component={Profile} />
               <Route path="/salon/:id" component={SalonDetail} />
               <Route path="/review/:id" component={CreateReview} />
               <Route exact path="/partner/:id" component={Partner} /> 
+              <Route exact path="/privacy" component={Privacy} />
+
               {renderRoutes(routes)}
             </Switch>
             <br/>
@@ -81,10 +86,30 @@ export const ME_QUERY = gql`
       email
       role
       dateJoined
+      bookingSet {
+        id
+        serviceTitle
+        servicePrice
+        start
+      } 
       salonSet{
         id
         name
         address
+        masterSet {
+          id
+          masterName
+          masterEmail
+          masterPhone
+          bookingSet {
+            id
+            customerName
+            customerEmail
+            serviceTitle
+            start
+            end
+          }  
+        }
         city {
           id
           title
@@ -140,17 +165,72 @@ export const ME_QUERY = gql`
         hairserviceSet {
           id
           title
+          price
+          promotionPrice
+          duration
         }
         nailsserviceSet {
           id
           title
+          price
+          promotionPrice
+          duration
         }
+        hairremovalserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }
+        makeupserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }
+        massageserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }
+        eyebrowserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }     
+        cosmetologyserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }
+        tattooserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }
+        aestheticsserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }                            
       }
     }
   }
 `;
 
-// export const SALON_QUERY = gql`
+// export const SALON_QUERY = `
 //   {
 //     salons (search: "hair1"){
 //       name

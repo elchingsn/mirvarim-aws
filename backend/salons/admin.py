@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db import models
 from django.forms import CheckboxSelectMultiple
-from .models import Salon, Hair, Nails, HairRemoval, Makeup, Massage, Eyebrow, Cosmetology, Tattoo, Aesthetics, City, Area
+from .models import Salon, Master, Hair, Nails, HairRemoval, Makeup, Massage, Eyebrow, Cosmetology, Tattoo, Aesthetics, City, Area, Booking
 
 class SalonAdmin(admin.ModelAdmin):
   
@@ -20,6 +20,32 @@ class SalonAdmin(admin.ModelAdmin):
   list_per_page = 25
   
 admin.site.register(Salon, SalonAdmin)
+
+class BookingAdmin(admin.ModelAdmin):
+  
+  class Meta:
+    model = Booking 
+
+  list_display = ('id', 'master', 'customer','service_title', 'start', 'end')
+  list_display_links = ('master', 'customer')
+  list_filter = ('start',)
+  search_fields = ('master','customer')
+  list_per_page = 50
+  
+admin.site.register(Booking, BookingAdmin)
+
+class MasterAdmin(admin.ModelAdmin):
+  
+  class Meta:
+    model = Master 
+
+  list_display = ('id', 'salon', 'master_name')
+  list_display_links = ('salon',)
+  list_filter = ('salon',)
+  search_fields = ('salon',)
+  list_per_page = 50
+  
+admin.site.register(Master, MasterAdmin)
 
 
 @admin.register(Hair)

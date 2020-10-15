@@ -1,6 +1,8 @@
 import React from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
+import { useTranslation } from 'react-i18next';
+
 // @material-ui/icons
 import EventAvailable from '@material-ui/icons/EventAvailable';
 import Search from '@material-ui/icons/Search';
@@ -23,7 +25,8 @@ import mockup1 from "assets/img/mockup.png"
 
 const useStyles = makeStyles(featuresStyle);
 
-export default function SectionFeatures({ ...rest }) {
+export default function Features({ ...rest }) {
+  const { t, i18n } = useTranslation();
   const classes = useStyles();
   return (
     <div className="cd-section" {...rest}>
@@ -40,7 +43,7 @@ export default function SectionFeatures({ ...rest }) {
                 classes.mlAuto + " " + classes.mrAuto + " " + classes.textCenter
               }
             >
-              <h2 className={classes.title}>Why to use our platform</h2>
+              <h2 className={classes.title}>{t("Why to use our platform")}</h2>
               {/* <h5 className={classes.description}>
             </h5> */}
             </GridItem>
@@ -49,11 +52,11 @@ export default function SectionFeatures({ ...rest }) {
             <GridItem xs={12} sm={4} md={4}>
               <FeatureInfo
                 icon={Search}
-                title="Discover"
+                title={t("Discover")}
                 description={
                   <span>
                     <p>
-                      Find out latest trends and services
+                      {t("Find out latest trends and services")}
                     </p>
                   </span>
                 }
@@ -63,11 +66,11 @@ export default function SectionFeatures({ ...rest }) {
             <GridItem xs={12} sm={4} md={4}>
               <FeatureInfo
                 icon={InsertComment}
-                title="Connect"
+                title={t("Connect")}
                 description={
                   <span>
                     <p>
-                      Engage community and rate salons
+                      {t("Engage community and rate salons")}
                     </p>
                   </span>
                 }
@@ -77,11 +80,11 @@ export default function SectionFeatures({ ...rest }) {
             <GridItem xs={12} sm={4} md={4}>
               <FeatureInfo
                 icon={Phonelink}
-                title="Book"
+                title={t("Book")}
                 description={
                   <span>
                     <p>
-                      Book beauty and wellness services 
+                      {t("Book beauty and wellness services")} 
                     </p>
                   </span>
                 }
@@ -103,10 +106,9 @@ export default function SectionFeatures({ ...rest }) {
                 classes.mlAuto + " " + classes.mrAuto + " " + classes.textCenter
               }
             >
-              <h2 className={classes.title}>Discover how we can help you grow your business</h2>
+              <h2 className={classes.title}>{t("Discover how we can help you grow your business")}</h2>
               <h5 className={classes.description}>
-              Mirvarim is a beauty management platform that helps your beauty salon or spa connect with new and existing customers. 
-              Mirvarim also provides state-of-the-art salon management software, designed to simplify managing your daily operations.
+              {t("Mirvarim is a beauty management platform that helps your beauty salon or spa connect with new and existing customers. Mirvarim also provides state-of-the-art salon management software, designed to simplify managing your daily operations.")}
               </h5>
             </GridItem>
           </GridContainer>
@@ -114,14 +116,14 @@ export default function SectionFeatures({ ...rest }) {
             <GridItem xs={12} sm={4} md={4} lg={3} className={classes.mlAuto}>
               <FeatureInfo
                 icon={PhoneIphone}
-                title="Advertise your business"
-                description="Increase awareness of your salon, update services, allow customers to reach your easily. Mirvarim gives you the tools you need to reach out to both new and existing clients, by increasing your visibility across multiple channels."
+                title={t("Advertise your business")}
+                description={t("Increase awareness of your salon, update services, allow customers to reach your easily. Mirvarim gives you the tools you need to reach out to both new and existing clients, by increasing your visibility across multiple channels.")}
                 iconColor="info"
               />
               <FeatureInfo
                 icon={TrendingUp}
-                title="Optimize your business"
-                description="Get business insights from our data analysis and run customized reports on your salon's performance"
+                title={t("Optimize your business")}
+                description={t("Get business insights from our data analysis and run customized reports on your salon's performance")}
                 iconColor="danger"
               />
             </GridItem>
@@ -133,14 +135,14 @@ export default function SectionFeatures({ ...rest }) {
             <GridItem xs={12} sm={4} md={4} lg={3} className={classes.mrAuto}>
               <FeatureInfo
                 icon={EventAvailable}
-                title="Appointments anytime, anywere"
-                description=" Clients can check your availability and book their visits 24/7, from anywhere. 60% of appointments are booked outside of working hours, and with Mirvarim, you don’t have to miss out."
+                title={t("Appointments anytime, anywere")}
+                description={t("Clients can check your availability and book their visits 24/7, from anywhere. 60% of appointments are booked outside of working hours, and with Mirvarim, you don’t have to miss out.")}
                 iconColor="primary"
               />
               <FeatureInfo
                 icon={SupervisorAccount}
-                title="Stay connected"
-                description="Keep key client details at your fingertips: customizable client profiles store information like booking history, no-shows and appointment reminders in one easy location."
+                title={t("Stay connected")}
+                description={t("Keep key client details at your fingertips: customizable client profiles store information like booking history, no-shows and appointment reminders in one easy location.")}
                 iconColor="success"
               />
             </GridItem>

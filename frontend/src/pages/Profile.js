@@ -1,5 +1,6 @@
 import React from "react";
 import { ApolloConsumer, Query } from "@apollo/react-components";
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from "graphql-tag";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -8,10 +9,14 @@ import Avatar from "@material-ui/core/Avatar";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Favorite from "@material-ui/icons/Favorite";
+import EventIcon from '@material-ui/icons/Event';
 import ThumbUpIcon from "@material-ui/icons/ThumbUpTwoTone";
+import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from "@material-ui/core/Divider";
+import Button from '@material-ui/core/Button';
 import Badge from '@material-ui/core/Badge';
 import format from "date-fns/format";
+import { DELETE_BOOKING } from "components/Partner/Dashboard/views/calendar/CalendarView/CreateEventForm.js"
 
 import GridContainer from "components/Partials/GridContainer.js";
 import GridItem from "components/Partials/GridItem.js";
@@ -34,6 +39,17 @@ const Profile = ({ match }) => {
     document.body.scrollTop = 0;
   }, []);
 
+  const [deleteBooking, { data: delete_data }] = useMutation(DELETE_BOOKING, {
+    refetchQueries: [{ query: PROFILE_QUERY, variables: { id }}],
+    awaitRefetchQueries: true,
+  });
+
+  const handleDeleteBooking = (id) =>{  
+    deleteBooking({variables: { bookingId: id }}).catch(err => {
+      console.error(err);
+    });
+  }
+
   return (
     <Query query={PROFILE_QUERY} variables={{ id }}>
       {({ data, loading, error }) => {
@@ -47,7 +63,7 @@ const Profile = ({ match }) => {
             <Card className={classes.card}>
               <CardHeader
                 avatar={<Avatar>{data.user.username[0]}</Avatar>}
-                title={data.user.username}
+                title={`Welcome, ${data.user.username}`}
                 subheader={`Joined on ${data.user.dateJoined.substring(0,10).split("-").reverse().join("/")}`}
               />
             </Card>
@@ -95,6 +111,63 @@ const Profile = ({ match }) => {
                   )
                 },
                 {
+                  tabButton: "Bookings",
+                  tabIcon: EventIcon,
+                  tabContent: (
+                    <div>
+                      <Paper elevation={1} className={classes.paper}>
+                        <Typography variant="title" className={classes.title}>
+                          {`Upcoming bookings: ${data.user.bookingSet.filter(event => (new Date(event.start)-new Date())>0).length}`}
+                        </Typography>
+                        {data.user.bookingSet.filter(event => (new Date(event.start)-new Date())>0).map(booking => (
+                          <div key={booking.id} className={classes.collections}>
+                          <GridContainer>
+                            <GridItem
+                              xs={9}
+                              sm={6}
+                              md={4}
+                              lg={3}
+                              className={classes.gridItem}
+                            >
+                            <Typography variant="title" className={classes.title}>
+                              {`${new Date(booking.start).toString().slice(0,21)}`}
+                            </Typography>
+                            <Typography>
+                              {`Salon: ${booking.master.salon.name} with ${booking.master.masterName}`}
+                            </Typography>
+                            <Typography>
+                              {`Service: ${booking.serviceTitle}`}
+                            </Typography>
+                            <Typography>
+                              {`Amount: ${booking.servicePrice} manats`}
+                            </Typography>
+                            <Typography>
+                              {`Address: ${booking.master.salon.address}`}
+                            </Typography>
+                            <Typography>
+                              {`Phone: ${booking.master.salon.phone}`}
+                            </Typography>
+                            </GridItem>
+                            <GridItem
+                              xs={3}
+                              sm={6}
+                              md={8}
+                              lg={9}
+                              className={classes.gridItem}
+                            >
+                              <Button color="primary" size="large" onClick={() => handleDeleteBooking(booking.id)}>
+                                <DeleteIcon/>
+                              </Button>
+                            </GridItem>
+                            </GridContainer>
+                            <Divider className={classes.divider} />
+                          </div>
+                        ))}
+                      </Paper>
+                    </div>
+                  )
+                },
+                {
                   tabButton: "Reviews",
                   tabIcon: ThumbUpIcon,
                   tabContent: (
@@ -104,7 +177,7 @@ const Profile = ({ match }) => {
                           Comments
                         </Typography>
                         {data.user.reviewSet.filter(review => (review.comment != "")).map(review => (
-                          <div key={review.id}>
+                          <div key={review.id} className={classes.collections}>
                             <Typography variant="title" className={classes.title}>
                               {`${review.salon.name} on ${review.postDate.substring(0,10)}`}
                             </Typography>
@@ -156,6 +229,22 @@ export const PROFILE_QUERY = gql`
           }
         }
       }
+      bookingSet {
+        id
+        serviceTitle
+        servicePrice
+        start
+        master {
+          id
+          masterName
+          salon {
+            id
+            name
+            address
+            phone
+          }
+        }
+      }   
     }
   }
 `;
