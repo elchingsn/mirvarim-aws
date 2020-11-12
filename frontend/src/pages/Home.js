@@ -1,5 +1,7 @@
 import React, {useState} from "react";
 import {Link} from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+import { Trans } from 'react-i18next'
 
 // import Navbar from "../components/Partials/Navbar";
 import SearchSalons from "components/Partials/SearchSalons";
@@ -39,6 +41,8 @@ import presentationStyle from "assets/jss/presentationStyle.js";
 const useStyles = makeStyles(presentationStyle);
 
 export default function Home() {
+  const { t, i18n } = useTranslation();
+
   const [searchResults, setSearchResults] = useState([]);
   const [searchOpen, setSearchOpen] = useState(false);
   const [smallViewSize, setSmallViewSize] = useState(window.innerWidth<960)
@@ -149,7 +153,7 @@ export default function Home() {
                   round
                   onClick={handleSearchOpen}
                 >
-                  <i class="fas fa-search" > Search salon or service</i>
+                  <i class="fas fa-search" > {t("Search salon or service")}</i>
                 </Button>
                 </Hidden>
                 </div>
@@ -179,12 +183,13 @@ export default function Home() {
                 {({ data, loading, error }) => {
                   if (loading) return <div>Loading</div>;
                   if (error) return <div>Error</div>;
-                  const featuredSalons = data.salons.filter(el => el.isFeatured == true)
+                  const publishedSalons = data.salons.filter(el => el.isPublished == true)
+                  const featuredSalons = publishedSalons.filter(el => el.isFeatured == true)
                   console.log('salon list', data.salons);
                   console.log('featured salons', featuredSalons);
                   return (
                     <div>
-                    <h3 className={classes.title1}>Featured Salons</h3> 
+                    <h3 className={classes.title1}>{t("Featured Salons")}</h3> 
                     <Listings listings={featuredSalons}/>
                     </div>
                   )
@@ -194,11 +199,12 @@ export default function Home() {
                 {({ data, loading, error }) => {
                   if (loading) return <div>Loading</div>;
                   if (error) return <div>Error</div>;
-                  const latestSalons = data.salons.slice().sort((a,b) => new Date(b.listDate)-new Date(a.listDate)).slice(0,4)
+                  const publishedSalons = data.salons.filter(el => el.isPublished == true)
+                  const latestSalons = publishedSalons.slice().sort((a,b) => new Date(b.listDate)-new Date(a.listDate)).slice(0,4)
                   console.log(data.salons.slice().sort((a,b) => new Date(b.listDate)-new Date(a.listDate)))
                   return (
                     <div>
-                    <h3 className={classes.title1}>Latest Salons</h3> 
+                    <h3 className={classes.title1}>{t("Latest Salons")}</h3> 
                     <Listings listings={latestSalons}/>
                     </div>
                   )
@@ -208,18 +214,18 @@ export default function Home() {
       <Features />
 
       <div className={classes.container}>
-      {/* <h2 className={classes.title}>About us</h2> */}
+      {/* <h2 className={classes.title}>About us</h2> */}     
         <p>
-        Mirvarim is the place to find and book beauty and wellness experiences online. Find your next massage salon,
-        discover a trendy new hairdressers or a great nail salon. Discover beauty salons and services in your area 
-        and check the availability of dates and times for whenever suits you best. Compare prices, select your desired 
-        service with a few clicks and make online payments. After the booking, get immediate confirmation for your beauty 
-        treatment. You have further questions? Don’t hesitate to reach out to our friendly staff that will assist you in 
-        every step of the booking process. Mirvarim, as a beauty discovery platform is a place for beauty salons to get a 
-        great online presence and maximise their exposure. They can showcase their work and connect with customers, both old 
-        and new. Users can peek inside every salon using our picture galleries, get familiar with a specific salon’s offer 
-        with our detailed service overviews & get instant info on opening hours & location. The mission of Mirvarim is to be
-        the go-to discovery platform for all beauty and wellness services anytime, anywhere. 
+        <Trans i18nKey="about">
+          Mirvarim is the place to find and book beauty and wellness experiences online. Find your next massage salon 
+          discover a trendy new hairdressers or a great nail salon. Discover beauty salons and services in your area 
+          and check the availability of dates and times for whenever suits you best. Compare prices, select your desired 
+          service with a few clicks and make online payments. After the booking, get immediate confirmation for your beauty 
+          treatment. Mirvarim, as a beauty discovery platform is a place for beauty salons to get a great online presence and 
+          maximise their exposure. Users can peek inside every salon using our picture galleries, get familiar with a specific 
+          salon’s offer with our detailed service overviews and get instant info on opening hours and location. The mission of 
+          Mirvarim is to be the go-to discovery platform for all beauty and wellness services anytime, anywhere.
+        </Trans>
         </p>
       </div>
       </div>
@@ -236,6 +242,10 @@ const SALON_QUERY = gql`
         rating  
         priceRange
         photoMain
+        isPublished
+        isFeatured
+        payment
+        appointment
         reviewSet{
           rating
         }

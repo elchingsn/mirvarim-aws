@@ -57,6 +57,8 @@ const Toolbar = ({
 }) => {
   const classes = useStyles();
   console.log('toolbar date', date)
+  console.log('view', view)
+  //{format(new Date(date),'dd')} - {format(new Date(new Date(date).getTime() + 7*1440*60000),'dd MMMM yyyy')}
 
   return (
     <Grid
@@ -74,15 +76,18 @@ const Toolbar = ({
           <Button onClick={onDateNext}>Next</Button>
         </ButtonGroup>
       </Grid>
-      <Hidden smDown>
         <Grid item>
           <Typography
-            variant="h4"
+            variant="h5"
             color="textPrimary"
           >
-            {format(new Date(date),'MMMM yyyy') }
+            {(view == 'listWeek') ?
+              `${format(new Date(date),'dd')} - ${format(new Date(new Date(date).getTime() + 7*1440*60000),'dd MMMM yyyy')}` :
+              format(new Date(date),'MMMM yyyy')
+            } 
           </Typography>
         </Grid>
+        <Hidden smDown>
         <Grid item>
           {viewOptions.map((viewOption) => {
             const Icon = viewOption.icon;

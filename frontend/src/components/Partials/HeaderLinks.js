@@ -264,7 +264,7 @@ export default function HeaderLinks(props) {
                     noLiPadding
                     navDropdown
                     hoverColor={dropdownHoverColor}
-                    buttonText = {t("Tattoo")} 
+                    buttonText = {t("Tattoo/Piercing")} 
                     dropdownList={categories} 
                     buttonProps={{
                       className: classes.navLink,

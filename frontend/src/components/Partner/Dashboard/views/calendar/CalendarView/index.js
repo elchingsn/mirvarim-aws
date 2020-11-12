@@ -195,6 +195,10 @@ const Calendar = ({salon, masterId, bookings, isModalOpen, setModalOpen}) => {
   const [isUpdateModalOpen, setUpdateModalOpen] = useState(false)
 
   const [selectedEvent, setSelectedEvent] = useState({});
+  const [selectedRange, setSelectedRange] = useState({
+    start: '',
+    duration: 30
+  });
 
   // Math.floor((new Date(end) - new Date(start))/60000) converts the milliseconds to duration in minutes
   const [createBooking, { data: create_data }] = useMutation(CREATE_BOOKING);
@@ -217,6 +221,7 @@ const Calendar = ({salon, masterId, bookings, isModalOpen, setModalOpen}) => {
   })
 
   console.log ('events', events);
+  console.log("range", selectedRange)
 
   //create array of all services offered by the salon
   const hairServices = salon.hairserviceSet
@@ -274,16 +279,19 @@ const Calendar = ({salon, masterId, bookings, isModalOpen, setModalOpen}) => {
   //   setModalOpen(true)
   // };
 
-  const handleRangeSelect = (arg) => {
+  const handleRangeSelect = async (arg) => {
     const calendarEl = calendarRef.current;
-
     if (calendarEl) {
       const calendarApi = calendarEl.getApi();
-
       calendarApi.unselect();
     }
-      console.log(arg)
-      // dispatch(selectRange(arg.start, arg.end));
+    await setSelectedRange({
+      ...selectedRange,
+      start: formatISO(arg.start).slice(0,16),
+      duration: Math.floor((arg.end - arg.start)/60000)
+    })
+    console.log("arg", arg)
+    setModalOpen(true)
   };
 
   const handleEventSelect = async (arg) => {
@@ -351,6 +359,11 @@ const Calendar = ({salon, masterId, bookings, isModalOpen, setModalOpen}) => {
           onViewChange={handleViewChange}
           view={view}
         />
+        {!salon.appointment && 
+          <h6> 
+            Customer access to your calendar and booking from the website is available in standard package.
+          </h6>
+        }
         <Paper className={classes.calendar}>
           <FullCalendar
             schedulerLicenseKey='GPL-My-Project-Is-Open-Source'
@@ -401,6 +414,7 @@ const Calendar = ({salon, masterId, bookings, isModalOpen, setModalOpen}) => {
               salon={salon}
               services={services}
               masterId={masterId}
+              range={selectedRange}
               handleModalClose={handleModalClose}
               // range={selectedRange}
 

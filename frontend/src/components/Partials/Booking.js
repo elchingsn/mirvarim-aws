@@ -85,6 +85,15 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
   //   }
   // }, [bookingData])
 
+  // useEffect(() => {
+  //   if (currentUser.role == "A_2") {
+  //     setBookingData({
+  //       ...bookingData, 
+  //       masterId: salon.masterSet[0].id
+  //     })
+  //   }
+  // }, [currentUser])
+
 
   const [createBooking, { data: create_data }] = useMutation(CREATE_BOOKING, {
     onCompleted({ booking }) {
@@ -149,10 +158,12 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
         }
       }).sort(function(a, b){
         return a.bookingSet.length - b.bookingSet.length
-      });
+      }); 
       console.log('sorted_bookingSet', sorted_bookingSet)
       bookings = sorted_bookingSet[0].bookingSet;
       master_id = sorted_bookingSet[0].id;
+    } else if (salon.masterSet.length == 1) {
+      bookings = salon.masterSet[0].bookingSet
     } else {
       bookings = masterBookings.filter(booking => (new Date(booking.end)-new Date())>0)
     }
@@ -219,6 +230,7 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
             </NativeSelect>
           <FormHelperText>{t("Choose a service")}</FormHelperText>
         </FormControl>
+        {salon.createdBy.role == "A_3" && 
         <FormControl margin="normal" required fullWidth>
           <Autocomplete
             id="size-small-standard-multi"
@@ -240,6 +252,7 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
             )}
           />
         </FormControl>
+        }
       </div>
       )
       case 1:
@@ -275,14 +288,6 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
               onClick={() => setBookingData({...bookingData, start: formatISO(new Date(den.setHours(10)))})}
             >
               10:00
-            </Button>
-            <Button
-              disabled={busyTime[11]}
-              variant="outlined"
-              className={classes.button}
-              onClick={() => setBookingData({...bookingData, start: formatISO(new Date(den.setHours(11)))})}
-            >
-              11:00
             </Button>
            */}
           </Box>
@@ -353,7 +358,7 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
         <Paper square elevation={0} className={classes.resetContainer} style={{paddingTop:"5px"}}>
           <Typography>
             {`${t("Appointment")}: ${bookingData.serviceTitle}, ${new Date(bookingData.start).toString().slice(0,21)}.\
-            ${t("Total amount is")} ${bookingData.servicePrice} ${t("manats")}.`}
+            ${t("Total amount is")} ${bookingData.servicePrice} ${t("AZN")}.`}
           </Typography> 
           {!submitting &&
             (<Box

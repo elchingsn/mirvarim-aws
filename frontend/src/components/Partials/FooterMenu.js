@@ -197,7 +197,7 @@ const FooterMenu = (props) => {
               href="#pablo"
               onClick={e => e.preventDefault()}
             >
-              <Link style={{color:"white"}} to="/">
+              <Link style={{color:"white"}} to="/contact">
               <i class="fas fa-envelope" ></i>
               </Link>
             </Button>

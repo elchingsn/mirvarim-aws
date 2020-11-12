@@ -144,7 +144,7 @@ class CreateHairService(graphene.Mutation):
         hairService = HairService.objects.create(
                                       salon = salon_obj,
                                       category = hair_obj,
-                                      title = serviceData.title.title(),
+                                      title = serviceData.title,
                                       description = serviceData.description,
                                       duration = serviceData.duration,
                                       price = serviceData.price,
@@ -153,10 +153,57 @@ class CreateHairService(graphene.Mutation):
         
         masterIds = serviceData.masterIds
         if masterIds[0]:
-          for id in masterIds[0]:
+          for id in masterIds:
             hairService.master.add(Master.objects.get(id=id))
 
         return CreateHairService(hairService=hairService)
+
+class UpdateHairService(graphene.Mutation):
+    hairService = graphene.Field(HairServiceType)
+
+    class Arguments:
+      serviceId = graphene.Int(required=True)
+      serviceData = HairServiceInput(required=True)
+    
+    @staticmethod
+    def mutate(root,info,serviceId,serviceData):
+        user = info.context.user
+        hairService = HairService.objects.get(id=serviceId)
+
+        if user.is_anonymous:
+            raise GraphQLError('Log in to edit service.')
+        hairService.title = serviceData.title
+        hairService.description = serviceData.description
+        hairService.duration = serviceData.duration
+        hairService.price = serviceData.price
+        hairService.promotion_price = serviceData.promotion_price
+
+        masterIds = serviceData.masterIds
+        if masterIds[0]:
+          hairService.master.clear()
+          for id in masterIds:
+            hairService.master.add(Master.objects.get(id=id))
+     
+        hairService.save()
+        return UpdateHairService(hairService=hairService)
+
+class DeleteHairService(graphene.Mutation):
+    hairService = graphene.Field(HairServiceType)
+
+    class Arguments:
+      serviceId = graphene.Int(required=True)
+    
+    @staticmethod
+    def mutate(root,info,serviceId):
+        user = info.context.user
+        hairService = HairService.objects.get(id=serviceId)
+
+        if user.is_anonymous:
+            raise GraphQLError('Log in to delete service.')
+                
+        hairService.delete()
+        return DeleteHairService(hairService=hairService)
+
 
 class NailsServiceInput(graphene.InputObjectType):
     salonId = graphene.Int()
@@ -199,7 +246,7 @@ class CreateNailsService(graphene.Mutation):
 
         masterIds = serviceData.masterIds
         if masterIds[0]:
-          for id in masterIds[0]:
+          for id in masterIds:
             nailsService.master.add(Master.objects.get(id=id))                                      
 
         return CreateNailsService(nailsService=nailsService)
@@ -245,7 +292,7 @@ class CreateHairRemovalService(graphene.Mutation):
 
         masterIds = serviceData.masterIds
         if masterIds[0]:
-          for id in masterIds[0]:
+          for id in masterIds:
             hairRemovalService.master.add(Master.objects.get(id=id))
 
         return CreateHairRemovalService(hairRemovalService=hairRemovalService)
@@ -291,7 +338,7 @@ class CreateMakeupService(graphene.Mutation):
 
         masterIds = serviceData.masterIds
         if masterIds[0]:
-          for id in masterIds[0]:
+          for id in masterIds:
             makeupService.master.add(Master.objects.get(id=id))                                      
 
         return CreateMakeupService(makeupService=makeupService)
@@ -337,7 +384,7 @@ class CreateMassageService(graphene.Mutation):
 
         masterIds = serviceData.masterIds
         if masterIds[0]:
-          for id in masterIds[0]:
+          for id in masterIds:
             massageService.master.add(Master.objects.get(id=id))
 
         return CreateMassageService(massageService=massageService)
@@ -383,7 +430,7 @@ class CreateEyebrowService(graphene.Mutation):
 
         masterIds = serviceData.masterIds
         if masterIds[0]:
-          for id in masterIds[0]:
+          for id in masterIds:
             eyebrowService.master.add(Master.objects.get(id=id))
 
         return CreateEyebrowService(eyebrowService=eyebrowService)
@@ -429,7 +476,7 @@ class CreateCosmetologyService(graphene.Mutation):
 
         masterIds = serviceData.masterIds
         if masterIds[0]:
-          for id in masterIds[0]:
+          for id in masterIds:
             cosmetologyService.master.add(Master.objects.get(id=id))
             
         return CreateCosmetologyService(cosmetologyService=cosmetologyService)
@@ -475,7 +522,7 @@ class CreateTattooService(graphene.Mutation):
 
         masterIds = serviceData.masterIds
         if masterIds[0]:
-          for id in masterIds[0]:
+          for id in masterIds:
             tattooService.master.add(Master.objects.get(id=id))
 
         return CreateTattooService(tattooService=tattooService)
@@ -521,13 +568,17 @@ class CreateAestheticsService(graphene.Mutation):
 
         masterIds = serviceData.masterIds
         if masterIds[0]:
-          for id in masterIds[0]:
+          for id in masterIds:
             aestheticsService.master.add(Master.objects.get(id=id))
 
         return CreateAestheticsService(aestheticsService=aestheticsService)
 
+
 class ServiceMutation(graphene.ObjectType):
     create_hair_service = CreateHairService.Field() 
+    update_hair_service = UpdateHairService.Field() 
+    delete_hair_service = DeleteHairService.Field() 
+
     create_nails_service = CreateNailsService.Field() 
     create_hair_removal_service = CreateHairRemovalService.Field() 
     create_makeup_service = CreateMakeupService.Field()    
@@ -536,6 +587,7 @@ class ServiceMutation(graphene.ObjectType):
     create_cosmetology_service = CreateCosmetologyService.Field()    
     create_tattoo_service = CreateTattooService.Field() 
     create_aesthetics_service = CreateAestheticsService.Field()
+
 
     
     

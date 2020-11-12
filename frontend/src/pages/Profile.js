@@ -1,6 +1,7 @@
 import React from "react";
 import { ApolloConsumer, Query } from "@apollo/react-components";
 import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useTranslation } from 'react-i18next';
 import gql from "graphql-tag";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -30,6 +31,7 @@ const useStyles = makeStyles(styles);
 
 
 const Profile = ({ match }) => {
+  const { t, i18n } = useTranslation();
   const classes = useStyles();
   const id = match.params.id;
   console.log(id);
@@ -63,8 +65,8 @@ const Profile = ({ match }) => {
             <Card className={classes.card}>
               <CardHeader
                 avatar={<Avatar>{data.user.username[0]}</Avatar>}
-                title={`Welcome, ${data.user.username}`}
-                subheader={`Joined on ${data.user.dateJoined.substring(0,10).split("-").reverse().join("/")}`}
+                title={`${t("Welcome")}, ${data.user.username}`}
+                subheader={`${t("Joined on")} ${data.user.dateJoined.substring(0,10).split("-").reverse().join("/")}`}
               />
             </Card>
 
@@ -74,7 +76,7 @@ const Profile = ({ match }) => {
               color="primary"
               tabs={[
                 {
-                  tabButton: "Favorites",
+                  tabButton: `${t("Favorites")}`,
                   tabIcon: Favorite,
                   tabContent: (
                     <GridContainer>
@@ -84,7 +86,7 @@ const Profile = ({ match }) => {
                         md={7}
                         className={classes.gridItem}
                       >
-                        <h4 className={classes.title}>Latest Favorites</h4>
+                        <h4 className={classes.title}>{t("Latest Favorites")}</h4>
                         <FavoriteListings listings={favoriteSalons}/>
                       </GridItem>
 
@@ -94,16 +96,16 @@ const Profile = ({ match }) => {
                         md={2}
                         className={classes.gridItem}
                       >
-                        <h4 className={classes.title}>Stats</h4>
+                        <h4 className={classes.title}>{t("Stats")}</h4>
                         <ul className={classes.listUnstyled}>
                           <li>
-                            <b>{data.user.likeSet.length}</b> Favorites
+                            <b>{data.user.likeSet.length}</b> {t("Favorites")}
                           </li>
                           <li>
-                            <b>{data.user.reviewSet.length}</b> Reviews
+                            <b>{data.user.reviewSet.length}</b> {t("Reviews")}
                           </li>
                           <li>
-                            <b>0</b> Votes
+                            <b>0</b> {t("Votes")}
                           </li>
                         </ul>
                       </GridItem>
@@ -111,13 +113,13 @@ const Profile = ({ match }) => {
                   )
                 },
                 {
-                  tabButton: "Bookings",
+                  tabButton: `${t("Bookings")}`,
                   tabIcon: EventIcon,
                   tabContent: (
                     <div>
                       <Paper elevation={1} className={classes.paper}>
                         <Typography variant="title" className={classes.title}>
-                          {`Upcoming bookings: ${data.user.bookingSet.filter(event => (new Date(event.start)-new Date())>0).length}`}
+                          {`${t("Upcoming bookings")}: ${data.user.bookingSet.filter(event => (new Date(event.start)-new Date())>0).length}`}
                         </Typography>
                         {data.user.bookingSet.filter(event => (new Date(event.start)-new Date())>0).map(booking => (
                           <div key={booking.id} className={classes.collections}>
@@ -133,19 +135,19 @@ const Profile = ({ match }) => {
                               {`${new Date(booking.start).toString().slice(0,21)}`}
                             </Typography>
                             <Typography>
-                              {`Salon: ${booking.master.salon.name} with ${booking.master.masterName}`}
+                              {`${t("Salon")}: ${booking.master.salon.name} ${t("with")} ${booking.master.masterName}`}
                             </Typography>
                             <Typography>
-                              {`Service: ${booking.serviceTitle}`}
+                              {`${t("Service")}: ${booking.serviceTitle}`}
                             </Typography>
                             <Typography>
-                              {`Amount: ${booking.servicePrice} manats`}
+                              {`${t("Amount")}: ${booking.servicePrice} AZN`}
                             </Typography>
                             <Typography>
-                              {`Address: ${booking.master.salon.address}`}
+                              {`${t("Address")}: ${booking.master.salon.address}`}
                             </Typography>
                             <Typography>
-                              {`Phone: ${booking.master.salon.phone}`}
+                              {`${t("Phone")}: ${booking.master.salon.phone}`}
                             </Typography>
                             </GridItem>
                             <GridItem
@@ -168,13 +170,13 @@ const Profile = ({ match }) => {
                   )
                 },
                 {
-                  tabButton: "Reviews",
+                  tabButton: `${t("Reviews")}`,
                   tabIcon: ThumbUpIcon,
                   tabContent: (
                     <div>
                       <Paper elevation={1} className={classes.paper}>
                         <Typography variant="title" className={classes.title}>
-                          Comments
+                          {t("Comments")}
                         </Typography>
                         {data.user.reviewSet.filter(review => (review.comment != "")).map(review => (
                           <div key={review.id} className={classes.collections}>

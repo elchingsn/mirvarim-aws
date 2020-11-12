@@ -10,6 +10,8 @@ import FormControl from "@material-ui/core/FormControl";
 import Paper from "@material-ui/core/Paper";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -21,6 +23,8 @@ import Gavel from "@material-ui/icons/Gavel";
 import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
 import FormHelperText from '@material-ui/core/FormHelperText';
 import NativeSelect from '@material-ui/core/NativeSelect';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import Error from "../Shared/Error";
 import { SubjectTwoTone } from "@material-ui/icons";
@@ -36,6 +40,7 @@ const Register = ({ classes, setNewUser }) => {
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const [failureOpen, setFailureOpen] = useState({
     open: false,
@@ -123,8 +128,19 @@ const Register = ({ classes, setNewUser }) => {
                   <InputLabel htmlFor="password1">{t("Password")}</InputLabel>
                   <Input
                     id="password1"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     onChange={event => setPassword1(event.target.value)}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={() => setShowPassword(!showPassword)}
+                          onMouseDown={(event) => event.preventDefault()}
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
                   />
                   <h6 className={classes.error}>{err["password1"]&&err["password1"][0].message}</h6>
                 </FormControl>
@@ -132,11 +148,23 @@ const Register = ({ classes, setNewUser }) => {
                   <InputLabel htmlFor="password2">{t("Confirm Password")}</InputLabel>
                   <Input
                     id="password2"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     onChange={event => setPassword2(event.target.value)}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={() => setShowPassword(!showPassword)}
+                          onMouseDown={(event) => event.preventDefault()}
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    }                    
                   />
                   <h6 className={classes.error}>{err["password2"]&&err["password2"][0].message}</h6>
                 </FormControl>
+                <h6 className={classes.error}>{err["nonFieldErrors"]&&err["nonFieldErrors"][0].message}</h6>
                 <Button
                   type="submit"
                   fullWidth

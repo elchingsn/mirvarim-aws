@@ -126,7 +126,9 @@ class Salon(models.Model):
     created_by = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE)
     is_published = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
+    freelancer = models.BooleanField(default=False)
     appointment = models.BooleanField(default=False)
+    outcall = models.BooleanField(default=False)
     payment = models.BooleanField(default=False)
     list_date = models.DateTimeField(default=datetime.now, blank=True)
 
@@ -148,6 +150,7 @@ class Master(models.Model):
   master_name = models.CharField(max_length=50, blank=True)
   master_email = models.EmailField(max_length=200, blank=True)
   master_phone = models.CharField(max_length=25, blank=True)
+  home_visit = models.BooleanField(default=False)
   # photo = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
   # hair_services = models.ManyToManyField(HairService, blank=True) 
   def __str__(self):

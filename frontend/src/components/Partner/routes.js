@@ -83,11 +83,11 @@ const routes = [
         path: "/partner/:id/calendar",
         component: lazy(() => import('components/Partner/Dashboard/views/calendar/CalendarView')) 
       },
-      // {
-      //   exact: true,
-      //   path: "/partner/:id/service/edit",
-      //   component: lazy(() => import('components/Service/UpdateService'))
-      // },
+      {
+        exact: true,
+        path: "/partner/:id/service/edit",
+        component: lazy(() => import('components/Service/UpdateService'))
+      },
       // {
       //   exact: true,
       //   path: "/partner/:id/service",

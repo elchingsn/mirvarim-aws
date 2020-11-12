@@ -41,6 +41,7 @@ const EventForm = ({
   salon,
   services,
   masterId,
+  range,
   handleModalClose
 }) => {
   const classes = useStyles()
@@ -54,8 +55,8 @@ const EventForm = ({
     customerMobile: '',
     serviceTitle: '',
     servicePrice: 30,
-    duration: 30,
-    start: ''
+    duration: range.duration,
+    start: range.start
   })
 
   console.log('bookingdata', bookingData)
@@ -163,6 +164,7 @@ const EventForm = ({
                 id="datetime-local"
                 label="Start date"
                 type="datetime-local"
+                value={bookingData.start}
                 onChange={(e) => setBookingData({...bookingData, start: e.target.value})}
                 InputLabelProps={{
                   shrink: true,

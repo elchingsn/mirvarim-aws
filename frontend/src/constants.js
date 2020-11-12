@@ -3,3 +3,6 @@ export const THEMES = {
   DARK: 'DARK',
   UNICORN: 'UNICORN'
 }; 
+
+export const ENABLE_REDUX_DEV_TOOLS = true;
+

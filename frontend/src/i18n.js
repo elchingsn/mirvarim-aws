@@ -21,6 +21,10 @@ i18n
     lng: localStorage.getItem("i18nextLng") || 'aze',
     fallbackLng: {'default': ['aze']},
     whitelist: ['aze','en','ru'],
+
+    // allow keys to be phrases having `:`, `.`
+    nsSeparator: false,
+    keySeparator: false,
  
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default

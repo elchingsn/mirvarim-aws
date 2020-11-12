@@ -12,6 +12,7 @@ import Salon from "./pages/Salon";
 import SalonDetail from "./pages/SalonDetail";
 import Partner from "./pages/Partner";
 import Privacy from "pages/Privacy"
+import Contact from "pages/Contact"
 
 import Navbar from "./components/Partials/Navbar";
 import MainFooter from "components/Partials/MainFooter"
@@ -36,10 +37,12 @@ const App = () => (
         <Route exact path="/login" component={Auth} />
         <Route path="/activate/:token" component={Activate} />
         <Route path="/reset" component={SendPasswordReset} />
+        <Route exact path="/partner" component={Auth} />
         <Route path="/password-reset/:token" component={PasswordReset} />
         <Route exact path="/salon" component={Salon} />
         <Route path="/salon/:id" component={SalonDetail} />
         <Route exact path="/privacy" component={Privacy} />
+        <Route exact path="/contact" component={Contact} />
         {/* redirects not matched routes to home */}
         <Route render={() => <Redirect to="/" />} />
       </Switch>

@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { Query } from "@apollo/react-components";
+import { useTranslation } from 'react-i18next';
 import { ApolloConsumer, useApolloClient, useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import Loading from "../Shared/Loading";
@@ -46,11 +47,8 @@ import CardFooter from "./CardFooter.js";
 import Button from "./Button.js";
 import Clearfix from "./Clearfix.js";
 
-import salonImage from "../../assets/img/salon1.jpeg"
-
 import styles from "../../assets/jss/filterStyle.js";
 import { node } from "prop-types";
-import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(styles);
 
@@ -61,7 +59,8 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   const { t, i18n } = useTranslation();
 
   const [booking, setBooking] = useState(false);
-  const [promo, setPromo] = useState(false);
+  const [onlysalons, setOnlysalons] = useState(false);
+  const [outcall, setOutcall] = useState(false);
   const [area, setArea] = useState([]);
   const [hair, setHair] = useState([]);
   const [nails, setNails] = useState([]);
@@ -89,6 +88,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   const [checkedCat, setCheckedCat] = useState(initCheckedCat);
   const [serviceValue, setServiceValue] = useState(initServiceValue);
 
+  const [resultsnum, setResultsnum] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [salonsPerPage, setSalonsPerPage] = useState(3);
   const [count, setCount] = useState(1);
@@ -184,9 +184,8 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   const classes = useStyles(); 
 
   const CategoryServices = ({catValue}) => {
-    console.log('catvalue', catValue)
     switch (catValue) {
-      case t("Hair"):
+      case `${t("Hair")}`:
         return(
           <div className={classes.paddingTB}>
             <FormControl component="fieldset" >
@@ -197,9 +196,6 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                 if (loading) return <Loading />;
                 if (error) return <Error error={error} />;
                 const categories = data.hairCat.map(item => item.title);
-                console.log("checkedCat",checkedCat);
-                console.log("hair",hair);
-                console.log('categories',categories)
                 if (checkedCat.length) {setHair(checkedCat)}
                 else if (hair.length != categories.length) {setHair(categories)}
                 return(
@@ -224,7 +220,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                     />
                   }
                   classes={{ label: classes.label }}
-                  label={node}
+                  label={t(`${node}`)}
                 />
                 )));
             }}
@@ -233,7 +229,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
             </FormControl>
           </div>
         );
-        case "Nails":
+        case `${t("Nails")}`:
           return(
             <div className={classes.paddingTB}>
               <FormControl component="fieldset" >
@@ -268,7 +264,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                       />
                     }
                     classes={{ label: classes.label }}
-                    label={node}
+                    label={t(`${node}`)}
                   />
                   )));
                 }}
@@ -277,7 +273,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
           </FormControl>
         </div>
       );
-      case "Hair Removal":
+      case `${t("Hair Removal")}`:
         return(
           <div className={classes.paddingTB}>
             <FormControl component="fieldset" >
@@ -312,7 +308,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                     />
                   }
                   classes={{ label: classes.label }}
-                  label={node}
+                  label={t(`${node}`)}
                 />
                 )));
               }}
@@ -321,7 +317,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
           </FormControl>
         </div>
        );
-       case "Makeup":
+       case `${t("Makeup")}`:
         return(
           <div className={classes.paddingTB}>
             <FormControl component="fieldset" >
@@ -356,7 +352,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                     />
                   }
                   classes={{ label: classes.label }}
-                  label={node}
+                  label={t(`${node}`)}
                 />
                 )));
             }}
@@ -365,7 +361,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
             </FormControl>
           </div>
         );
-        case t("Massage"):
+        case `${t("Massage")}`:
           return(
             <div className={classes.paddingTB}>
               <FormControl component="fieldset" >
@@ -400,7 +396,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                       />
                     }
                     classes={{ label: classes.label }}
-                    label={node}
+                    label={t(`${node}`)}
                   />
                   )));
                 }}
@@ -409,7 +405,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
           </FormControl>
         </div>
       );
-      case "Eyebrow":
+      case `${t("Eyebrow")}`:
         return(
           <div className={classes.paddingTB}>
             <FormControl component="fieldset" >
@@ -447,7 +443,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                     />
                   }
                   classes={{ label: classes.label }}
-                  label={node}
+                  label={t(`${node}`)}
                 />
                 )));
             }}
@@ -456,7 +452,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
             </FormControl>
           </div>
         );
-        case "Cosmetology":
+        case `${t("Cosmetology")}`:
           return(
             <div className={classes.paddingTB}>
               <FormControl component="fieldset" >
@@ -493,7 +489,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                       />
                     }
                     classes={{ label: classes.label }}
-                    label={node}
+                    label={t(`${node}`)}
                   />
                   )));
               }}
@@ -502,7 +498,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
               </FormControl>
             </div>
           );
-          case "Tattoo":
+          case `${t("Tattoo")}`:
             return(
               <div className={classes.paddingTB}>
                 <FormControl component="fieldset" >
@@ -539,7 +535,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                         />
                       }
                       classes={{ label: classes.label }}
-                      label={node}
+                      label={t(`${node}`)}
                     />
                     )));
                 }}
@@ -548,7 +544,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                 </FormControl>
               </div>
             );
-            case "Aesthetics":
+            case `${t("Aesthetics")}`:
               return(
                 <div className={classes.paddingTB}>
                   <FormControl component="fieldset" >
@@ -585,7 +581,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                           />
                         }
                         classes={{ label: classes.label }}
-                        label={node}
+                        label={t(`${node}`)}
                       />
                       )));
                   }}
@@ -610,10 +606,10 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
             <Card plain>
               <CardBody className={classes.cardBodyRefine}>
                 <h4 className={classes.cardTitle + " " + classes.textLeft}>
-                  Reset filter
+                  {t("Reset filter")}
                   <Tooltip
                     id="tooltip-top"
-                    title="Reset Filter"
+                    title={t("Reset filter")}
                     placement="top"
                     classes={{ tooltip: classes.tooltip }}
                   >
@@ -626,7 +622,8 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                         setCatDisplay(true);
                         setCatValue("");
                         setCheckedCat([]);
-                        setPromo(false);
+                        setOutcall(false);
+                        setOnlysalons(false);
                         setBooking(false);                        
                         setArea([]);
                         setHair([]);
@@ -651,26 +648,6 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                   control={
                     <Checkbox
                       //tabIndex={-1}
-                      onClick={() => setPromo(!promo)}
-                      checked={promo}
-                      checkedIcon={
-                        <Check className={classes.checkedIcon} />
-                      }
-                      icon={
-                        <Check className={classes.uncheckedIcon} />
-                      }
-                      classes={{
-                        checked: classes.checked,
-                        root: classes.checkRoot
-                      }}
-                    />
-                  }
-                  classes={{ label: classes.label }}
-                  label="Promotions"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
                       onClick={() => setBooking(!booking)}
                       checked={booking}
                       checkedIcon={
@@ -686,7 +663,48 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                     />
                   }
                   classes={{ label: classes.label }}
-                  label="Online booking"
+                  label={t("Online booking")}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onClick={() => setOnlysalons(!onlysalons)}
+                      checked={onlysalons}
+                      checkedIcon={
+                        <Check className={classes.checkedIcon} />
+                      }
+                      icon={
+                        <Check className={classes.uncheckedIcon} />
+                      }
+                      classes={{
+                        checked: classes.checked,
+                        root: classes.checkRoot
+                      }}
+                    />
+                  }
+                  classes={{ label: classes.label }}
+                  label={t("Only salons")}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      //tabIndex={-1}
+                      onClick={() => setOutcall(!outcall)}
+                      checked={outcall}
+                      checkedIcon={
+                        <Check className={classes.checkedIcon} />
+                      }
+                      icon={
+                        <Check className={classes.uncheckedIcon} />
+                      }
+                      classes={{
+                        checked: classes.checked,
+                        root: classes.checkRoot
+                      }}
+                    />
+                  }
+                  classes={{ label: classes.label }}
+                  label={t("Home visit")}
                 />
                 </div>
                 <Divider/>
@@ -697,12 +715,14 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                       if (loading) return <Loading />;
                       if (error) return <Error error={error} />;
                       const categories = data.area.map(item => item.title);
+                      const categories1 = data.area.map(item => item.id);
                     return  <Autocomplete
                               multiple
-                              limitTags={3}
+                              limitTags={5}
                               id="size-small-standard-multi"
                               size="small"
                               options={categories}
+                              getOptionLabel={option => t(`${option}`)}
                               value={area}
                               onChange={(event,value) => {
                                 setArea(value);
@@ -710,9 +730,10 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                               }}
                               renderInput={(params) => (
                                 <TextField {...params} 
-                                variant="outlined" 
-                                label="Location" 
-                                placeholder="More areas" />
+                                  variant="outlined" 
+                                  label={t("Location")} 
+                                  placeholder={t("More areas")}
+                                />
                               )}
                             />
                           }}
@@ -722,23 +743,22 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                 <div className={classes.paddingTB}>
                 {catDisplay ? (
                   <FormControl component="fieldset">
-                    <FormLabel component="legend" style={{paddingBottom:"10px"}}>Category</FormLabel>
+                    <FormLabel component="legend" style={{paddingBottom:"10px"}}>{t("Category")}</FormLabel>
                     <RadioGroup
                       aria-label="category"
                       name="category"
                       value={catValue}
                       onChange={handleCatChange}
                     >
-                      <FormControlLabel value="Hair" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}} />} label="Hair" />
-                      <FormControlLabel value="Nails" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Nails" />
-                      <FormControlLabel value="Hair Removal" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Hair Removal" />
-                      <FormControlLabel value="Makeup" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Makeup" />
+                      <FormControlLabel value={t("Hair")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}} />} label={t("Hair")} />
+                      <FormControlLabel value={t("Nails")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Nails")} />
+                      <FormControlLabel value={t("Hair Removal")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Hair Removal")} />
+                      <FormControlLabel value={t("Makeup")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Makeup")} />
                       <FormControlLabel value={t("Massage")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Massage")} />
-                      <FormControlLabel value="Eyebrow" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Eyebrow" />
-                      <FormControlLabel value="Cosmetology" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Cosmetology" />
-                      <FormControlLabel value="Tattoo" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Tattoo" />
-                      <FormControlLabel value="Aesthetics" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Aesthetics" />
-
+                      <FormControlLabel value={t("Eyebrow")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Eyebrow")} />
+                      <FormControlLabel value={t("Cosmetology")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Cosmetology")} />
+                      <FormControlLabel value={t("Tattoo")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Tattoo/Piercing")} />
+                      <FormControlLabel value={t("Aesthetics")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Aesthetics")} />
                     </RadioGroup>
                   </FormControl>) : 
                   (<div>
@@ -795,9 +815,8 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                   <Close />
                 </IconButton>
                 <div className={classes.container}>
-
                   <h4 className={classes.cardTitle + " " + classes.textLeft}>
-                    Reset filter
+                    {t("Reset filter")}
                     <Tooltip
                       id="tooltip-top"
                       title="Reset Filter"
@@ -813,7 +832,8 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                           setCatDisplay(true);
                           setCatValue("");
                           setCheckedCat([]);
-                          setPromo(false);
+                          setOnlysalons(false);
+                          setOutcall(false);
                           setBooking(false);
                           setArea([]);
                           setHair([]);
@@ -833,28 +853,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                     <Clearfix />
                   </h4>
                   <Divider/>
-
                   <div className={classes.paddingTB}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          onClick={() => setPromo(!promo)}
-                          checked={promo}
-                          checkedIcon={
-                            <Check className={classes.checkedIcon} />
-                          }
-                          icon={
-                            <Check className={classes.uncheckedIcon} />
-                          }
-                          classes={{
-                            checked: classes.checked,
-                            root: classes.checkRoot
-                          }}
-                        />
-                      }
-                      classes={{ label: classes.label }}
-                      label="Promotions"
-                    />
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -873,7 +872,47 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                         />
                       }
                       classes={{ label: classes.label }}
-                      label="Online booking"
+                      label={t("Online booking")}
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          onClick={() => setOnlysalons(!onlysalons)}
+                          checked={onlysalons}
+                          checkedIcon={
+                            <Check className={classes.checkedIcon} />
+                          }
+                          icon={
+                            <Check className={classes.uncheckedIcon} />
+                          }
+                          classes={{
+                            checked: classes.checked,
+                            root: classes.checkRoot
+                          }}
+                        />
+                      }
+                      classes={{ label: classes.label }}
+                      label={t("Only salons")}
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          onClick={() => setOutcall(!outcall)}
+                          checked={outcall}
+                          checkedIcon={
+                            <Check className={classes.checkedIcon} />
+                          }
+                          icon={
+                            <Check className={classes.uncheckedIcon} />
+                          }
+                          classes={{
+                            checked: classes.checked,
+                            root: classes.checkRoot
+                          }}
+                        />
+                      }
+                      classes={{ label: classes.label }}
+                      label={t("Home visit")}
                     />
                     </div>
                     <Divider/>
@@ -890,6 +929,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                                   id="size-small-standard-multi"
                                   size="small"
                                   options={categories}
+                                  getOptionLabel={option => t(`${option}`)}
                                   value={area}
                                   onChange={(event,value) => {
                                     setArea(value);
@@ -898,8 +938,9 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                                   renderInput={(params) => (
                                     <TextField {...params} 
                                     variant="outlined" 
-                                    label="Location" 
-                                    placeholder="More areas" />
+                                    label={t("Location")} 
+                                    placeholder={t("More areas")}
+                                    />
                                   )}
                                 />
                               }}
@@ -909,18 +950,22 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                     <div className={classes.paddingTB}>
                     {catDisplay ? (
                       <FormControl component="fieldset">
-                        <FormLabel component="legend" style={{paddingBottom:"10px"}}>Category</FormLabel>
+                        <FormLabel component="legend" style={{paddingBottom:"10px"}}>{t("Category")}</FormLabel>
                         <RadioGroup
                           aria-label="category"
                           name="category"
                           value={catValue}
                           onChange={handleCatChange}
                         >
-                          <FormControlLabel value="Hair" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}} />} label="Hair" />
-                          <FormControlLabel value="Nails" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Nails" />
-                          <FormControlLabel value="Hair Removal" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Hair Removal" />
-                          <FormControlLabel value="Makeup" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Makeup" />
-                          <FormControlLabel value="Massage" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label="Massage" />
+                          <FormControlLabel value="Hair" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}} />} label={t("Hair")} />
+                          <FormControlLabel value="Nails" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Nails")} />
+                          <FormControlLabel value="Hair Removal" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Hair Removal")} />
+                          <FormControlLabel value="Makeup" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Makeup")} />
+                          <FormControlLabel value="Massage" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Massage")} />
+                          <FormControlLabel value="Eyebrow" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Eyebrow")} />
+                          <FormControlLabel value="Cosmetology" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Cosmetology")} />
+                          <FormControlLabel value="Tattoo" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Tattoo/Piercing")} />
+                          <FormControlLabel value="Aesthetics" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Aesthetics")} />
                         </RadioGroup>
                       </FormControl>) : 
                       (<div>
@@ -958,26 +1003,35 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
 
           <GridItem xs={12} sm={12} md={8} lg={9}>
             {/* <GridContainer> */}
-              <Query query={FILTERED_SALONS_QUERY} 
-                variables={{area, hair, nails, makeup, massage, eyebrow, cosmetology, tattoo, aesthetics}} 
-                fetchPolicy='network-only'>
-                {({data, loading, error}) => {
-                  if (loading) return <Loading />;
-                  if (error) return <Error error={error} />;
-                  console.log('area', area)
-                  console.log('hair', hair)
-                  console.log('nails', nails)
-                    // Get current salons
-                  const currentSalons = data.salonsFiltered.slice(indexOfFirstSalon, indexOfLastSalon);
-                  setCount(Math.ceil(data.salonsFiltered.length/salonsPerPage))
-                  console.log(currentSalons)
-                return <FilterListings listings = {currentSalons}/>
-                      }}
-                </Query>
+            <Query query={FILTERED_SALONS_QUERY} 
+              variables={{booking, onlysalons, outcall, area, hair, nails, makeup, massage, eyebrow, cosmetology, tattoo, aesthetics}} 
+              fetchPolicy='network-only'>
+              {({data, loading, error}) => {
+                if (loading) return <Loading />;
+                if (error) return <Error error={error} />;
+                setResultsnum(data.salonsFiltered.length)
+                if (data.salonsFiltered.length == 0) return <p> {t("No listing found")} </p>
+                console.log('area', area)
+                console.log('hair', resultsnum)
+                console.log('booking', booking)
+                  // Get current salons
+                const currentSalons = data.salonsFiltered.slice(indexOfFirstSalon, indexOfLastSalon);
+                setCount(Math.ceil(data.salonsFiltered.length/salonsPerPage))
+                console.log(currentSalons)
+                return (
+                  <div>
+                    <p> {t("Listings found:")} {resultsnum} </p>
+                   <FilterListings listings = {currentSalons}/>
+                  </div>
+                )
+              }}
+            </Query>
             {/* </GridContainer> */}
-            <div style={{display:"flex", justifyContent:"center", paddingTop:"30px"}}>
-             <Pagination count={count} page={currentPage} onChange={handlePageChange} />
-            </div>
+            {Boolean(resultsnum) &&
+              (<div style={{display:"flex", justifyContent:"center", paddingTop:"30px"}}>
+              <Pagination count={count} page={currentPage} onChange={handlePageChange} />
+              </div>)
+            }
           </GridItem>       
         </GridContainer>
         <Hidden mdUp>
@@ -1000,6 +1054,9 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
 
 const FILTERED_SALONS_QUERY = gql`
 query(
+      $booking: Boolean,
+      $onlysalons: Boolean,
+      $outcall: Boolean,
       $area:[String],
       $hair:[String],
       $nails:[String]
@@ -1010,7 +1067,10 @@ query(
       $tattoo:[String],
       $aesthetics:[String]
       ) {
-    salonsFiltered(area: $area,
+    salonsFiltered(booking: $booking,
+                   onlysalons: $onlysalons,
+                   outcall: $outcall,
+                   area: $area,
                    hair: $hair,
                    nails: $nails
                    makeup: $makeup,

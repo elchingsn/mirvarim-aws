@@ -1,6 +1,7 @@
 /*eslint-disable*/
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // @material-ui/core components
@@ -22,8 +23,8 @@ import styles from "assets/jss/mainFooterStyle.js";
 const useStyles = makeStyles(styles);
 
 const SectionFooter = (props) => {
+  const { t, i18n } = useTranslation();
   const classes = useStyles();
-
   const { currentUser } = props;
 
   if(props.location.pathname.match(/partner/)){
@@ -47,7 +48,9 @@ const SectionFooter = (props) => {
                       target="_blank"
                       className={classes.block}
                     >
-                     Mirvarim
+                      <Link to="/">
+                        Mirvarim
+                      </Link>
                     </a>
                   </ListItem>
                   <ListItem className={classes.inlineBlock}>
@@ -56,7 +59,7 @@ const SectionFooter = (props) => {
                       className={classes.block}
                     >
                       <Link to="/privacy">
-                        Privacy Policy
+                        {t("Privacy Policy")}
                       </Link>
                     </a>
                   </ListItem>
@@ -65,10 +68,12 @@ const SectionFooter = (props) => {
                       href="#contact"
                       className={classes.block}
                     >
-                      Contact
+                      <Link to="/contact">
+                        {t("Contact")}
+                      </Link>
                     </a>
                   </ListItem>
-                  <ListItem className={classes.inlineBlock}>
+                  {/* <ListItem className={classes.inlineBlock}>
                     <a
                       href="#help"
                       target="_blank"
@@ -76,7 +81,7 @@ const SectionFooter = (props) => {
                     >
                       Help
                     </a>
-                  </ListItem>
+                  </ListItem> */}
                 </List>
               </div>
               {/* <div className={classes.pullCenter}>

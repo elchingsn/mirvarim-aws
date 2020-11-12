@@ -62,6 +62,7 @@ const Verify = ({verifyAccount}) => {
     <Link to="/reset">
       {t("Change password")}
     </Link>
+    <br/>
     <Link to="/">
       {t("Return to the main page")}
     </Link>

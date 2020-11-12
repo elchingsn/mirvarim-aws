@@ -8,7 +8,6 @@ import { useHistory, Redirect } from 'react-router-dom';
 import gql from "graphql-tag";
 import classNames from "classnames";
 
-
 import Box from "@material-ui/core/Box";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -51,7 +50,7 @@ const UpdateMaster = ({classes}) => {
   if (!currentUser.salonSet[0]) {
       return <div> No salon added. Please add a salon</div>
   } else if (!currentUser.salonSet[0].masterSet[0]) {
-    return <div> No salon added. Please add a salon</div>
+    return <div> No master added. Please add a master</div>
   } else {
     return <SelectMaster classes={classes} currentUser={currentUser} />
   }
@@ -268,6 +267,7 @@ const UPDATE_MASTER_MUTATION = gql`
     }
   }
 `;
+
 const styles = theme => ({
   container: {
     display: "flex",

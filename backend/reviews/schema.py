@@ -6,6 +6,7 @@ from graphene_file_upload.scalars import Upload
 from django.core.files.storage import FileSystemStorage
 from PIL import Image
 import datetime 
+from django.core.mail import send_mail
 
 from .models import Review, Vote, Like
 from salons.models import Salon
@@ -142,11 +143,36 @@ class DeleteLike(graphene.Mutation):
 
         return DeleteLike(like_id=like_id)
 
+class ContactInput(graphene.InputObjectType):
+    subject = graphene.String()
+    message = graphene.String()
+    email = graphene.String()
+
+class SendFeedback(graphene.Mutation):
+    success = graphene.Boolean()
+
+    class Arguments:
+      contact_data = ContactInput(required=True)
+    
+    @staticmethod
+    def mutate(root,info,contact_data):
+        send_mail(
+          'from {}: from {}'.format(contact_data.email, contact_data.subject),
+          contact_data.message,
+          contact_data.email,
+          ['mirvarim.partner@gmail.com'],
+          fail_silently=False,
+        )
+
+        return SendFeedback(success=True)
+
+
 class ReviewMutation(graphene.ObjectType):
     create_review = CreateReview.Field() 
     create_vote = CreateVote.Field() 
     create_like = CreateLike.Field() 
     delete_like = DeleteLike.Field() 
+    send_feedback = SendFeedback.Field()
 
 
 

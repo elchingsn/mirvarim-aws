@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import { useMutation } from '@apollo/react-hooks';
 import axios from "axios";
 import classNames from "classnames";
+import { useTranslation } from 'react-i18next';
 
 import { ApolloConsumer, Query, Mutation } from "@apollo/react-components";
 import { useHistory } from 'react-router-dom';
@@ -53,6 +54,7 @@ const labels = {
 
 const Review = ({match})=>{
     // const [form, setForm] = useState(false);
+  const { t, i18n } = useTranslation();
 
   React.useEffect(() => {
       window.scrollTo(0, 0);
@@ -76,7 +78,7 @@ const Review = ({match})=>{
   const salon_id = match.params.id;
 
   function getSteps() {
-    return ['Provide feedback', 'Add rating', 'Add comment [optional]', 'Submit'];
+    return [`${t("Provide feedback")}`, `${t("Add rating")}`, `${t("Add comment [optional]")}`, `${t("Submit")}`];
   }
 
   const Question = ({setQuestion, number, question, style, selected}) => {
@@ -88,34 +90,32 @@ const Review = ({match})=>{
           </GridItem>
           <GridItem xs={6} sm={2} md={2} lg={1} className = {classes.grid}>
               <IconButton className = {classNames({[classes[`${style}`]] : selected === 1})}
-              aria-label="question1" onClick = {() => {setQuestion(1);
-                                                      console.log("answered");
-                                                      }}
+              aria-label="question1" onClick = {() => setQuestion(1)}
               >
                 <MoodIcon className = {classes.button} color="primary"/>
               </IconButton>
-              <h5 style = {{ textAlign: "center", margin: "0"}} > Yes </h5>
+              <h5 style = {{ textAlign: "center", margin: "0"}} > {t("Yes")} </h5>
           </GridItem> 
           <GridItem xs={6} sm={2} md={2} lg={1} className = {classes.grid}>
           <IconButton className = {classNames({[classes[`${style}`]] : selected === 2})}
               aria-label="question1" onClick = {() => setQuestion(2)} >
                 <SentimentSatisfiedIcon className = {classes.button} color="secondary" />
               </IconButton>
-              <h5 style = {{ textAlign: "center", margin: "0"}} > Bele de </h5>
+              <h5 style = {{ textAlign: "center", margin: "0"}} > {t("Almost")} </h5>
           </GridItem> 
           <GridItem xs={6} sm={2} md={2} lg={1} className = {classes.grid}>
           <IconButton className = {classNames({[classes[`${style}`]] : selected === 3})}
               aria-label="question1" onClick = {() => setQuestion(3)} >
                 <SentimentVeryDissatisfiedIcon className = {classes.button} color="error" />
               </IconButton>
-              <h5 style = {{ textAlign: "center", margin: "0"}} > No </h5>
+              <h5 style = {{ textAlign: "center", margin: "0"}} > {t("No")} </h5>
           </GridItem> 
           <GridItem xs={6} sm={2} md={2} lg={1} className = {classes.grid}>
           <IconButton className = {classNames({[classes[`${style}`]] : selected === 4})}
               aria-label="question1" onClick = {() => setQuestion(4)} >
                 <NotInterestedIcon className = {classes.button} />
               </IconButton>
-              <h5 style = {{ textAlign: "center", margin: "0"}} > No idea </h5>
+              <h5 style = {{ textAlign: "center", margin: "0"}} > {t("No opinion")} </h5>
           </GridItem> 
         </GridContainer>
       </div>
@@ -128,19 +128,19 @@ const Review = ({match})=>{
       case 0:
         return (
           <div>
-            <h3 style = {{marginLeft: "20px"}}> Please answer below questions</h3>
-            <Question setQuestion={setQuestion1} number="1." question="Was it clean?" style="button1" selected={question1}/>
-            <Question setQuestion={setQuestion2} number="2." question="Was it professional?" style="button1" selected={question2}/>
-            <Question setQuestion={setQuestion3} number="3." question="Was it punctual?" style="button1" selected={question3}/>
-            <Question setQuestion={setQuestion4} number="4." question="Was it easy to find?" style="button1" selected={question4}/>
-            <Question setQuestion={setQuestion5} number="5." question="Was it good value for money?" style="button1" selected={question5}/>
+            <h3 style = {{marginLeft: "20px"}}> {t("Please answer below questions")}</h3>
+            <Question setQuestion={setQuestion1} number="1." question={t("Was it clean?")} style="button1" selected={question1}/>
+            <Question setQuestion={setQuestion2} number="2." question={t("Was it professional?")} style="button1" selected={question2}/>
+            <Question setQuestion={setQuestion3} number="3." question={t("Was it punctual?")} style="button1" selected={question3}/>
+            <Question setQuestion={setQuestion4} number="4." question={t("Was it easy to find?")} style="button1" selected={question4}/>
+            <Question setQuestion={setQuestion5} number="5." question={t("Was it good value for money?")} style="button1" selected={question5}/>
             {console.log (question1, question2, question3, question4, question5)}
           </div>
         );
       case 1:
         return (
           <div style = {{marginLeft: "30px"}}>
-            <h3> Please rate the salon</h3>
+            <h3> {t("Please rate the salon")}</h3>
             <StarRating
             numberOfStars="5"
             rating="0"
@@ -154,19 +154,19 @@ const Review = ({match})=>{
       case 2:
         return (
           <div style = {{marginLeft: "30px"}}>
-            <h3> Please add a comment if you wish</h3>
+            <h3> {t("Please add a comment if you wish")}</h3>
             <GridContainer style = {{width:"100%"}}>
               <GridItem xs={12} sm={12} md={8} >
                 <TextField
-                          multiline
-                          rows="6"
-                          label="Comment"
-                          placeholder="Add Comment"
-                          onChange={event => setComment(event.target.value)}
-                          value={comment}
-                          variant="outlined"
-                          fullWidth
-                        />
+                  multiline
+                  rows="6"
+                  label={t("Comment")}
+                  placeholder={t("Add Comment")}
+                  onChange={event => setComment(event.target.value)}
+                  value={comment}
+                  variant="outlined"
+                  fullWidth
+                />
                 </GridItem>
               </GridContainer>
           </div>
@@ -174,7 +174,7 @@ const Review = ({match})=>{
       case 3:
         return (
           <div style = {{marginLeft: "30px"}}>
-            <h3> Thank you for your feedback! </h3>
+            <h3> {("Thank you for your feedback!")} </h3>
           </div>
         );      
       default:
@@ -230,10 +230,10 @@ const Review = ({match})=>{
                 <div>
                   {activeStep === steps.length ? (
                     <div>
-                      <Button onClick={handleReset} className={classes.backButton}>Change</Button>
+                      <Button onClick={handleReset} className={classes.backButton}>{("Change")}</Button>
                       <Link to={`/salon/${salon_id}`}>
                         <Button className={classes.backButton}
-                        variant="contained" color="primary" > Go to the salon page </Button>
+                        variant="contained" color="primary" > {("Go to the salon page")} </Button>
                       </Link> 
                     </div>
                   ) : (

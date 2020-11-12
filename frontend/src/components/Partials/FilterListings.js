@@ -1,8 +1,9 @@
 import React, {useRef, useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import classNames from "classnames";
+import { useTranslation } from 'react-i18next';
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";                                                                    
 import Rating from '@material-ui/lab/Rating';
 // @material-ui/icons
 // import  from "@material-ui/icons/";
@@ -25,13 +26,14 @@ import purple from '@material-ui/core/colors/purple';
 
 
 import styles from "../../assets/jss/filterListingsStyle.js";
-import img from "../../assets/img/salon1.jpeg"
 import { concat } from "apollo-link";
 
 const useStyles = makeStyles(styles);
 
 const FilterListings = ({listings}) =>{
+    const { t, i18n } = useTranslation();
     console.log(listings)
+
     const classes = useStyles();
     const API_BASE = `${process.env.REACT_APP_API_BASE}/media`    
     const [isFavorite, setFavorite] = useState(false)
@@ -81,7 +83,7 @@ const FilterListings = ({listings}) =>{
                 <div>
                   <Rating name="read-only" size="small" value={avgRating} precision={0.1} readOnly />
                 </div>
-                <span>{countReviews} reviews</span>
+                <span>{countReviews} {t("reviews")}</span>
                 <p className={classNames(classes.description1, classes.truncate)}>
                     {listing.description}
                 </p>
@@ -147,11 +149,11 @@ const FilterListings = ({listings}) =>{
               <CardFooter style={{padding:"10px"}}>
                   <>
                   <div className={classes.priceContainer}>
-                    {services[1].title} 
+                    {t(`${services[1].title}`)}
                   </div>
                   <div style={{paddingLeft:"15px"}}>
                     &nbsp;  
-                    <i className="far fa-clock">&nbsp;{services[1].duration} min</i>
+                    <i className="far fa-clock">&nbsp;{services[1].duration} {t("min")}</i>
                   </div>
                   <div className={classNames(classes.stats, classes.mlAuto)}>
                     {services[1].promotionPrice ? (
@@ -179,11 +181,11 @@ const FilterListings = ({listings}) =>{
               <CardFooter style={{padding:"10px"}}>
                   <>
                   <div className={classes.priceContainer}>
-                    {services[2].title} 
+                  {t(`${services[2].title}`)} 
                   </div>
                   <div style={{paddingLeft:"15px"}}>
                     &nbsp;  
-                    <i className="far fa-clock">&nbsp;{services[2].duration} min</i>
+                    <i className="far fa-clock">&nbsp;{services[2].duration} {t("min")}</i>
                   </div>
                   <div className={classNames(classes.stats, classes.mlAuto)}>
                     {services[2].promotionPrice ? (

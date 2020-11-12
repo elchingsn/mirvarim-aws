@@ -1,7 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 from graphql import GraphQLError
-from django.db.models import Q
+from django.db.models import Q, Case, When
 from graphene_file_upload.scalars import Upload
 from django.core.files.storage import FileSystemStorage
 from mirvarix.storage_backends import PublicMediaStorage
@@ -81,6 +81,9 @@ class Query(graphene.ObjectType):
     salons = graphene.List(SalonType, search=graphene.String())
     bookings = graphene.List(BookingType, id=graphene.String(), email=graphene.String())
     salons_filtered = graphene.List(SalonType, 
+                                    booking=graphene.Boolean(),
+                                    onlysalons=graphene.Boolean(),
+                                    outcall=graphene.Boolean(),
                                     area=graphene.List(graphene.String),
                                     hair=graphene.List(graphene.String),
                                     nails=graphene.List(graphene.String),
@@ -125,14 +128,34 @@ class Query(graphene.ObjectType):
               
         return Salon.objects.all()
     
-    def resolve_salons_filtered(self, info, area=[], hair=[], nails=[], hairRemoval=[], makeup=[], massage=[],
-                                eyebrow=[], cosmetology=[], tattoo=[], aesthetics=[]):
+    def resolve_salons_filtered(self, info, booking=False, onlysalons=False, outcall=False, area=[], hair=[], nails=[], hairRemoval=[],
+                                makeup=[], massage=[],eyebrow=[], cosmetology=[], tattoo=[], aesthetics=[]):
 
         if area and (not (hair or nails or hairRemoval or makeup or massage or eyebrow or cosmetology or tattoo or aesthetics)):
-            return Salon.objects.filter(area__title__in=area).distinct()
+            return Salon.objects.filter((Q(appointment=booking)|Q(appointment=True)) &
+                                        (~Q(freelancer=onlysalons)|Q(freelancer=False)) &
+                                        (Q(outcall=outcall)|Q(outcall=True)) &
+                                        Q(area__title__in=area)).distinct()
         
         if area and (hair or nails or hairRemoval or makeup or massage or eyebrow or cosmetology or tattoo or aesthetics):
-            return Salon.objects.filter(Q(area__title__in=area) &
+            return Salon.objects.filter((Q(appointment=booking)|Q(appointment=True)) &
+                                        (~Q(freelancer=onlysalons)|Q(freelancer=False)) &
+                                        (Q(outcall=outcall)|Q(outcall=True)) &
+                                        Q(area__title__in=area) &
+                                        Q(hair_categories__title__in=hair) |
+                                        Q(nails_categories__title__in=nails)|
+                                        Q(hair_removal_categories__title__in=hairRemoval)|
+                                        Q(makeup_categories__title__in=makeup)|
+                                        Q(massage_categories__title__in=massage)|
+                                        Q(eyebrow_categories__title__in=eyebrow)|
+                                        Q(cosmetology_categories__title__in=cosmetology)|
+                                        Q(tattoo_categories__title__in=tattoo)|
+                                        Q(aesthetics_categories__title__in=aesthetics)).distinct()
+        
+        if not area and (hair or nails or hairRemoval or makeup or massage or eyebrow or cosmetology or tattoo or aesthetics):
+            return Salon.objects.filter((Q(appointment=booking)|Q(appointment=True)) &
+                                        (~Q(freelancer=onlysalons)|Q(freelancer=False)) &
+                                        (Q(outcall=outcall)|Q(outcall=True)) &
                                         (Q(hair_categories__title__in=hair) |
                                         Q(nails_categories__title__in=nails)|
                                         Q(hair_removal_categories__title__in=hairRemoval)|
@@ -143,18 +166,9 @@ class Query(graphene.ObjectType):
                                         Q(tattoo_categories__title__in=tattoo)|
                                         Q(aesthetics_categories__title__in=aesthetics))).distinct()
         
-        if not area and (hair or nails or hairRemoval or makeup or massage or eyebrow or cosmetology or tattoo or aesthetics):
-            return Salon.objects.filter(Q(hair_categories__title__in=hair) |
-                                        Q(nails_categories__title__in=nails)|
-                                        Q(hair_removal_categories__title__in=hairRemoval)|
-                                        Q(makeup_categories__title__in=makeup)|
-                                        Q(massage_categories__title__in=massage)|
-                                        Q(eyebrow_categories__title__in=eyebrow)|
-                                        Q(cosmetology_categories__title__in=cosmetology)|
-                                        Q(tattoo_categories__title__in=tattoo)|
-                                        Q(aesthetics_categories__title__in=aesthetics)).distinct()
-        
-        return Salon.objects.all()
+        return Salon.objects.filter((Q(appointment=booking)|Q(appointment=True)) &
+                                    (~Q(freelancer=onlysalons)|Q(freelancer=False)) &
+                                    (Q(outcall=outcall)|Q(outcall=True)))
     
     def resolve_bookings(self, info, id=None, email=None):
       if id:

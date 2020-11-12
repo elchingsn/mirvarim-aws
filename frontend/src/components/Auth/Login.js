@@ -47,6 +47,8 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
       client.writeData({ data: { isLoggedIn: true } });
       if(window.location.pathname.includes('login')){
         history.push('/');
+      } else if(window.location.pathname.includes('partner')) {
+        history.push(`/partner/${res.data.tokenAuth.user.id}`);
       }
     } else {
       setOpen(true)

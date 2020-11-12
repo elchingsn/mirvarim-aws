@@ -3,6 +3,8 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import indigo from "@material-ui/core/colors/indigo";
 import orange from "@material-ui/core/colors/orange";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { darkSlateBlue } from "assets/jss/mirvarix-react"
+
 
 // A theme with custom primary and secondary color.
 // It's optional.
@@ -10,7 +12,8 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       light: indigo[500],
-      main: indigo[700],
+      main: indigo[900],
+      //main: darkSlateBlue, 
       dark: indigo[900]
     },
     secondary: {

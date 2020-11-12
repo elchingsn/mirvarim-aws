@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import {Link} from "react-router-dom";
 import { ApolloConsumer, useApolloClient, useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
+import { useTranslation } from 'react-i18next';
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from "@material-ui/core/styles"; 
@@ -21,6 +22,7 @@ import presentationStyle from "../../assets/jss/presentationStyle.js";
 const useStyles = makeStyles(presentationStyle);
 
 const SearchSalons = ({state, setSearchOpen}) =>{
+    const { t, i18n } = useTranslation();
     const classes = useStyles();
     //needed to pass search field values from home page to search component of salon page
     // const [search, setSearch] = useState(state["search"]);
@@ -82,7 +84,6 @@ const SearchSalons = ({state, setSearchOpen}) =>{
           setSalonSet(data_salon.salons.map(el => el.name).flat(1));
           // creating array of services
           // const hairService_set = data_salon.salons.map(el => (el.hairserviceSet.map(item => item.title))).flat(1);
-          // const nailsService_set = data_salon.salons.map(el => (el.nailsserviceSet.map(item => item.title))).flat(1);
           // creating array of categories as alias to services
           const hairService_set = data_salon.salons.map(el => (el.hairCategories.map(item => item.title))).flat(1);
           const nailsService_set = data_salon.salons.map(el => (el.nailsCategories.map(item => item.title))).flat(1);
@@ -115,15 +116,12 @@ const SearchSalons = ({state, setSearchOpen}) =>{
         };
     }, [search]);
 
-    console.log(search);
-    console.log(searchOptions);
-
     useEffect(() => {   
       if (data_area) { 
           const options = data_area.area.map((option) => option.title);
           setLocationOptions(options);
       };
-  }, [data_area]);
+    }, [data_area]);
 
 
     // const handleChange = (event, client) => {
@@ -179,6 +177,7 @@ const SearchSalons = ({state, setSearchOpen}) =>{
                         id="search"
                         freeSolo
                         size="small"
+                        getOptionLabel={option => t(`${option}`)}
                         options={searchOptions}
                         onChange = {(event,values) => setSearch(values)}
                         value = {search}
@@ -191,7 +190,7 @@ const SearchSalons = ({state, setSearchOpen}) =>{
                             setSearch(event.target.value);
                             handleChange(event,client);
                         }}
-                        label = "Find service or salon"
+                        label = {t("Find service or salon")}
                         margin="none" />
                         )}
                          />
@@ -213,6 +212,7 @@ const SearchSalons = ({state, setSearchOpen}) =>{
                         size="small"
                         classes={{listbox: classes.listbox,
                           option: classes.input}}
+                        getOptionLabel={option => t(`${option}`)}
                         options={locationOptions}
                         onChange = {(event,values) => setLocation(values)}
                         value = {location}
@@ -224,7 +224,7 @@ const SearchSalons = ({state, setSearchOpen}) =>{
                           setLocation(event.target.value);
                           handleChange(event,client);
                         }}
-                        label = "location" 
+                        label = {t("Location")} 
                         />
                         )}
                          />
@@ -251,7 +251,7 @@ const SearchSalons = ({state, setSearchOpen}) =>{
                           // }}
                           onClick={()=>setSearchOpen(false)}
                           >
-                            Search
+                            {t("Search")}
                           </Button>
                         </Link> ) :
                         (<Link 
@@ -272,7 +272,7 @@ const SearchSalons = ({state, setSearchOpen}) =>{
                               type = "submit"
                               onClick={()=>setSearchOpen(false)}
                               >
-                              Search
+                              {t("Search")}
                             </Button>
                         </Link>
                       )}

@@ -2,6 +2,8 @@
 import React, { useEffect } from 'react';
 import { useLocation, matchPath } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -102,6 +104,8 @@ const useStyles = makeStyles(() => ({
 const NavBar = ({ onMobileClose, openMobile, user }) => {
   const classes = useStyles();
   const location = useLocation();
+  const { t, i18n } = useTranslation();
+
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
@@ -112,39 +116,39 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
 
   const sections = [
     {
-      subheader: 'Reports',
+      subheader: `${t("Reports")}`,
       items: [
         {
-          title: 'Dashboard',
+          title: `${t("Dashboard")}`,
           icon: PieChartIcon,
           href: `/partner/${user.id}/report`
         }
       ]
     },
     {
-      subheader: 'Listings',
+      subheader: `${t("Listings")}`,
       items: [
         {
-          title: 'Salons',
+          title: `${t("Salons")}`,
           href: `/partner/${user.id}/salon/view`,
           icon: BusinessCenterIcon,
           items: [
             {
-              title: 'Browse Salon',
+              title: `${t("Browse Salon")}`,
               href: `/partner/${user.id}/salon/view`
             },
             {
-              title: 'Create Salon',
+              title: `${t("Add Salon")}`,
               href: `/partner/${user.id}/salon/create`
             },
             {
-              title: 'Update Salon',
+              title: `${t("Update Salon")}`,
               href: `/partner/${user.id}/salon/edit`
             }
           ]
         },
         {
-          title: 'Masters',
+          title: `${t("Masters")}`,
           href: `/partner/${user.id}/master/view`,
           icon: BusinessCenterIcon,
           items: [
@@ -153,17 +157,17 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
             //   href: `/partner/${user.id}/master/view`
             // },
             {
-              title: 'Add Master',
+              title: `${t("Add Master")}`,
               href: `/partner/${user.id}/master/add`
             },
             {
-              title: 'Update Master',
+              title: `${t("Update Master")}`,
               href: `/partner/${user.id}/master/edit`
             }
           ]
         },
         {
-          title: 'Services',
+          title: `${t("Services")}`,
           href: `/partner/salon/:id/service/view`,
           icon: BusinessCenterIcon,
           items: [
@@ -172,12 +176,12 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
             //   href: `/partner/${user.id}/service/view`
             // },
             {
-              title: 'Create Service',
+              title: `${t("Add Service")}`,
               href: `/partner/${user.id}/service/create`
               // href: `/partner/salon/create`
             },
             {
-              title: 'Update Service',
+              title: `${t("Update Service")}`,
               href: `/partner/${user.id}/service/edit`
             }
           ]
@@ -185,10 +189,10 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
       ]
     },
     {
-      subheader: 'Applications',
+      subheader: `${t("Applications")}`,
       items: [
         {
-          title: 'Calendar',
+          title: `${t("Calendar")}`,
           href: `/partner/${user.id}/calendar`,
           icon: ReceiptIcon
         }
@@ -230,15 +234,15 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
             bgcolor="background.dark"
           >
             <h4>
-              Need Help?
-              </h4>
+              {t("Need Help?")}
+            </h4>
             <Link
               variant="subtitle1"
               color="secondary"
               component={RouterLink}
               to="/"
             >
-              Contact us
+              {t("Contact us")}
             </Link>
           </Box>
         </Box>

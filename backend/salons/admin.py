@@ -39,8 +39,8 @@ class MasterAdmin(admin.ModelAdmin):
   class Meta:
     model = Master 
 
-  list_display = ('id', 'salon', 'master_name')
-  list_display_links = ('salon',)
+  list_display = ('id','master_name','salon')
+  list_display_links = ('master_name','salon',)
   list_filter = ('salon',)
   search_fields = ('salon',)
   list_per_page = 50

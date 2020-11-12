@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { withRouter } from 'react-router-dom';
 import { ApolloConsumer, Query } from "@apollo/react-components";
 import gql from "graphql-tag";
+import { useTranslation } from 'react-i18next';
 import Loading from "../Shared/Loading";
 import Error from "../Shared/Error";
 import Auth from "../Auth";
-
-import { useTranslation } from 'react-i18next';
 
 import PropTypes from "prop-types";
 
@@ -40,7 +39,7 @@ import styles from "../../assets/jss/navbarStyle.js";
 
 const useStyles = makeStyles(styles);
 
-export default function HeaderLinks(props) {
+export default function UserLinks(props) {
   const easeInOutQuad = (t, b, c, d) => {
     t /= d / 2;
     if (t < 1) return (c / 2) * t * t + b;
@@ -80,6 +79,8 @@ export default function HeaderLinks(props) {
   };
   var onClickSections = {};
 
+  const { t, i18n } = useTranslation();
+
   const { currentUser } = props;
   const classes = useStyles();
   const [loginOpen, setLoginOpen] = useState(false);
@@ -87,8 +88,6 @@ export default function HeaderLinks(props) {
   // const [form, setForm] = useState(false);
   // const [fbUser, setFbUser] = useState("");
   const [flag, setFlag] = useState(localStorage.getItem("i18nextLng"));
-
-  const { t, i18n } = useTranslation();
 
   const handleLoginOpen = () => {
     setLoginOpen(true);
@@ -138,7 +137,7 @@ export default function HeaderLinks(props) {
                 </Select>
               </FormControl>
             </ListItem> 
-            {currentUser.role === "A_3" ? 
+            {(currentUser.role === "A_3" || currentUser.role === "A_2") ? 
               (<ListItem className={classes.listItem}>
                 {/* Below commented code yields purple text */}
                 {/* <Link to={"/partner"} className={classes.grow}>
@@ -150,14 +149,14 @@ export default function HeaderLinks(props) {
                 <Link to={`/partner/${currentUser.id}`}>
                 <Button className={classes.username} size="small" variant="outlined"
                   onClick={(e)=> e.preventDefault}>
-                  List your salon
+                  {t("List your salon")}
                 </Button>
                 </Link>
                 </ListItem>) 
               :(<ListItem className={classes.listItem}>
                 <Button className={classes.username} size="small" variant="outlined"
                   onClick={handleDashboardOpen}>
-                  List your salon
+                  {t("List your salon")}
                 </Button>
                 </ListItem>
               )}
@@ -207,13 +206,13 @@ export default function HeaderLinks(props) {
             <ListItem className={classes.listItem}>
             <Button className={classes.username} size="small" variant="outlined"
               onClick={handleDashboardOpen}>
-              List your salon
+              {t("List your salon")}
             </Button>
             </ListItem>
 
             <ListItem className={classes.listItem}>
             <Button className={classes.username} size="small" 
-            onClick={handleLoginOpen}>Login/Register</Button>
+            onClick={handleLoginOpen}>{t("Login/Register")}</Button>
             </ListItem>
             </List>
             <Dialog
@@ -232,15 +231,15 @@ export default function HeaderLinks(props) {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">Become our business partner</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{t("Become our business partner")}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Please login as a salon or freelancer to add salon/service
+              {t("Please login as a salon or freelancer to add salon/service")}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleDashboardClose} color="primary" autoFocus>
-              Close
+              {t("Close")}
             </Button>
           </DialogActions>
         </Dialog>
@@ -309,11 +308,11 @@ const MASSAGE_QUERY = gql`
 }
 `;
 
-HeaderLinks.defaultProps = {
+UserLinks.defaultProps = {
   hoverColor: "primary"
 };
 
-HeaderLinks.propTypes = {
+UserLinks.propTypes = {
   dropdownHoverColor: PropTypes.oneOf([
     "dark",
     "primary",

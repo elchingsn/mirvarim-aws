@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
 import { Mutation } from '@apollo/react-components';
@@ -73,13 +73,13 @@ NumberFormatCustom.propTypes = {
   //onChange: PropTypes.func.isRequired,
 };
 
-const ServiceForm = ({serviceMutation, catType, data_salon}) => {
+const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
   const classes = formStyles();
   const history = useHistory();
 
   const [promo, setPromo] = React.useState(false);
   const [submitting, setSubmitting] = useState(false);
-
+  console.log('salon_data', data_salon);
 
   const [serviceData, setServiceData] = useState({
     salonId: data_salon.id,
@@ -91,6 +91,16 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
     price: '',
     promotionPrice: 0
   })
+
+  useEffect(() => {
+    if (role == "A_2") {
+      setServiceData({
+        ...serviceData, 
+        masterIds: data_salon.masterSet[0].id
+      })
+    }
+  }, [role])
+  
 
   const handleSubmit = async (event, serviceMutation) => {
     event.preventDefault();
@@ -140,6 +150,7 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
         variant="outlined"
         />
       </FormControl>
+      { role == "A_3" &&
       <FormControl fullWidth required className={classes.field}>
         <Autocomplete
           multiple
@@ -162,6 +173,7 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
           )}
         />
       </FormControl>
+      }
       <FormControl fullWidth className={classes.field}>
         <TextField
         label="Description"
@@ -201,6 +213,7 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
         }}
       />
     </FormControl>
+    <h4> Is promotion available? </h4>
     <Checkbox
         checked={promo}
         color="primary"
@@ -209,7 +222,7 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
           setServiceData({ ...serviceData, promotionPrice: 0 })
         }}
         inputProps={{ 'aria-label': 'primary checkbox' }}
-      />
+    />
     {promo && (
     <FormControl fullWidth className={classes.field}>
         <TextField
@@ -261,7 +274,7 @@ const ServiceForm = ({serviceMutation, catType, data_salon}) => {
   )
 } 
 
-const CategoryServices = ({catValue, data_salon, setOpen, userId}) => {
+const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
   const { t, i18n } = useTranslation();
 
   switch (catValue) {
@@ -280,7 +293,7 @@ const CategoryServices = ({catValue, data_salon, setOpen, userId}) => {
           {(createHairService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm serviceMutation={createHairService} catType="hairCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createHairService} catType="hairCategories" data_salon={data_salon} />
             );
           }}
         </Mutation>
@@ -300,7 +313,7 @@ const CategoryServices = ({catValue, data_salon, setOpen, userId}) => {
           {(createNailsService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm serviceMutation={createNailsService} catType="nailsCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createNailsService} catType="nailsCategories" data_salon={data_salon} />
             );
           }}
         </Mutation>
@@ -320,7 +333,7 @@ const CategoryServices = ({catValue, data_salon, setOpen, userId}) => {
           {(createHairRemovalService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm serviceMutation={createHairRemovalService} catType="hairRemovalCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createHairRemovalService} catType="hairRemovalCategories" data_salon={data_salon} />
             );
           }}
         </Mutation>
@@ -340,7 +353,7 @@ const CategoryServices = ({catValue, data_salon, setOpen, userId}) => {
           {(createMakeupService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm serviceMutation={createMakeupService} catType="makeupCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createMakeupService} catType="makeupCategories" data_salon={data_salon} />
             );
           }}
         </Mutation>
@@ -360,7 +373,7 @@ const CategoryServices = ({catValue, data_salon, setOpen, userId}) => {
           {(createMassageService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm serviceMutation={createMassageService} catType="massageCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createMassageService} catType="massageCategories" data_salon={data_salon} />
             );
           }}
         </Mutation>
@@ -380,7 +393,7 @@ const CategoryServices = ({catValue, data_salon, setOpen, userId}) => {
           {(createEyebrowService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm serviceMutation={createEyebrowService} catType="eyebrowCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createEyebrowService} catType="eyebrowCategories" data_salon={data_salon} />
             );
           }}
         </Mutation>
@@ -400,7 +413,7 @@ const CategoryServices = ({catValue, data_salon, setOpen, userId}) => {
           {(createCosmetologyService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm serviceMutation={createCosmetologyService} catType="cosmetologyCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createCosmetologyService} catType="cosmetologyCategories" data_salon={data_salon} />
             );
           }}
         </Mutation>
@@ -420,7 +433,7 @@ const CategoryServices = ({catValue, data_salon, setOpen, userId}) => {
           {(createTattooService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm serviceMutation={createTattooService} catType="tattooCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createTattooService} catType="tattooCategories" data_salon={data_salon} />
             );
           }}
         </Mutation>
@@ -440,7 +453,7 @@ const CategoryServices = ({catValue, data_salon, setOpen, userId}) => {
           {(createAestheticsService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm serviceMutation={createAestheticsService} catType="aestheticsCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createAestheticsService} catType="aestheticsCategories" data_salon={data_salon} />
             );
           }}
         </Mutation>
@@ -520,7 +533,12 @@ const CreateServiceForm = ({classes, currentUser}) => {
                   )}
                 />
               </FormControl>     
-              <CategoryServices data_salon={data_salon} catValue={catValue} setOpen={setOpen} userId={userId}/>    
+              <CategoryServices 
+                role={currentUser.role}
+                data_salon={data_salon} 
+                catValue={catValue} 
+                setOpen={setOpen} 
+                userId={userId}/>    
       </Paper>
       <Dialog
           open={open}

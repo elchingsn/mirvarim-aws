@@ -14,6 +14,7 @@ import Partner from "./pages/Partner";
 import CreateReview from "components/Review/CreateReview";
 import CreateSalon from "components/Salon/CreateSalon";
 import Privacy from "pages/Privacy"
+import Contact from "pages/Contact"
 
 import Navbar from "components/Partials/Navbar";
 import MainFooter from "components/Partials/MainFooter"
@@ -52,12 +53,13 @@ const App = () => (
               <Route path="/reset" component={SendPasswordReset} />
               <Route path="/password-reset/:token" component={PasswordReset} />
               <Route exact path="/salon" component={Salon} />
+              <Route exact path="/partner" component={Auth} />
               <Route path="/profile/:id" component={Profile} />
               <Route path="/salon/:id" component={SalonDetail} />
               <Route path="/review/:id" component={CreateReview} />
               <Route exact path="/partner/:id" component={Partner} /> 
               <Route exact path="/privacy" component={Privacy} />
-
+              <Route exact path="/contact" component={Contact} />
               {renderRoutes(routes)}
             </Switch>
             <br/>
@@ -96,6 +98,10 @@ export const ME_QUERY = gql`
         id
         name
         address
+        isPublished
+        isFeatured
+        appointment
+        payment
         masterSet {
           id
           masterName
@@ -165,6 +171,11 @@ export const ME_QUERY = gql`
         hairserviceSet {
           id
           title
+          description
+          master {
+            id
+            masterName
+          }
           price
           promotionPrice
           duration
@@ -172,6 +183,11 @@ export const ME_QUERY = gql`
         nailsserviceSet {
           id
           title
+          description
+          master {
+            id
+            masterName
+          }
           price
           promotionPrice
           duration
@@ -179,6 +195,11 @@ export const ME_QUERY = gql`
         hairremovalserviceSet {
           id
           title
+          description
+          master {
+            id
+            masterName
+          }
           price
           promotionPrice
           duration
@@ -186,6 +207,11 @@ export const ME_QUERY = gql`
         makeupserviceSet {
           id
           title
+          description
+          master {
+            id
+            masterName
+          }
           price
           promotionPrice
           duration
@@ -193,6 +219,11 @@ export const ME_QUERY = gql`
         massageserviceSet {
           id
           title
+          description
+          master {
+            id
+            masterName
+          }
           price
           promotionPrice
           duration
@@ -200,6 +231,11 @@ export const ME_QUERY = gql`
         eyebrowserviceSet {
           id
           title
+          description
+          master {
+            id
+            masterName
+          }
           price
           promotionPrice
           duration
@@ -207,6 +243,11 @@ export const ME_QUERY = gql`
         cosmetologyserviceSet {
           id
           title
+          description
+          master {
+            id
+            masterName
+          }
           price
           promotionPrice
           duration
@@ -214,6 +255,11 @@ export const ME_QUERY = gql`
         tattooserviceSet {
           id
           title
+          description
+          master {
+            id
+            masterName
+          }
           price
           promotionPrice
           duration
@@ -221,6 +267,11 @@ export const ME_QUERY = gql`
         aestheticsserviceSet {
           id
           title
+          description
+          master {
+            id
+            masterName
+          }
           price
           promotionPrice
           duration

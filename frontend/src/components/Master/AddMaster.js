@@ -102,6 +102,8 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
           <FormControl fullWidth className={classes.field}>
             <TextField
             label="Description"
+            multiline
+            rows="3"
             placeholder="Add email"
             onChange={(event) => setMasterData({ ...masterData, email:event.target.value })}
             value={masterData.email}
@@ -169,6 +171,8 @@ const AddMaster = ({classes}) => {
   const currentUser = useContext(UserContext);
   if (!currentUser.salonSet[0]) {
     return <div> No salon added. Please add a salon</div>
+  } else if ((currentUser.salonSet[0].masterSet.length > 0) && (currentUser.role == "A_2")) {
+    return <div> Freelancer master already added.</div>
   } else {
     return <AddMasterForm classes={classes} currentUser={currentUser} />
   }
@@ -224,7 +228,7 @@ const AddMasterForm = ({classes, currentUser}) => {
     </div>
   )};
 
-const ADD_MASTER_MUTATION = gql`
+export const ADD_MASTER_MUTATION = gql`
   mutation($masterData:MasterInput!) {
     addMaster(masterData: $masterData) {
       master {

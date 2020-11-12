@@ -35,6 +35,8 @@ import { UserContext } from "App";
 import Error from "../Shared/Error"; 
 import Loading from "../Shared/Loading";
 
+//import { ADD_MASTER_MUTATION } from "components/Master/AddMaster.js"
+
 //import styles from "../assets/jss/salonDetailStyle.js";
 
 function Transition(props) {
@@ -88,6 +90,8 @@ const AddSalonForm = ({ classes }) => {
     const [submitting, setSubmitting] = useState(false);
     const [fileError, setFileError] = useState("");
 
+    //const [addMaster, { data: master_data }] = useMutation(ADD_MASTER_MUTATION);
+
     const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
 
     const [uploadImg] = useMutation(FILE_MUTATION);
@@ -96,19 +100,18 @@ const AddSalonForm = ({ classes }) => {
     const handlePhotoMainChange = event => {
       console.log(event.target.files);
       const selectedFile = event.target.files[0];
-      const fileSizeLimit = 1000000; // 1mb
+      const fileSizeLimit = 5000000; // 5mb
       if (selectedFile && selectedFile.size > fileSizeLimit) {
         setFileError(`${selectedFile.name}: File size too large`);
       } else {
         setImg0(selectedFile);
-        console.log(selectedFile);
         setFileError("");
       }
     };
 
     const handlePhoto1Change = event => {
       const selectedFile = event.target.files[0];
-      const fileSizeLimit = 1000000; // 1mb
+      const fileSizeLimit = 5000000; // 5mb
       if (selectedFile && selectedFile.size > fileSizeLimit) {
         setFileError(`${selectedFile.name}: File size too large`);
       } else {
@@ -119,7 +122,7 @@ const AddSalonForm = ({ classes }) => {
 
     const handlePhoto2Change = event => {
       const selectedFile = event.target.files[0];
-      const fileSizeLimit = 1000000; // 1mb
+      const fileSizeLimit = 5000000; // 5mb
       if (selectedFile && selectedFile.size > fileSizeLimit) {
         setFileError(`${selectedFile.name}: File size too large`);
       } else {
@@ -130,7 +133,7 @@ const AddSalonForm = ({ classes }) => {
 
     const handlePhoto3Change = event => {
       const selectedFile = event.target.files[0];
-      const fileSizeLimit = 1000000; // 1mb
+      const fileSizeLimit = 5000000; // 5mb
       if (selectedFile && selectedFile.size > fileSizeLimit) {
         setFileError(`${selectedFile.name}: File size too large`);
       } else {
@@ -167,7 +170,6 @@ const AddSalonForm = ({ classes }) => {
       for(let i=0; i<numImages; i++){
         const photo = photos[i]
         if (photo) {uploadedUrl[i] = await handleImageUpload(photo)}
-        console.log(uploadedUrl)
       }
 
       console.log( name, address, cityId, areaId, description, priceRange, masters, hairCategories, nailsCategories,
@@ -185,8 +187,15 @@ const AddSalonForm = ({ classes }) => {
                       photo4: uploadedUrl[4], photo5: uploadedUrl[5], photo6: uploadedUrl[6] 
                   }}}).catch(err => {
                     console.error(err);
-                    history.push('/login');
+                    history.push('/login'); 
                   });;
+      // if (currentUser.role == "A_2") {
+      //   console.log("adding master");
+      //   addMaster({variables: { masterData: {} }}).catch(err => {
+      //     console.error(err);
+      //     history.push('/login');
+      //   });
+      // }
     };
 
     return(
@@ -332,7 +341,6 @@ const AddSalonForm = ({ classes }) => {
                                 onChange={(event,value) => {
                                           // setHairCategories({...data, hairCat: data.hairCat.filter(item => value.includes(item.title))});
                                           setHairCategories(data.hairCat.filter(item => value.includes(item.title)).map(item => item.id))
-                                          console.log(hairCategories)
                                 }}
                                 renderInput={(params) => (
                                   <TextField {...params} 
