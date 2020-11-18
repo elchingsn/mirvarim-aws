@@ -7,6 +7,7 @@ import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useHistory, Redirect } from 'react-router-dom';
 import gql from "graphql-tag";
 import classNames from "classnames";
+import { useTranslation } from 'react-i18next';
 
 import Box from "@material-ui/core/Box";
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -46,23 +47,25 @@ function Transition(props) {
 
 const UpdateMaster = ({classes}) => {
     //query the salon data updated by the current user
+  const { t, i18n } = useTranslation();
   const currentUser = useContext(UserContext);
   if (!currentUser.salonSet[0]) {
-      return <div> No salon added. Please add a salon</div>
+      return <div> {t("No salon added. Please add a salon")} </div>
   } else if (!currentUser.salonSet[0].masterSet[0]) {
-    return <div> No master added. Please add a master</div>
+    return <div> {t("No master added. Please add a master")} </div>
   } else {
     return <SelectMaster classes={classes} currentUser={currentUser} />
   }
 }
 
 const SelectMaster = ({classes, currentUser}) => {
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedMaster, setSelectedMaster] = useState({});
   return (
     <div className={classes.container}>
       <Paper className={classes.paper}>
-          <h3> Select master</h3>
+          <h3> {t("Select master")} </h3>
               <FormControl fullWidth className={classes.field}>
                 <Autocomplete
                   id="size-small-clearOnEsc"
@@ -77,8 +80,8 @@ const SelectMaster = ({classes, currentUser}) => {
                     <TextField {...params} 
                     //inputProps={{style: {textTransform: 'capitalize'}}} 
                     variant="outlined" 
-                    label="Select master" 
-                    placeholder="Select master"
+                    label={t("Select master")} 
+                    placeholder={t("Select master")}
                     />
                   )}
                 />
@@ -91,7 +94,7 @@ const SelectMaster = ({classes, currentUser}) => {
                 TransitionComponent={Transition}
                 >
                   <DialogTitle>
-                    Master successfully updated!
+                    {t("Master successfully updated!")}
                   </DialogTitle>
                   <DialogActions>
                     <Button
@@ -102,7 +105,7 @@ const SelectMaster = ({classes, currentUser}) => {
                       }}
                     >
                       <Link to={`/partner/${currentUser.id}/salon/view`}>
-                        Back to salon page
+                        {t("Back to salon page")}
                       </Link>
                     </Button>
                   </DialogActions>

@@ -54,7 +54,7 @@ const useStyles = makeStyles(styles);
 
 export default function Filter({initCatValue, initCheckedCat, initServiceValue, initAreaValue}) {
   
-  console.log('filter', initCatValue)
+  console.log('filter', initCatValue, initCheckedCat, initServiceValue, initAreaValue)
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t, i18n } = useTranslation();
 
@@ -119,7 +119,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
     setCosmetology([]); 
     setTattoo([]);    
     setAesthetics([]);      
-    setCatValue(initCatValue);
+    setCatValue(t(initCatValue));
     setCheckedCat(initCheckedCat);
     if(initCatValue) { setTimeout(() => setCatDisplay(false), 1000) };
     setCurrentPage(1);
@@ -498,7 +498,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
               </FormControl>
             </div>
           );
-          case `${t("Tattoo")}`:
+          case `${t("Tattoo/Piercing")}`:
             return(
               <div className={classes.paddingTB}>
                 <FormControl component="fieldset" >
@@ -757,7 +757,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                       <FormControlLabel value={t("Massage")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Massage")} />
                       <FormControlLabel value={t("Eyebrow")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Eyebrow")} />
                       <FormControlLabel value={t("Cosmetology")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Cosmetology")} />
-                      <FormControlLabel value={t("Tattoo")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Tattoo/Piercing")} />
+                      <FormControlLabel value={t("Tattoo/Piercing")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Tattoo/Piercing")} />
                       <FormControlLabel value={t("Aesthetics")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Aesthetics")} />
                     </RadioGroup>
                   </FormControl>) : 
@@ -957,15 +957,15 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                           value={catValue}
                           onChange={handleCatChange}
                         >
-                          <FormControlLabel value="Hair" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}} />} label={t("Hair")} />
-                          <FormControlLabel value="Nails" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Nails")} />
-                          <FormControlLabel value="Hair Removal" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Hair Removal")} />
-                          <FormControlLabel value="Makeup" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Makeup")} />
-                          <FormControlLabel value="Massage" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Massage")} />
-                          <FormControlLabel value="Eyebrow" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Eyebrow")} />
-                          <FormControlLabel value="Cosmetology" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Cosmetology")} />
-                          <FormControlLabel value="Tattoo" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Tattoo/Piercing")} />
-                          <FormControlLabel value="Aesthetics" control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Aesthetics")} />
+                          <FormControlLabel value={t("Hair")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}} />} label={t("Hair")} />
+                          <FormControlLabel value={t("Nails")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Nails")} />
+                          <FormControlLabel value={t("Hair Removal")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Hair Removal")} />
+                          <FormControlLabel value={t("Makeup")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Makeup")} />
+                          <FormControlLabel value={t("Massage")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Massage")} />
+                          <FormControlLabel value={t("Eyebrow")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Eyebrow")} />
+                          <FormControlLabel value={t("Cosmetology")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Cosmetology")} />
+                          <FormControlLabel value={t("Tattoo/Piercing")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Tattoo/Piercing")} />
+                          <FormControlLabel value={t("Aesthetics")} control={<Radio style={{paddingTop:"5px", paddingBottom:"5px"}}/>} label={t("Aesthetics")} />
                         </RadioGroup>
                       </FormControl>) : 
                       (<div>
@@ -1012,8 +1012,6 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                 setResultsnum(data.salonsFiltered.length)
                 if (data.salonsFiltered.length == 0) return <p> {t("No listing found")} </p>
                 console.log('area', area)
-                console.log('hair', resultsnum)
-                console.log('booking', booking)
                   // Get current salons
                 const currentSalons = data.salonsFiltered.slice(indexOfFirstSalon, indexOfLastSalon);
                 setCount(Math.ceil(data.salonsFiltered.length/salonsPerPage))

@@ -16,6 +16,8 @@ import { useHistory } from 'react-router-dom';
 import gql from "graphql-tag";
 import { UserContext } from "App.js"
 import {ME_QUERY} from "App.js"
+import { useTranslation } from 'react-i18next';
+
 // import moment from 'moment';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -74,16 +76,18 @@ const CalendarView = () => {
   const currentUser = useContext(UserContext);
 
   const { data, loading, error } = useQuery(BOOKING_QUERY, {
-    variables: {id: currentUser.salonSet[0].id},
+    variables: {salonId: currentUser.salonSet[0].id},
     pollInterval: 3000,
   })
   if (loading) return <Loading />;
   if (error) { history.push('/login') };
+  console.log('all bookings',data)
 
   return <SelectedCalendar currentUser={currentUser} bookings={data.bookings}/>
 }
 
 const SelectedCalendar =({currentUser, bookings}) => {
+  const { t, i18n } = useTranslation();
   const classes = useStyles();
   const salon = currentUser.salonSet[0];
   const [isModalOpen, setModalOpen] = useState(false)
@@ -143,14 +147,14 @@ const SelectedCalendar =({currentUser, bookings}) => {
             name="service"
             inputProps={{ 'aria-label': 'role' }}
           > 
-            <option value="All">All</option>
+            <option value="All">{t("All")}</option>
             {[...new Set(bookings.map(booking => booking.master.masterName))].map(name => (
               <option value={name}>
                 {name} 
               </option>
             ))}
           </NativeSelect>
-        <FormHelperText>Choose a master</FormHelperText>
+        <FormHelperText>{t("Select master")}</FormHelperText>
       </FormControl>
       </Grid>
       <Grid item>
@@ -165,7 +169,7 @@ const SelectedCalendar =({currentUser, bookings}) => {
             </SvgIcon>
           }
         >
-          New Event
+          {t("New Event")}
         </Button>
       </Grid>
     </Grid>
@@ -183,6 +187,7 @@ const SelectedCalendar =({currentUser, bookings}) => {
 
 const Calendar = ({salon, masterId, bookings, isModalOpen, setModalOpen}) => {
   console.log ('bookings', bookings);
+  const { t, i18n } = useTranslation();
   const classes = useStyles();
   const calendarRef = useRef(null);
   const theme = useTheme();
@@ -361,7 +366,7 @@ const Calendar = ({salon, masterId, bookings, isModalOpen, setModalOpen}) => {
         />
         {!salon.appointment && 
           <h6> 
-            Customer access to your calendar and booking from the website is available in standard package.
+            {t("Customer access to your calendar and booking from the website is available in standard package.")}
           </h6>
         }
         <Paper className={classes.calendar}>

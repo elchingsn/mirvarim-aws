@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { format, toDate } from 'date-fns'
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import {
   Button,
   ButtonGroup,
@@ -16,29 +17,6 @@ import ViewConfigIcon from '@material-ui/icons/ViewComfyOutlined';
 import ViewWeekIcon from '@material-ui/icons/ViewWeekOutlined';
 import ViewDayIcon from '@material-ui/icons/ViewDayOutlined';
 import ViewAgendaIcon from '@material-ui/icons/ViewAgendaOutlined';
-
-const viewOptions = [
-  {
-    label: 'Month',
-    value: 'dayGridMonth',
-    icon: ViewConfigIcon
-  },
-  {
-    label: 'Week',
-    value: 'timeGridWeek',
-    icon: ViewWeekIcon
-  },
-  {
-    label: 'Day',
-    value: 'timeGridDay',
-    icon: ViewDayIcon
-  },
-  {
-    label: 'Agenda',
-    value: 'listWeek',
-    icon: ViewAgendaIcon
-  }
-];
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -55,9 +33,33 @@ const Toolbar = ({
   view,
   ...rest
 }) => {
+  const { t, i18n } = useTranslation();
+
+  const viewOptions = [
+    {
+      label: `${t("Month")}`,
+      value: 'dayGridMonth',
+      icon: ViewConfigIcon
+    },
+    {
+      label: `${t("Week")}`,
+      value: 'timeGridWeek',
+      icon: ViewWeekIcon
+    },
+    {
+      label: `${t("Day")}`,
+      value: 'timeGridDay',
+      icon: ViewDayIcon
+    },
+    {
+      label: `${t("Agenda")}`,
+      value: 'listWeek',
+      icon: ViewAgendaIcon
+    }
+  ];
+
   const classes = useStyles();
   console.log('toolbar date', date)
-  console.log('view', view)
   //{format(new Date(date),'dd')} - {format(new Date(new Date(date).getTime() + 7*1440*60000),'dd MMMM yyyy')}
 
   return (
@@ -71,9 +73,9 @@ const Toolbar = ({
     >
       <Grid item>
         <ButtonGroup size="small">
-          <Button onClick={onDatePrev}>Prev</Button>
-          <Button onClick={onDateToday}>Today</Button>
-          <Button onClick={onDateNext}>Next</Button>
+          <Button onClick={onDatePrev}>{t("Prev")}</Button>
+          <Button onClick={onDateToday}>{t("Today")}</Button>
+          <Button onClick={onDateNext}>{t("Next")}</Button>
         </ButtonGroup>
       </Grid>
         <Grid item>

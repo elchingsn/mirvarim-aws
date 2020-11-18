@@ -77,7 +77,8 @@ const SearchSalons = ({state, setSearchOpen}) =>{
     const { data: data_salon } = useQuery(SEARCH_SALONS_QUERY);
     console.log(data_salon);
     const { data: data_area } = useQuery(AREA_QUERY, {variables: {location}});
-    let options = [];
+    let options1 = [];
+    let options2 = [];
 
     useEffect(() => {   
         if (data_salon) { 
@@ -96,11 +97,11 @@ const SearchSalons = ({state, setSearchOpen}) =>{
           const aestheticsService_set = data_salon.salons.map(el => (el.aestheticsCategories.map(item => item.title))).flat(1);
           const search_set = [].concat(salon_set,hairService_set,nailsService_set,hairRemovalService_set,makeupService_set,
                               massageService_set,eyebrowService_set,cosmetologyService_set,tattooService_set,aestheticsService_set);
-          if (search) { options = search_set.filter(el => el.toLowerCase().includes(search.toLowerCase()))};
+          if (search) { options1 = search_set.filter(el => t(el).toLowerCase().includes(search.toLowerCase()))};
           console.log(search);
           console.log(searchOptions);
           // when search field is cleared no drop down option will be visible
-          search ? setSearchOptions(options) : setSearchOptions([]);
+          search ? setSearchOptions(options1) : setSearchOptions([]);
           if (salon_set.includes(search)) 
             {setSalonId(data_salon.salons.find(el => el.name === search).id)}
           else {setCheckedCat(search)}
@@ -118,10 +119,13 @@ const SearchSalons = ({state, setSearchOpen}) =>{
 
     useEffect(() => {   
       if (data_area) { 
-          const options = data_area.area.map((option) => option.title);
-          setLocationOptions(options);
+          if (location) { 
+            options2 = data_area.area.map((option) => option.title).filter(el => t(el).toLowerCase().includes(location.toLowerCase()))
+          }
+          location ? setLocationOptions(options2) : setLocationOptions([]);
+          console.log(options2)
       };
-    }, [data_area]);
+    }, [location]);
 
 
     // const handleChange = (event, client) => {

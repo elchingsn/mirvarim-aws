@@ -98,6 +98,8 @@ export const ME_QUERY = gql`
         id
         name
         address
+        email
+        phone        
         isPublished
         isFeatured
         appointment

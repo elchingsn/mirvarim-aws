@@ -78,9 +78,17 @@ class AestheticsAdmin(admin.ModelAdmin):
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
   pass
-@admin.register(Area)
-class RegionAdmin(admin.ModelAdmin):
-  pass
+
+class AreaAdmin(admin.ModelAdmin):
+  class Meta:
+    model = Area 
+  list_display = ('id', 'title', 'city')
+  list_display_links = ('title', 'city')
+  list_filter = ('city',)
+  search_fields = ('city',)
+  list_per_page = 50
+  
+admin.site.register(Area, AreaAdmin)
 
 
 

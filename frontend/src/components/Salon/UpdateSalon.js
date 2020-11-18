@@ -8,6 +8,7 @@ import { useHistory, Redirect } from 'react-router-dom';
 import gql from "graphql-tag";
 import axios from "axios";
 import Cookies from 'js-cookie';
+import { useTranslation } from 'react-i18next';
 
 import Box from "@material-ui/core/Box";
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -35,6 +36,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { UserContext } from "App.js"
 import {ME_QUERY} from "App.js"
 
+import InputMask from 'react-input-mask';
 import Error from "../Shared/Error"; 
 import Loading from "../Shared/Loading";
 
@@ -45,10 +47,11 @@ function Transition(props) {
 }
 
 const UpdateSalon = ({classes}) => {
+  const { t, i18n } = useTranslation();
     //query the salon data updated by the current user
     const currentUser = useContext(UserContext);
     if (!currentUser.salonSet[0]) {
-      return <div> No salon added. Please add a salon</div>
+      return <div> {t("No salon added. Please add a salon")}</div>
   } else {
     return <UpdateSalonForm classes={classes} currentUser={currentUser} />
   }
@@ -61,6 +64,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
   //const { data: data_user } = useQuery(PROFILE_QUERY, {variables: {id:userId}});
   console.log('update salon user', currentUser);
   const history = useHistory();
+  const { t, i18n } = useTranslation();
 
   const [name, setName] = useState(data_salon.name);
   const [address, setAddress] = useState(data_salon.address);
@@ -80,23 +84,30 @@ const UpdateSalonForm = ({classes, currentUser}) => {
   const [aestheticsCategories, setAestheticsCategories] = useState(data_salon.aestheticsCategories.map(item => item.id).flat(1));
   const [male, setMale] = useState(false);
   const [female, setFemale] = useState(false);
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [img0, setImg0] = useState(`${data_salon.photoMain}`);
-  const [photo1, setPhoto1] = useState(data_salon.photo1 ? `${data_salon.photo1}` : "");
-  const [photo2, setPhoto2] = useState(data_salon.photo2 ? `${data_salon.photo2}` : "");
-  const [photo3, setPhoto3] = useState(data_salon.photo3 ? `${data_salon.photo3}` : "");
-  const [photo4, setPhoto4] = useState(data_salon.photo4 ? `${data_salon.photo4}` : "");
-  const [photo5, setPhoto5] = useState(data_salon.photo5 ? `${data_salon.photo5}` : "");
-  const [photo6, setPhoto6] = useState(data_salon.photo6 ? `${data_salon.photo6}` : "");
+  const [email, setEmail] = useState(data_salon.email ? data_salon.email : "");
+  const [phone, setPhone] = useState(data_salon.phone ? data_salon.phone : "");
+  const [img0, setImg0] = useState("");
+  const [photo1, setPhoto1] = useState("");
+  const [photo2, setPhoto2] = useState("");
+  const [photo3, setPhoto3] = useState("");
+  const [photo4, setPhoto4] = useState("");
+  const [photo5, setPhoto5] = useState("");
+  const [photo6, setPhoto6] = useState("");
   console.log('data photo1', data_salon.photo1, 'photo1', photo1)
   console.log('massage',massageCategories);
 
   const [disabled, setDisabled] = useState(true)
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [fileError, setFileError] = useState("");
-
+  const [fileError, setFileError] = useState({
+    sizeError0: "",
+    sizeError1: "",
+    sizeError2: "",
+    sizeError3: "",
+    sizeError4: "",
+    sizeError5: "",
+    sizeError6: "",
+  });
   const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
 
   const [uploadImg] = useMutation(FILE_MUTATION);
@@ -104,48 +115,80 @@ const UpdateSalonForm = ({classes, currentUser}) => {
   const handlePhotoMainChange = event => {
     console.log(event.target.files);
     const selectedFile = event.target.files[0];
-    const fileSizeLimit = 1000000; // 1mb
+    const fileSizeLimit = 5000000; // 5mb
     if (selectedFile && selectedFile.size > fileSizeLimit) {
-      setFileError(`${selectedFile.name}: File size too large`);
+      setFileError({...fileError, sizeError0: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
     } else {
       setImg0(selectedFile);
-      console.log(selectedFile);
-      setFileError("");
+      setFileError({...fileError, sizeError0: ""});
     }
   };
 
   const handlePhoto1Change = event => {
     const selectedFile = event.target.files[0];
-    const fileSizeLimit = 1000000; // 1mb
+    const fileSizeLimit = 5000000; // 5mb
     if (selectedFile && selectedFile.size > fileSizeLimit) {
-      setFileError(`${selectedFile.name}: File size too large`);
+      setFileError({...fileError, sizeError1: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
     } else {
       setPhoto1(selectedFile);
-      setFileError("");
+      setFileError({...fileError, sizeError1: ""});
     }
   };
 
   const handlePhoto2Change = event => {
     const selectedFile = event.target.files[0];
-    const fileSizeLimit = 1000000; // 1mb
+    const fileSizeLimit = 5000000; // 5mb
     if (selectedFile && selectedFile.size > fileSizeLimit) {
-      setFileError(`${selectedFile.name}: File size too large`);
+      setFileError({...fileError, sizeError2: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
     } else {
       setPhoto2(selectedFile);
-      setFileError("");
+      setFileError({...fileError, sizeError2: ""});
     }
   };
 
   const handlePhoto3Change = event => {
     const selectedFile = event.target.files[0];
-    const fileSizeLimit = 1000000; // 1mb
+    const fileSizeLimit = 5000000; // 5mb
     if (selectedFile && selectedFile.size > fileSizeLimit) {
-      setFileError(`${selectedFile.name}: File size too large`);
+      setFileError({...fileError, sizeError3: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
     } else {
       setPhoto3(selectedFile);
-      setFileError("");
+      setFileError({...fileError, sizeError3: ""});
     }
   };
+
+  const handlePhoto4Change = event => {
+    const selectedFile = event.target.files[0];
+    const fileSizeLimit = 5000000; // 5mb
+    if (selectedFile && selectedFile.size > fileSizeLimit) {
+      setFileError({...fileError, sizeError4: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
+    } else {
+      setPhoto4(selectedFile);
+      setFileError({...fileError, sizeError4: ""});
+    }
+  };
+
+  const handlePhoto5Change = event => {
+    const selectedFile = event.target.files[0];
+    const fileSizeLimit = 5000000; // 5mb
+    if (selectedFile && selectedFile.size > fileSizeLimit) {
+      setFileError({...fileError, sizeError5: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
+    } else {
+      setPhoto5(selectedFile);
+      setFileError({...fileError, sizeError5: ""});
+    }
+  };
+
+  const handlePhoto6Change = event => {
+    const selectedFile = event.target.files[0];
+    const fileSizeLimit = 5000000; // 5mb
+    if (selectedFile && selectedFile.size > fileSizeLimit) {
+      setFileError({...fileError, sizeError6: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
+    } else {
+      setPhoto6(selectedFile);
+      setFileError({...fileError, sizeError6: ""});
+    }
+  };  
 
   const handleImageUpload = async (img) => {
     try {
@@ -194,7 +237,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                  salonData: {
                     name, address, cityId, areaId, description, priceRange, masters, hairCategories, nailsCategories, 
                     hairRemovalCategories, makeupCategories, massageCategories, eyebrowCategories, cosmetologyCategories,
-                    tattooCategories, aestheticsCategories, male, female, email, phone, photoMain: img0,
+                    tattooCategories, aestheticsCategories, male, female, email, phone, photoMain: uploadedUrl[0],
                     photo1: uploadedUrl[1], photo2: uploadedUrl[2], photo3: uploadedUrl[3],
                     photo4: uploadedUrl[4], photo5: uploadedUrl[5], photo6: uploadedUrl[6] 
                 }, salonId}}).catch(err => {
@@ -206,7 +249,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
   return(
     <div className={classes.container}>
       <Paper className={classes.paper}>
-          <h3>Update Salon</h3>
+          <h3>{t("Update Salon")}</h3>
           <Mutation
             mutation={UPDATE_SALON_MUTATION}
             onCompleted={data => {
@@ -223,8 +266,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                 <form onSubmit={event => handleSubmit(event, updateSalon)} >
                   <FormControl fullWidth className={classes.field}>
                     <TextField
-                    label="Name"
-                    placeholder="Add Name"
+                    label={t("Name")}
+                    placeholder={t("Add Name")}
                     onChange={event => setName(event.target.value)}
                     value={name}
                     variant="outlined"
@@ -234,8 +277,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                   </FormControl>
                   <FormControl fullWidth className={classes.field}>
                     <TextField
-                    label="Address"
-                    placeholder="Add Address"
+                    label={t("Address")}
+                    placeholder={t("Add Address")}
                     onChange={event => setAddress(event.target.value)}
                     value={address}
                     variant="outlined"
@@ -252,8 +295,9 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               
                               return  <Autocomplete
                                         id="size-small-clearOnEsc"
-                                        clearOnEscape
+                                        disableClearable
                                         size="small"
+                                        getOptionLabel={option => t(`${option}`)}
                                         options={categories}
                                         disabled={disabled}
                                         defaultValue={data.city.filter(item => item.id == cityId)[0].title}
@@ -264,7 +308,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                                         renderInput={(params) => (
                                           <TextField {...params} 
                                           variant="outlined"  
-                                          label="City" 
+                                          label={t("City")} 
                                           // margin="normal" 
                                           // className={classes.textField}
                                           />
@@ -273,17 +317,19 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                                     }}
                     </Query>
                   </FormControl>
+                  
                   <FormControl fullWidth className={classes.field}>
                     <Query query={AREA_QUERY}>
                               {({data, loading, error}) => {
                                 if (loading) return <Loading />;
                                 if (error) return <Error error={error} />;
-                                const categories = data.area.map(item => item.title); 
+                                const categories = data.area.filter(item => item.city.id == cityId).map(item => item.title); 
                               
                               return  <Autocomplete
                                         id="size-small-clearOnEsc"
-                                        clearOnEscape
+                                        disableClearable
                                         size="small"
+                                        getOptionLabel={option => t(`${option}`)}
                                         options={categories}
                                         disabled={disabled}
                                         defaultValue={data.area.filter(item => item.id == areaId)[0].title}
@@ -295,7 +341,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                                         renderInput={(params) => (
                                           <TextField {...params} 
                                           variant="outlined" 
-                                          label="Location" 
+                                          label={t("Location")} 
                                           // margin="normal" 
                                           // className={classes.textField}
                                           />
@@ -308,8 +354,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                   <TextField
                     multiline
                     rows="4"
-                    label="Description"
-                    placeholder="Add Description"
+                    label={t("Description")}
+                    placeholder={t("Add Description")}
                     onChange={event => setDescription(event.target.value)}
                     value={description}
                     disabled={disabled}
@@ -317,6 +363,27 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                     // className={classes.textField}
                   />
                 </FormControl>
+                <FormControl fullWidth className={classes.field}>
+                      <TextField
+                      label={t("Email")}
+                      placeholder={t("Add email")}
+                      onChange={(event) => setEmail(event.target.value)}
+                      value={email}
+                      disabled={disabled}
+                      variant="outlined"
+                      />
+                  </FormControl>
+                  <FormControl fullWidth className={classes.field}>
+                    <InputMask 
+                      mask="+\9\9\4 (99) 999 99 99"
+                      //maskChar=""
+                      style={{height:"50px", fontSize:"16px" }}
+                      alwaysShowMask
+                      value={phone}
+                      onChange={(event) => setPhone(event.target.value)}
+                      disabled={disabled}
+                    />
+                  </FormControl>                
                 {/* <FormControl fullWidth>
                   <NativeSelect
                     value={priceRange}
@@ -334,7 +401,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                     <option value="4">$$$$</option>
                   </NativeSelect>
                 </FormControl> */}
-                <h5>Select relevant services</h5>
+                <h5>{t("Select relevant services")}</h5>
                 <FormControl fullWidth className={classes.field}>
                   <Query query={HAIR_QUERY}>
                     {({data, loading, error}) => {
@@ -347,6 +414,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               limitTags={3}
                               id="size-small-standard-multi"
                               size="small"
+                              getOptionLabel={option => t(`${option}`)}
                               options={categories}
                               disabled={disabled}
                               defaultValue={hairCategories.map(catId => data.hairCat.filter(item => item.id == catId)[0].title)}
@@ -358,8 +426,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               renderInput={(params) => (
                                 <TextField {...params} 
                                 variant="outlined" 
-                                label="Haircut categories " 
-                                placeholder="More haircut"
+                                label={t("Haircut categories")} 
+                                placeholder={t("More haircut")}
                                 />
                               )}
                             />;
@@ -378,6 +446,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               limitTags={3}
                               id="size-small-standard-multi"
                               size="small"
+                              getOptionLabel={option => t(`${option}`)}
                               options={categories}
                               disabled={disabled}
                               defaultValue={nailsCategories.map(catId => data.nailsCat.filter(item => item.id == catId)[0].title)}
@@ -387,8 +456,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               renderInput={(params) => (
                                 <TextField {...params} 
                                 variant="outlined" 
-                                label="Nails categories " 
-                                placeholder="More nails" />
+                                label={t("Nails categories")} 
+                                placeholder={t("More nails")} />
                               )}
                             />;
                           }}
@@ -406,6 +475,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               limitTags={3}
                               id="size-small-standard-multi"
                               size="small"
+                              getOptionLabel={option => t(`${option}`)}
                               options={categories}
                               disabled={disabled}
                               defaultValue={hairRemovalCategories.map(catId => data.hairRemovalCat.filter(item => item.id == catId)[0].title)}
@@ -415,8 +485,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               renderInput={(params) => (
                                 <TextField {...params} 
                                 variant="outlined" 
-                                label="Hair removal categories " 
-                                placeholder="More hair removal" />
+                                label={t("Hair removal categories")} 
+                                placeholder={t("More hair removal")} />
                               )}
                             />;
                           }}
@@ -434,6 +504,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               limitTags={3}
                               id="size-small-standard-multi"
                               size="small"
+                              getOptionLabel={option => t(`${option}`)}
                               options={categories}
                               disabled={disabled}
                               defaultValue={makeupCategories.map(catId => data.makeupCat.filter(item => item.id == catId)[0].title)}
@@ -443,8 +514,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               renderInput={(params) => (
                                 <TextField {...params} 
                                 variant="outlined" 
-                                label="Makeup categories " 
-                                placeholder="More makeup" />
+                                label={t("Makeup categories")} 
+                                placeholder={t("More makeup")} />
                               )}
                             />;
                           }}
@@ -462,6 +533,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               limitTags={3}
                               id="size-small-standard-multi"
                               size="small"
+                              getOptionLabel={option => t(`${option}`)}
                               options={categories}
                               disabled={disabled}
                               defaultValue={massageCategories.map(catId => data.massageCat.filter(item => item.id == catId)[0].title)}
@@ -471,8 +543,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               renderInput={(params) => (
                                 <TextField {...params} 
                                 variant="outlined" 
-                                label="Massage categories " 
-                                placeholder="More massage" />
+                                label={t("Massage/spa categories")} 
+                                placeholder={t("More massage")} />
                               )}
                             />;
                           }}
@@ -490,6 +562,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               limitTags={3}
                               id="size-small-standard-multi"
                               size="small"
+                              getOptionLabel={option => t(`${option}`)}
                               options={categories}
                               disabled={disabled}
                               defaultValue={eyebrowCategories.map(catId => data.eyebrowCat.filter(item => item.id == catId)[0].title)}
@@ -499,8 +572,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               renderInput={(params) => (
                                 <TextField {...params} 
                                 variant="outlined" 
-                                label="Eyebrow categories " 
-                                placeholder="More eyebrow" />
+                                label={t("Eyebrow/lashes categories")} 
+                                placeholder={t("More eyebrow")} />
                               )}
                             />;
                           }}
@@ -518,6 +591,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               limitTags={3}
                               id="size-small-standard-multi"
                               size="small"
+                              getOptionLabel={option => t(`${option}`)}
                               options={categories}
                               disabled={disabled}
                               defaultValue={cosmetologyCategories.map(catId => data.cosmetologyCat.filter(item => item.id == catId)[0].title)}
@@ -527,8 +601,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               renderInput={(params) => (
                                 <TextField {...params} 
                                 variant="outlined" 
-                                label="Cosmetology categories " 
-                                placeholder="More cosmetology" />
+                                label={t("Cosmetology categories")} 
+                                placeholder={t("More cosmetology")} />
                               )}
                             />;
                           }}
@@ -546,6 +620,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               limitTags={3}
                               id="size-small-standard-multi"
                               size="small"
+                              getOptionLabel={option => t(`${option}`)}
                               options={categories}
                               disabled={disabled}
                               defaultValue={tattooCategories.map(catId => data.tattooCat.filter(item => item.id == catId)[0].title)}
@@ -555,8 +630,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               renderInput={(params) => (
                                 <TextField {...params} 
                                 variant="outlined" 
-                                label="Tattoo categories " 
-                                placeholder="More tattoo" />
+                                label={t("Tattoo/piercing categories")} 
+                                placeholder={t("More tattoo")} />
                               )}
                             />;
                           }}
@@ -574,6 +649,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               limitTags={3}
                               id="size-small-standard-multi"
                               size="small"
+                              getOptionLabel={option => t(`${option}`)}
                               options={categories}
                               disabled={disabled}
                               defaultValue={aestheticsCategories.map(catId => data.aestheticsCat.filter(item => item.id == catId)[0].title)}
@@ -583,8 +659,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               renderInput={(params) => (
                                 <TextField {...params} 
                                 variant="outlined" 
-                                label="Aesthetics categories " 
-                                placeholder="More aesthetics" />
+                                label={t("Aesthetics categories")} 
+                                placeholder={t("More aesthetics")} />
                               )}
                             />;
                           }}
@@ -603,14 +679,14 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                     <Button
                       variant="outlined"
                       size="small"
-                      color={img0 ? "secondary" : "inherit"}
+                      color={img0||data_salon.photoMain ? "secondary" : "inherit"}
                       component="span"
                       className={classes.button}
                     >
-                      Main photo
+                      {t("Main photo")}
                     </Button>
                     {img0 ? img0.name : '\xa0\xa0'+data_salon.photoMain.split('/').pop()}
-                    <FormHelperText>{fileError}</FormHelperText>
+                    <FormHelperText>{fileError.sizeError0}</FormHelperText>
                   </label>
                 </FormControl>
                 <FormControl fullWidth error={Boolean(fileError)}>
@@ -626,14 +702,16 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                     <Button
                       variant="outlined"
                       size="small"
-                      color={photo1 ? "secondary" : "inherit"}
+                      color={photo1||data_salon.photo1 ? "secondary" : "inherit"}
                       component="span"
                       className={classes.button}
                     >
-                      Photo 1
+                      {t("Photo 1")}
                     </Button>
-                    {photo1 ? photo1.name : '\xa0\xa0'+data_salon.photo1.split('/').pop()}
-                    <FormHelperText>{fileError}</FormHelperText>
+                    { photo1 ? 
+                      photo1.name : 
+                      data_salon.photo1 ? '\xa0\xa0'+data_salon.photo1.split('/').pop() : "" }
+                    <FormHelperText>{fileError.sizeError1}</FormHelperText>
                   </label>
                 </FormControl>
                 <FormControl fullWidth error={Boolean(fileError)}>
@@ -649,14 +727,16 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                     <Button
                       variant="outlined"
                       size="small"
-                      color={photo2 ? "secondary" : "inherit"}
+                      color={photo2||data_salon.photo2 ? "secondary" : "inherit"}
                       component="span"
                       className={classes.button}
                     >
-                      Photo 2
+                      {t("Photo 2")}
                     </Button>
-                    {photo2 ? photo2.name : '\xa0\xa0'+data_salon.photo2.split('/').pop()}
-                    <FormHelperText>{fileError}</FormHelperText>
+                    { photo2 ? 
+                      photo2.name : 
+                      data_salon.photo2 ? '\xa0\xa0'+data_salon.photo2.split('/').pop() : "" }
+                    <FormHelperText>{fileError.sizeError2}</FormHelperText>
                   </label>
                 </FormControl>
                 <FormControl fullWidth error={Boolean(fileError)}>
@@ -672,16 +752,93 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                     <Button
                       variant="outlined"
                       size="small"
-                      color={photo3 ? "secondary" : "inherit"}
+                      color={photo3||data_salon.photo3 ? "secondary" : "inherit"}
                       component="span"
                       className={classes.button}
                     >
-                      Photo 3
+                      {t("Photo 3")}
                     </Button>
-                    {photo3 ? photo3.name : '\xa0\xa0'+data_salon.photo3.split('/').pop()}
-                    <FormHelperText>{fileError}</FormHelperText>
+                    { photo3 ? 
+                      photo3.name : 
+                      data_salon.photo3 ? '\xa0\xa0'+data_salon.photo3.split('/').pop() : "" }
+                    <FormHelperText>{fileError.sizeError3}</FormHelperText>
                   </label>
                 </FormControl>
+                <FormControl fullWidth error={Boolean(fileError)}>
+                    <input
+                      id="photo4"
+                      type="file"
+                      accept=".jpg, .jpeg, .png"
+                      disabled={disabled}
+                      className={classes.input}
+                      onChange={handlePhoto4Change}
+                    />
+                    <label htmlFor="photo4">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color={photo4||data_salon.photo4 ? "secondary" : "inherit"}
+                        component="span"
+                        className={classes.button}
+                      >
+                      {t("Photo 4")}
+                      </Button>
+                      { photo4 ? 
+                        photo4.name : 
+                        data_salon.photo4 ? '\xa0\xa0'+data_salon.photo4.split('/').pop() : "" }
+                      <FormHelperText>{fileError.sizeError4}</FormHelperText>
+                    </label>
+                  </FormControl>
+                  <FormControl fullWidth error={Boolean(fileError)}>
+                    <input
+                      id="photo5"
+                      type="file"
+                      accept=".jpg, .jpeg, .png"
+                      disabled={disabled}
+                      className={classes.input}
+                      onChange={handlePhoto5Change}
+                    />
+                    <label htmlFor="photo5">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color={photo5||data_salon.photo5 ? "secondary" : "inherit"}
+                        component="span"
+                        className={classes.button}
+                      >
+                      {t("Photo 5")}
+                      </Button>
+                      { photo5 ? 
+                        photo5.name : 
+                        data_salon.photo5 ? '\xa0\xa0'+data_salon.photo5.split('/').pop() : "" } 
+                      <FormHelperText>{fileError.sizeError5}</FormHelperText>
+                    </label>
+                  </FormControl>
+                  <FormControl fullWidth error={Boolean(fileError)}>
+                    <input
+                      id="photo6"
+                      type="file"
+                      accept=".jpg, .jpeg, .png"
+                      disabled={disabled}
+                      className={classes.input}
+                      onChange={handlePhoto6Change}
+                    />
+                    <label htmlFor="photo6">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color={photo6||data_salon.photo6 ? "secondary" : "inherit"}
+                        component="span"
+                        className={classes.button}
+                      >
+                      {t("Photo 6")}
+                      </Button>
+                      { photo6 ? 
+                        photo6.name : 
+                        data_salon.photo6 ? '\xa0\xa0'+data_salon.photo6.split('/').pop() : "" } 
+                      <FormHelperText>{fileError.sizeError6}</FormHelperText>
+                    </label>
+                  </FormControl>                                                                      
                 {disabled ? 
                   (<Box
                     mt={1}
@@ -694,7 +851,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                       onClick={() => setDisabled(false)}
                       className={classes.save}
                     >
-                      Update
+                      {t("Update")}
                     </Button>
                   </Box>)
                 : (<Box
@@ -708,7 +865,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                         variant="outlined"
                         className={classes.cancel}
                       >
-                        Cancel
+                        {t("Cancel")}
                       </Button>
                     </Link>
                     {/* <Box flexGrow={1} /> */}
@@ -746,13 +903,13 @@ const UpdateSalonForm = ({classes, currentUser}) => {
         TransitionComponent={Transition}
         >
           <DialogTitle>
-            Salon successfully updated!
+            {t("Salon successfully updated!")}
           </DialogTitle>
-          <DialogContent>
+          {/* <DialogContent>
             <DialogContentText>
-              We will review your changes before publishing on the website.
+              {t("We will review your changes before publishing on the website.")}
             </DialogContentText>
-          </DialogContent>
+          </DialogContent> */}
           <DialogActions>
             <Button
               color="primary"
@@ -762,7 +919,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
               }}
             >
               <Link to={`/partner/${userId}/salon/browse`}>
-                Return to the main.
+                {t("Return to the main.")}
               </Link>
             </Button>
           </DialogActions>
@@ -810,6 +967,10 @@ const AREA_QUERY = gql`
     area {
         id
         title
+        city {
+          id
+          title
+        }
         salonSet{
           name
         }

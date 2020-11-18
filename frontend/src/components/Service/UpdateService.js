@@ -76,6 +76,7 @@ NumberFormatCustom.propTypes = {
 const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedService, data_salon }) => {
   const classes = formStyles();
   const history = useHistory();
+  const { t, i18n } = useTranslation();
 
   const [promo, setPromo] = React.useState(Boolean(selectedService.promotionPrice));
   const [disabled, setDisabled] = useState(true)
@@ -132,8 +133,8 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
       </FormControl> */}
       <FormControl fullWidth className={classes.field}>
         <TextField
-        label="Name"
-        placeholder="Add name"
+        label={t("Service name")}
+        placeholder={t("Add service name")}
         onChange={(event) => setServiceData({ ...serviceData, title:event.target.value })}
         value={serviceData.title}
         disabled={disabled}
@@ -159,8 +160,8 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
           renderInput={(params) => (
             <TextField {...params} 
             variant="outlined" 
-            label="Choose masters" 
-            placeholder="More masters"
+            label={t("Choose masters")} 
+            placeholder={t("More masters")}
           />
           )}
         />
@@ -168,8 +169,8 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
       }
       <FormControl fullWidth className={classes.field}>
         <TextField
-        label="Description"
-        placeholder="Add description"
+        label={t("Description")}
+        placeholder={t("Add description")}
         onChange={(event) => setServiceData({ ...serviceData, description:event.target.value })}
         value={serviceData.description}
         disabled={disabled}
@@ -190,14 +191,14 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
           renderInput={(params) => (
             <TextField {...params} 
             variant="outlined"  
-            label="Duration in mitutes" 
+            label={t("Duration in mitutes")} 
             />
             )}
         />
       </FormControl>
       <FormControl fullWidth className={classes.field}>
         <TextField
-        label="Price"
+        label={t("Price")}
         variant="outlined"
         disabled={disabled}
         value={serviceData.price}
@@ -211,7 +212,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
     </FormControl>
     {!promo && (
       <div>
-      <h4> Is promotion available? </h4>
+      <h4> {t("Is promotion available?")} </h4>
       <Checkbox
           checked={promo}
           color="primary"
@@ -226,7 +227,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
     {promo && (
     <FormControl fullWidth className={classes.field}>
         <TextField
-        label="Promotion price"
+        label={t("Promotion price")}
         variant="outlined"
         disabled={disabled}
         value={serviceData.promotionPrice}
@@ -251,7 +252,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
           onClick={() => setDisabled(false)}
           className={classes.save}
         >
-          Update
+          {t("Update")}
         </Button>
       </Box>) :
       (<Box
@@ -270,7 +271,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
         }
         className={classes.cancel}
       >
-        Delete
+        {t("Delete")}
       </Button>
       {/* <Box flexGrow={1} /> */}
       <Button
@@ -546,13 +547,15 @@ const UpdateServiceForm = ({classes, currentUser}) => {
   return(
     <div className={classes.container}>
       <Paper className={classes.paper}>
-          <h3>Add Service</h3>
+          <h3>{t("Update Service")}</h3>
               <FormControl fullWidth className={classes.field}> 
                 <Autocomplete
                   id="size-small-clearOnEsc"
                   disableClearable
                   size="small"
+                  getOptionLabel={option => t(`${option}`)}
                   options={services.map(service => t(`${service.title}`))}
+                  options={services.map(service => service.title)}
                   onChange={(event,value) => {
                             setCatValue(services.filter(item => item.title == value)[0].__typename);
                             setSelectedService(services.filter(item => item.title == value)[0])
@@ -561,8 +564,8 @@ const UpdateServiceForm = ({classes, currentUser}) => {
                   renderInput={(params) => (
                     <TextField {...params} 
                     variant="outlined" 
-                    label="Category " 
-                    placeholder="Select service category"
+                    label={t("Category")} 
+                    placeholder={t("Select service category")}
                     />
                   )}
                 />
@@ -583,7 +586,7 @@ const UpdateServiceForm = ({classes, currentUser}) => {
           TransitionComponent={Transition}
           >
             <DialogTitle>
-              Service successfully updated!
+              {t("Service successfully updated!")}
             </DialogTitle>
             <DialogActions>
               <Button
@@ -594,7 +597,7 @@ const UpdateServiceForm = ({classes, currentUser}) => {
                 }}
               >
                 <Link to={`/partner/${userId}/salon/view`}>
-                  Back to salon page
+                  {t("Back to salon page")}
                 </Link>
               </Button>
             </DialogActions>

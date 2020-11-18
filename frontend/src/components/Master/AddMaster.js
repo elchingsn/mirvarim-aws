@@ -52,9 +52,9 @@ function Transition(props) {
 const MasterForm = ({ data_salon, setOpen, userId }) => {
   const classes = formStyles();
   const history = useHistory();
+  const { t, i18n } = useTranslation();
 
   const [submitting, setSubmitting] = useState(false);
-
 
   const [masterData, setMasterData] = useState({
     salonId: data_salon.id,
@@ -92,8 +92,8 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
         <form onSubmit={event => handleSubmit(event, addMaster)}>
           <FormControl fullWidth className={classes.field}>
             <TextField
-            label="Name"
-            placeholder="Add name"
+            label={t("Name")}
+            placeholder={t("Add name")}
             onChange={(event) => setMasterData({ ...masterData, name:event.target.value })}
             value={masterData.name}
             variant="outlined"
@@ -101,10 +101,8 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
           </FormControl>
           <FormControl fullWidth className={classes.field}>
             <TextField
-            label="Description"
-            multiline
-            rows="3"
-            placeholder="Add email"
+            label={t("Email")}
+            placeholder={t("Add email")}
             onChange={(event) => setMasterData({ ...masterData, email:event.target.value })}
             value={masterData.email}
             variant="outlined"
@@ -140,7 +138,7 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
             onClick={() => setMasterData({ ...masterData, name: "", email: "", prone: "" })}
             className={classes.cancel}
           >
-            Cancel
+            {t("Cancel")}
           </Button>
           {/* <Box flexGrow={1} /> */}
           <Button
@@ -155,7 +153,7 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
             {submitting ? (
               <CircularProgress className={classes.save} size={24} />
             ) : (
-              "Add Master"
+              `${t("Add Master")}`
             )}
           </Button>
         </Box>
@@ -169,10 +167,12 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
 
 const AddMaster = ({classes}) => {
   const currentUser = useContext(UserContext);
+  const { t, i18n } = useTranslation();
+
   if (!currentUser.salonSet[0]) {
-    return <div> No salon added. Please add a salon</div>
+    return <div> {t("No salon added. Please add a salon")}</div>
   } else if ((currentUser.salonSet[0].masterSet.length > 0) && (currentUser.role == "A_2")) {
-    return <div> Freelancer master already added.</div>
+    return <div> {t("Freelancer master already added.")}</div>
   } else {
     return <AddMasterForm classes={classes} currentUser={currentUser} />
   }
@@ -200,7 +200,7 @@ const AddMasterForm = ({classes, currentUser}) => {
   return(
     <div className={classes.container}>
       <Paper className={classes.paper}>
-          <h3>Add Master</h3> 
+          <h3>{t("Add Master")}</h3> 
               <MasterForm data_salon={data_salon} setOpen={setOpen} userId={userId}/>    
       </Paper>
       <Dialog
@@ -209,7 +209,7 @@ const AddMasterForm = ({classes, currentUser}) => {
           TransitionComponent={Transition}
           >
             <DialogTitle>
-              Master successfully added!
+              {t("Master successfully added!")}
             </DialogTitle>
             <DialogActions>
               <Button
@@ -220,7 +220,7 @@ const AddMasterForm = ({classes, currentUser}) => {
                 }}
               >
                 <Link to={`/partner/${userId}/salon/view`}>
-                  Back to salon page
+                  {t("Back to salon page")}
                 </Link>
               </Button>
             </DialogActions>

@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import classNames from "classnames";
 import ImageGallery from "react-image-gallery";
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import {Query, Mutation} from "@apollo/react-components";
 import { ApolloProvider, useQuery, useMutation } from "@apollo/react-hooks";
@@ -79,16 +80,17 @@ const RatingDistribution = ({value, progress, quantity}) => {
 
 const Service = ({title, duration, promotionPrice, price }) => {
   const classes = useStyles();
+  const { t, i18n } = useTranslation();
 
   return (
     <CardFooter style={{paddingTop:"5px",paddingBottom:"10px",paddingLeft:"0px"}}>
         <>
         <div className={classes.priceContainer}>
-          {title}
+          {t(`${title}`)}
         </div>
         <div style={{paddingLeft:"15px"}}>
           &nbsp;
-          <i className="far fa-clock">&nbsp;{duration} min</i>
+          <i className="far fa-clock">&nbsp;{duration} {t("min")}</i>
         </div>
         <div className={classNames(classes.stats, classes.mlAuto)}>
           {promotionPrice ? (
@@ -127,6 +129,8 @@ const ViewSalon=() => {
 const BrowseSalon = ({currentUser}) => {
   const classes = useStyles();
   const history = useHistory();
+  const { t, i18n } = useTranslation();
+
   const [open, setOpen] = useState(false);
   const [colorSelect, setColorSelect] = useState("0");
   const [tabIndex, setTabIndex] = useState(0);
@@ -241,7 +245,13 @@ const BrowseSalon = ({currentUser}) => {
           const hairRemovalServices = salon.hairremovalserviceSet
           const makeupServices = salon.makeupserviceSet
           const massageServices = salon.massageserviceSet
-          const services = [...hairServices, ...nailsServices, ...hairRemovalServices, ...makeupServices, ...massageServices]
+          const eyebrowServices = salon.eyebrowserviceSet
+          const cosmetologyServices = salon.cosmetologyserviceSet
+          const tattooServices = salon.tattooserviceSet
+          const aestheticsServices = salon.aestheticsserviceSet          
+          const services = [...hairServices, ...nailsServices, ...hairRemovalServices, ...makeupServices, ...massageServices,
+                            ...eyebrowServices, ...cosmetologyServices, ...tattooServices, ...aestheticsServices]   
+
           const _raw_images = [salon.photoMain, salon.photo1, salon.photo2, salon.photo3,
               salon.photo4, salon.photo5, salon.photo6];
           const _images = _raw_images.filter((el) => el!="");
@@ -287,7 +297,7 @@ const BrowseSalon = ({currentUser}) => {
 
                         <GridItem md={6} sm={6} xs={12}>
                             <Rating name="read-only" size="small" value={salon.rating} readOnly />
-                            <h5>View all reviews</h5>
+                            <h5>{t("View all reviews")}</h5>
                           </GridItem>
                         </GridContainer>
                     </GridItem>
@@ -308,7 +318,7 @@ const BrowseSalon = ({currentUser}) => {
 
                   <GridItem md={6} sm={6}>
                       <Rating name="read-only" size="small" value={salon.rating} readOnly />
-                      <h5>View all reviews</h5>
+                      <h5>{t("View all reviews")}</h5>
                     </GridItem>
                   </GridContainer>
 
@@ -329,15 +339,15 @@ const BrowseSalon = ({currentUser}) => {
                       variant="fullWidth"
                       aria-label="full width tabs example"
                     >
-                      <Tab label="About" />
-                      <Tab label="Masters" />
-                      <Tab label="Services" />
-                      <Tab label="Reviews" />
+                      <Tab label={t("About")} />
+                      <Tab label={t("Masters")} />
+                      <Tab label={t("Services")} />
+                      <Tab label={t("Reviews")} />
                   </Tabs>
                 </nav>
                 <GridContainer>
                   <GridItem md={12} sm={12} className={classNames(classes.paddingLR, classes.paddingT)}>
-                    <p style={{fontSize:"18px", marginTop:"30px", color:"inherit"}}> About</p>
+                    <p style={{fontSize:"18px", marginTop:"30px", color:"inherit"}}>{t("About")}</p>
                     <ShowMoreText>
                       {salon.description}
                     </ShowMoreText>
@@ -348,7 +358,7 @@ const BrowseSalon = ({currentUser}) => {
                 <div className={classNames(classes.tab, classes.mainRaised)} ref={masterRef}>
                   <GridContainer>
                     <GridItem md={12} sm={12} className={classNames(classes.paddingLR, classes.paddingT)}>
-                      <p style={{fontSize:"18px", color:"inherit"}}> Masters </p>
+                      <p style={{fontSize:"18px", color:"inherit"}}>{t("Masters")} </p>
                       {salon.masterSet.map(master => (
                         <CardFooter style={{paddingTop:"5px",paddingBottom:"10px",paddingLeft:"0px"}}>
                         <>
@@ -370,9 +380,9 @@ const BrowseSalon = ({currentUser}) => {
                 <div className={classNames(classes.tab, classes.mainRaised)} ref={servicesRef}>
                 <GridContainer>
                   <GridItem md={12} sm={12} className={classNames(classes.paddingLR,classes.paddingT)}>
-                  <p style={{fontSize:"18px", color:"inherit"}}>Services</p>
+                  <p style={{fontSize:"18px", color:"inherit"}}>{t("Services")}</p>
                     {hairServices[0] && (
-                      <Accordion title="Hair Services">
+                      <Accordion title={t("Hair Services")}>
                         {hairServices.map(service => (
                           <div>
                           <Service 
@@ -386,7 +396,7 @@ const BrowseSalon = ({currentUser}) => {
                       </Accordion>
                     )}
                     {nailsServices[0] && (
-                      <Accordion title="Nails Services">
+                      <Accordion title={t("Nails Services")}>
                         {nailsServices.map(service => (
                           <div>
                           <Service 
@@ -400,7 +410,7 @@ const BrowseSalon = ({currentUser}) => {
                       </Accordion>
                     )}
                     {hairRemovalServices[0] && (
-                      <Accordion title="Hair Removal Services">
+                      <Accordion title={t("Hair Removal Services")}>
                         {hairRemovalServices.map(service => (
                           <div>
                           <Service 
@@ -414,7 +424,7 @@ const BrowseSalon = ({currentUser}) => {
                       </Accordion>
                     )}                                            
                     {makeupServices[0] && (
-                      <Accordion title="Makeup Services">
+                      <Accordion title={t("Makeup Services")}>
                         {makeupServices.map(service => (
                           <div>
                           <Service 
@@ -428,7 +438,7 @@ const BrowseSalon = ({currentUser}) => {
                       </Accordion>
                     )}
                     {massageServices[0] && (
-                      <Accordion title="Massage Services">
+                      <Accordion title={t("Massage/Spa Services")}>
                         {massageServices.map(service => (
                           <div>
                           <Service 
@@ -440,7 +450,63 @@ const BrowseSalon = ({currentUser}) => {
                           </div> 
                         ))}
                       </Accordion>
-                    )}                      
+                    )}     
+                      {eyebrowServices[0] && (
+                        <Accordion title={t("Eyebrow Services")}>
+                          {eyebrowServices.map(service => (
+                            <div>
+                            <Service 
+                              title={service.title} 
+                              duration={service.duration} 
+                              price={service.price} 
+                              promotionPrice={service.promotionPrice} />
+                            <Divider />
+                            </div> 
+                          ))}
+                        </Accordion>
+                      )}  
+                      {cosmetologyServices[0] && (
+                        <Accordion title={t("Cosmetology Services")}>
+                          {cosmetologyServices.map(service => (
+                            <div>
+                            <Service 
+                              title={service.title} 
+                              duration={service.duration} 
+                              price={service.price} 
+                              promotionPrice={service.promotionPrice} />
+                            <Divider />
+                            </div> 
+                          ))}
+                        </Accordion>
+                      )}  
+                      {tattooServices[0] && (
+                        <Accordion title={t("Tattoo/Piercing Services")}>
+                          {tattooServices.map(service => (
+                            <div>
+                            <Service 
+                              title={service.title} 
+                              duration={service.duration} 
+                              price={service.price} 
+                              promotionPrice={service.promotionPrice} />
+                            <Divider />
+                            </div> 
+                          ))}
+                        </Accordion>
+                      )}  
+                      {aestheticsServices[0] && (
+                        <Accordion title={t("Aesthetics Services")}>
+                          {aestheticsServices.map(service => (
+                            <div>
+                            <Service 
+                              title={service.title} 
+                              duration={service.duration} 
+                              price={service.price} 
+                              promotionPrice={service.promotionPrice} />
+                            <Divider />
+                            </div> 
+                          ))}
+                        </Accordion>
+                      )}                                                                                                            
                       {/* {services.map(service => (
                         <div>
                         <Service 
@@ -486,7 +552,7 @@ const BrowseSalon = ({currentUser}) => {
                                   <Box> <Rating value={avgRating} precision={0.1} readOnly/> </Box>
                                 </Box>
                                 <Box display="flex" justifyContent="center">
-                                  <Box> <div>{countReviews} reviews</div> </Box>
+                                  <Box> <div>{countReviews} {t("reviews")}</div> </Box>
                                 </Box>
                                 </GridItem>
                                 ) : (
@@ -501,7 +567,7 @@ const BrowseSalon = ({currentUser}) => {
                                     <Box> <Rating value={avgRating} precision={0.1} readOnly/> </Box>
                                   </Box>
                                   <Box display="flex" justifyContent="center">
-                                    <Box> <div>{countReviews} reviews</div> </Box>
+                                    <Box> <div>{countReviews} {t("reviews")}</div> </Box>
                                   </Box>
                                   </GridItem>
                                   </>
@@ -518,7 +584,7 @@ const BrowseSalon = ({currentUser}) => {
 
                         ( <GridContainer>
                           <GridItem sm={12} md={10} className={classNames(classes.paddingLR)}>
-                            <p style={{fontSize:"18px", marginTop:"20px", color:"inherit"}}> Reviews</p>
+                            <p style={{fontSize:"18px", marginTop:"20px", color:"inherit"}}>{t("Reviews")}</p>
                           </GridItem>
 
                           <GridItem sm={12} md={4} className={classNames(classes.paddingLR)}>
@@ -536,7 +602,7 @@ const BrowseSalon = ({currentUser}) => {
                                 <Box> <Rating value={avgRating} precision={0.1} readOnly/> </Box>
                               </Box>
                               <Box display="flex" justifyContent="center">
-                                <Box> <div> {countReviews} reviews</div> </Box>
+                                <Box> <div> {countReviews} {t("reviews")}</div> </Box>
                               </Box>
                               </GridItem>
                             </GridContainer>
@@ -659,6 +725,34 @@ query selected_salon ($id:Int!) {
           promotionPrice
           duration
         }
+        eyebrowserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }     
+        cosmetologyserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }
+        tattooserviceSet { 
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }
+        aestheticsserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        } 
         likeSet {
           id
           salon {

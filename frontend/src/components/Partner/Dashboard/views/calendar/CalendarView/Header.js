@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import classNames from "classnames";
 import PropTypes from 'prop-types';
 import {
@@ -29,6 +30,7 @@ const Header = ({
   //onAddClick,
   ...rest
 }) => {
+  const { t, i18n } = useTranslation();
   const classes = useStyles();
 
   return (
@@ -50,13 +52,13 @@ const Header = ({
             to="/app"
             component={RouterLink}
           >
-            Dashboard
+            {t("Dashboard")}
           </Link>
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Calendar
+            {t("Calendar")}
           </Typography>
         </Breadcrumbs>
         {/* <Typography

@@ -74,6 +74,7 @@ NumberFormatCustom.propTypes = {
 };
 
 const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
+  const { t, i18n } = useTranslation();
   const classes = formStyles();
   const history = useHistory();
 
@@ -129,24 +130,28 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
           id="size-small-clearOnEsc"
           disableClearable
           size="small"
+          getOptionLabel={option => t(`${option}`)}
           options={data_salon[catType].map(item => item.title).flat(1)}
           onChange={(event,value) => {
-            setServiceData({ ...serviceData, categoryId:data_salon[catType].filter(item => item.title === value)[0].id })
+            setServiceData({ ...serviceData, 
+              categoryId:data_salon[catType].filter(item => item.title === value)[0].id,
+              title:value
+            })
           }}
           renderInput={(params) => (
             <TextField {...params} 
             variant="outlined"  
-            label="Subcategory" 
+            label={t("Subcategory")} 
             />
           )}
         />
       </FormControl>
       <FormControl fullWidth className={classes.field}>
         <TextField
-        label="Name"
-        placeholder="Add name"
+        label={t("Service name")}
+        placeholder={t("Add service name")}
         onChange={(event) => setServiceData({ ...serviceData, title:event.target.value })}
-        value={serviceData.title}
+        value={t(serviceData.title)}
         variant="outlined"
         />
       </FormControl>
@@ -167,8 +172,8 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
           renderInput={(params) => (
             <TextField {...params} 
             variant="outlined" 
-            label="Choose masters" 
-            placeholder="More masters"
+            label={t("Choose masters")} 
+            placeholder={t("More masters")}
           />
           )}
         />
@@ -176,8 +181,8 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
       }
       <FormControl fullWidth className={classes.field}>
         <TextField
-        label="Description"
-        placeholder="Add description"
+        label={t("Description")}
+        placeholder={t("Add description")}
         onChange={(event) => setServiceData({ ...serviceData, description:event.target.value })}
         value={serviceData.description}
         variant="outlined"
@@ -195,14 +200,14 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
           renderInput={(params) => (
             <TextField {...params} 
             variant="outlined"  
-            label="Duration in mitutes" 
+            label={t("Duration in mitutes")} 
             />
             )}
         />
       </FormControl>
       <FormControl fullWidth className={classes.field}>
         <TextField
-        label="Price"
+        label={t("Price")}
         variant="outlined"
         value={serviceData.price}
         onChange={(event) => setServiceData({ ...serviceData, price: parseInt(event.target.value) })}
@@ -213,7 +218,7 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
         }}
       />
     </FormControl>
-    <h4> Is promotion available? </h4>
+    <h4> {t("Is promotion available?")} </h4>
     <Checkbox
         checked={promo}
         color="primary"
@@ -226,7 +231,7 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
     {promo && (
     <FormControl fullWidth className={classes.field}>
         <TextField
-        label="Promotion price"
+        label={t("Promotion price")}
         variant="outlined"
         value={serviceData.promotionPrice}
         onChange={(event) => setServiceData({ ...serviceData, promotionPrice: parseInt(event.target.value) })}
@@ -249,7 +254,7 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
         onClick={() => setServiceData({ ...serviceData,title:"",masterIds:[],description:"",price:"" })}
         className={classes.cancel}
       >
-        Cancel
+        {t("Cancel")}
       </Button>
       {/* <Box flexGrow={1} /> */}
       <Button
@@ -266,7 +271,7 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
         {submitting ? (
           <CircularProgress className={classes.save} size={24} />
         ) : (
-          "Add Service"
+          `${t("Add Service")}`
         )}
       </Button>
       </Box>
@@ -465,8 +470,10 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
 
 const CreateService = ({classes}) => {
   const currentUser = useContext(UserContext);
+  const { t, i18n } = useTranslation();
+
   if (!currentUser.salonSet[0]) {
-    return <div> No salon added. Please add a salon</div>
+    return <div> {t("No salon added. Please add a salon")}</div>
   } else {
     return <CreateServiceForm classes={classes} currentUser={currentUser} />
   }
@@ -477,7 +484,6 @@ const CreateServiceForm = ({classes, currentUser}) => {
   const userId = currentUser.id;
   const data_salon = currentUser.salonSet[0];
   const salonId = data_salon.id;
-
   const { t, i18n } = useTranslation();
 
   const hairService_set = data_salon.hairCategories.map(item => item.__typename);
@@ -512,12 +518,13 @@ const CreateServiceForm = ({classes, currentUser}) => {
   return(
     <div className={classes.container}>
       <Paper className={classes.paper}>
-          <h3>Add Service</h3>
+          <h3>{t("Add Service")}</h3>
               <FormControl fullWidth className={classes.field}>
                 <Autocomplete
                   id="size-small-clearOnEsc"
                   disableClearable
                   size="small"
+                  getOptionLabel={option => t(`${option}`)}
                   options={category_set}
                   onChange={(event,value) => {
                             // setHairCategories({...data, hairCat: data.hairCat.filter(item => value.includes(item.title))});
@@ -527,8 +534,8 @@ const CreateServiceForm = ({classes, currentUser}) => {
                   renderInput={(params) => (
                     <TextField {...params} 
                     variant="outlined" 
-                    label="Category " 
-                    placeholder="Select service category"
+                    label={t("Category")} 
+                    placeholder={t("Select service category")}
                     />
                   )}
                 />
@@ -546,7 +553,7 @@ const CreateServiceForm = ({classes, currentUser}) => {
           TransitionComponent={Transition}
           >
             <DialogTitle>
-              Service successfully created!
+              {t("Service successfully created!")}
             </DialogTitle>
             <DialogActions>
               <Button
@@ -557,7 +564,7 @@ const CreateServiceForm = ({classes, currentUser}) => {
                 }}
               >
                 <Link to={`/partner/${userId}/salon/view`}>
-                  Back to salon page
+                  {t("Back to salon page")}
                 </Link>
               </Button>
             </DialogActions>

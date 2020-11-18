@@ -42,6 +42,7 @@ const EventForm = ({
   handleUpdateModalClose,
   event
 }) => {
+  const { t, i18n } = useTranslation();
   const classes = useStyles()
   console.log('event', event)
   const [updateBooking, { data: update_data }] = useMutation(UPDATE_BOOKING);
@@ -104,7 +105,7 @@ const EventForm = ({
   return(
     <div>
       <Paper className={classes.paper}>
-          <h3>Add event</h3>  
+          <h3>{t("Change event")}</h3>  
           <form className={classes.form} onSubmit={handleSubmit}>
             <FormControl margin="normal" variant="outlined" required fullWidth>
               <Autocomplete
@@ -118,16 +119,16 @@ const EventForm = ({
                 renderInput={(params) => (
                   <TextField {...params} 
                   variant="outlined"  
-                  label="Choose service" 
+                  label={t("Select service")} 
                   />
                   )}
               />
             </FormControl>
             <FormControl fullWidth className={classes.field}>
               <TextField
-                label="Name"
+                label={t("Name")}
                 size="small"
-                placeholder="Customer name"
+                placeholder={t("Customer name")}
                 onChange={(event) => setBookingData({ ...bookingData, customerName:event.target.value })}
                 value={bookingData.customerName}
                 variant="outlined"
@@ -146,7 +147,7 @@ const EventForm = ({
             <FormControl fullWidth className={classes.field}>
               <TextField
                 id="datetime-local"
-                label="Start date"
+                label={t("Start time")}
                 type="datetime-local"
                 value={bookingData.start.slice(0,16)}
                 onChange={(e) => setBookingData({...bookingData, start: e.target.value})}
@@ -158,7 +159,7 @@ const EventForm = ({
             <FormControl fullWidth className={classes.field}>
               <TextField
                 id="datetime-local"
-                label="End date"
+                label={t("End time")}
                 type="datetime-local"
                 value={
                   bookingData.start.length>0 ?
@@ -183,13 +184,13 @@ const EventForm = ({
               </Button>
               <Box flexGrow={1} />
               <Button onClick={handleCancel} className={classes.button}>
-                Cancel
+                {t("Cancel")}
               </Button>
               <Button 
                 disabled={ bookingData.start.length === 0 }
                 type="submit" 
                 className={classes.button}>
-                Confirm
+                {t("Confirm")}
               </Button>
             </Box>
         </form>

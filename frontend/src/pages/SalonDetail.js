@@ -335,7 +335,7 @@ const SalonDetail=({match}) => {
                 simple
                 className={`${smallViewSize? "classes.floatright" : "classes.right"}`}>
                 <AddCircleOutlineIcon className={classes.addIcon}/>
-                <span> Rate </span>
+                <span> {t("Rate")} </span>
               </Button>
             </Link>)
           : ( <div>
@@ -346,7 +346,7 @@ const SalonDetail=({match}) => {
                   simple
                   className={`${smallViewSize? "classes.floatright" : "classes.right"}`}>  
                   <AddCircleOutlineIcon className={classes.addIcon}/>
-                  <span> Rate </span>
+                  <span> {t("Rate")} </span>
                 </Button>
                 <Dialog
                   open={open}
@@ -598,7 +598,7 @@ const SalonDetail=({match}) => {
                   </nav>
                   <GridContainer>
                     <GridItem md={12} sm={12} className={classNames(classes.paddingLR, classes.paddingT)}>
-                      <p style={{fontSize:"18px", marginTop:"30px", color:"inherit"}}> {t("About")}</p>
+                      <p style={{fontSize:"18px", marginTop:"30px", color:"inherit"}}>{t("About")}</p>
                       <ShowMoreText>
                         {salon.description} 
                       </ShowMoreText>

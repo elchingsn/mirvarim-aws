@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import gql from "graphql-tag";
 import axios from "axios";
 import Cookies from 'js-cookie';
+import { useTranslation } from 'react-i18next';
 
 import Box from "@material-ui/core/Box";
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -30,6 +31,7 @@ import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
 import FormHelperText from '@material-ui/core/FormHelperText';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import CircularProgress from "@material-ui/core/CircularProgress";
+import InputMask from 'react-input-mask';
 
 import { UserContext } from "App";
 import Error from "../Shared/Error"; 
@@ -44,11 +46,12 @@ function Transition(props) {
 }
 
 const CreateSalon = ({classes}) => {
+    const { t, i18n } = useTranslation();
     const currentUser = useContext(UserContext);
     if (currentUser.salonSet[0]) {
         return (
           <div className={classes.container}>
-            <div className={classes.field}> This account has already added a salon. Please, contact us if you want to delete your salon. </div>
+            <div className={classes.field}> {t("This account has already added a salon. Please, contact us if you want to delete your salon.")} </div>
           </div>
         ) 
     } else {
@@ -58,6 +61,8 @@ const CreateSalon = ({classes}) => {
 
 const AddSalonForm = ({ classes }) => {
     const history = useHistory();
+    const { t, i18n } = useTranslation();
+
     const [name, setName] = useState("");
     const [address, setAddress] = useState("");
     const [cityId, setCityId] = useState("");
@@ -88,7 +93,15 @@ const AddSalonForm = ({ classes }) => {
 
     const [open, setOpen] = useState(false);
     const [submitting, setSubmitting] = useState(false);
-    const [fileError, setFileError] = useState("");
+    const [fileError, setFileError] = useState({
+      sizeError0: "",
+      sizeError1: "",
+      sizeError2: "",
+      sizeError3: "",
+      sizeError4: "",
+      sizeError5: "",
+      sizeError6: "",
+    });
 
     //const [addMaster, { data: master_data }] = useMutation(ADD_MASTER_MUTATION);
 
@@ -96,16 +109,15 @@ const AddSalonForm = ({ classes }) => {
 
     const [uploadImg] = useMutation(FILE_MUTATION);
 
-
     const handlePhotoMainChange = event => {
       console.log(event.target.files);
       const selectedFile = event.target.files[0];
       const fileSizeLimit = 5000000; // 5mb
       if (selectedFile && selectedFile.size > fileSizeLimit) {
-        setFileError(`${selectedFile.name}: File size too large`);
+        setFileError({...fileError, sizeError0: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
       } else {
         setImg0(selectedFile);
-        setFileError("");
+        setFileError({...fileError, sizeError0: ""});
       }
     };
 
@@ -113,10 +125,10 @@ const AddSalonForm = ({ classes }) => {
       const selectedFile = event.target.files[0];
       const fileSizeLimit = 5000000; // 5mb
       if (selectedFile && selectedFile.size > fileSizeLimit) {
-        setFileError(`${selectedFile.name}: File size too large`);
+        setFileError({...fileError, sizeError1: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
       } else {
         setPhoto1(selectedFile);
-        setFileError("");
+        setFileError({...fileError, sizeError1: ""});
       }
     };
 
@@ -124,10 +136,10 @@ const AddSalonForm = ({ classes }) => {
       const selectedFile = event.target.files[0];
       const fileSizeLimit = 5000000; // 5mb
       if (selectedFile && selectedFile.size > fileSizeLimit) {
-        setFileError(`${selectedFile.name}: File size too large`);
+        setFileError({...fileError, sizeError2: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
       } else {
         setPhoto2(selectedFile);
-        setFileError("");
+        setFileError({...fileError, sizeError2: ""});
       }
     };
 
@@ -135,17 +147,49 @@ const AddSalonForm = ({ classes }) => {
       const selectedFile = event.target.files[0];
       const fileSizeLimit = 5000000; // 5mb
       if (selectedFile && selectedFile.size > fileSizeLimit) {
-        setFileError(`${selectedFile.name}: File size too large`);
+        setFileError({...fileError, sizeError3: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
       } else {
         setPhoto3(selectedFile);
-        setFileError("");
+        setFileError({...fileError, sizeError3: ""});
+      }
+    };
+
+    const handlePhoto4Change = event => {
+      const selectedFile = event.target.files[0];
+      const fileSizeLimit = 5000000; // 5mb
+      if (selectedFile && selectedFile.size > fileSizeLimit) {
+        setFileError({...fileError, sizeError4: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
+      } else {
+        setPhoto4(selectedFile);
+        setFileError({...fileError, sizeError4: ""});
+      }
+    };
+
+    const handlePhoto5Change = event => {
+      const selectedFile = event.target.files[0];
+      const fileSizeLimit = 5000000; // 5mb
+      if (selectedFile && selectedFile.size > fileSizeLimit) {
+        setFileError({...fileError, sizeError5: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
+      } else {
+        setPhoto5(selectedFile);
+        setFileError({...fileError, sizeError5: ""});
+      }
+    };
+
+    const handlePhoto6Change = event => {
+      const selectedFile = event.target.files[0];
+      const fileSizeLimit = 5000000; // 5mb
+      if (selectedFile && selectedFile.size > fileSizeLimit) {
+        setFileError({...fileError, sizeError6: `${selectedFile.name}: ${t("File size should be less than 5mb")}`});
+      } else {
+        setPhoto6(selectedFile);
+        setFileError({...fileError, sizeError6: ""});
       }
     };
   
     const handleImageUpload = async (img) => {
       try {
         const res = await uploadImg({variables:{file: img}});
-        console.log(res);
         return res.data.uploadImg.url;
       } catch (err) {
         console.error("Error uploading file", err);
@@ -201,11 +245,10 @@ const AddSalonForm = ({ classes }) => {
     return(
       <div className={classes.container}>
         <Paper className={classes.paper}>
-            <h3>Add Salon</h3>
+            <h3>{t("Add Salon")}</h3>
             <Mutation
               mutation={CREATE_SALON_MUTATION}
               onCompleted={data => {
-              console.log({ data });
               setSubmitting(false);
               setOpen(true);
               }}
@@ -218,8 +261,8 @@ const AddSalonForm = ({ classes }) => {
                   <form onSubmit={event => handleSubmit(event, createSalon)}>
                     <FormControl fullWidth className={classes.field}>
                       <TextField
-                      label="Name"
-                      placeholder="Add Name"
+                      label={t("Name")}
+                      placeholder={t("Add Name")}
                       onChange={event => setName(event.target.value)}
                       value={name}
                       variant="outlined"
@@ -228,8 +271,8 @@ const AddSalonForm = ({ classes }) => {
                     </FormControl>
                     <FormControl fullWidth className={classes.field}>
                       <TextField
-                      label="Address"
-                      placeholder="Add Address"
+                      label={t("Address")}
+                      placeholder={t("Add Address")}
                       onChange={event => setAddress(event.target.value)}
                       value={address}
                       variant="outlined"
@@ -248,6 +291,7 @@ const AddSalonForm = ({ classes }) => {
                                           //clearOnEscape
                                           disableClearable
                                           size="small"
+                                          getOptionLabel={option => t(`${option}`)}
                                           options={categories}
                                           onChange={(event,value) => {
                                             // it returns the id of the selected city in the City model
@@ -256,7 +300,7 @@ const AddSalonForm = ({ classes }) => {
                                           renderInput={(params) => (
                                             <TextField {...params} 
                                             variant="outlined"  
-                                            label="City" 
+                                            label={t("City")} 
                                             // margin="normal" 
                                             // className={classes.textField}
                                             />
@@ -265,18 +309,21 @@ const AddSalonForm = ({ classes }) => {
                                       }}
                       </Query>
                     </FormControl>
+                    {cityId && 
                     <FormControl fullWidth className={classes.field}>
                       <Query query={AREA_QUERY}>
                                 {({data, loading, error}) => {
                                   if (loading) return <Loading />;
                                   if (error) return <Error error={error} />;
-                                  const categories = data.area.map(item => item.title); 
+                                  console.log('area', data);
+                                  const categories = data.area.filter(item => item.city.id == cityId).map(item => item.title); 
                                 
                                 return  <Autocomplete
                                           id="size-small-clearOnEsc"
                                           //clearOnEscape
                                           disableClearable
                                           size="small"
+                                          getOptionLabel={option => t(`${option}`)}
                                           options={categories}
                                           onChange={(event,value) => {
                                             //it returns nested city instance data->city->id,title
@@ -286,7 +333,7 @@ const AddSalonForm = ({ classes }) => {
                                           renderInput={(params) => (
                                             <TextField {...params} 
                                             variant="outlined" 
-                                            label="Location" 
+                                            label={t("Location")} 
                                             // margin="normal" 
                                             // className={classes.textField}
                                             />
@@ -295,18 +342,38 @@ const AddSalonForm = ({ classes }) => {
                                       }}
                       </Query>
                     </FormControl>
+                    }
                     <FormControl fullWidth className={classes.field}>
-                    <TextField
-                      multiline
-                      rows="4"
-                      label="Description"
-                      placeholder="Add Description"
-                      onChange={event => setDescription(event.target.value)}
-                      value={description}
+                      <TextField
+                        multiline
+                        rows="4"
+                        label={t("Description")}
+                        placeholder={t("Add Description")}
+                        onChange={event => setDescription(event.target.value)}
+                        value={description}
+                        variant="outlined"
+                        // className={classes.textField}
+                      />
+                    </FormControl>
+                    <FormControl fullWidth className={classes.field}>
+                      <TextField
+                      label={t("Email")}
+                      placeholder={t("Add email")}
+                      onChange={(event) => setEmail(event.target.value)}
+                      value={email}
                       variant="outlined"
-                      // className={classes.textField}
-                    />
-                  </FormControl>
+                      />
+                    </FormControl>
+                    <FormControl fullWidth className={classes.field}>
+                      <InputMask 
+                        mask="+\9\9\4 (99) 999 99 99"
+                        //maskChar=""
+                        style={{height:"50px", fontSize:"16px" }}
+                        alwaysShowMask
+                        value={phone}
+                        onChange={(event) => setPhone(event.target.value)}
+                      />
+                    </FormControl>
                   {/* <FormControl fullWidth>
                     <NativeSelect
                       value={priceRange}
@@ -324,7 +391,7 @@ const AddSalonForm = ({ classes }) => {
                       <option value="4">$$$$</option>
                     </NativeSelect>
                   </FormControl> */}
-                  <h5>Select relevant services</h5>
+                  <h5>{t("Select relevant services")}</h5>
                   <FormControl fullWidth className={classes.field}>
                     <Query query={HAIR_QUERY}>
                       {({data, loading, error}) => {
@@ -337,6 +404,7 @@ const AddSalonForm = ({ classes }) => {
                                 limitTags={3}
                                 id="size-small-standard-multi"
                                 size="small"
+                                getOptionLabel={option => t(`${option}`)}
                                 options={categories}
                                 onChange={(event,value) => {
                                           // setHairCategories({...data, hairCat: data.hairCat.filter(item => value.includes(item.title))});
@@ -345,8 +413,8 @@ const AddSalonForm = ({ classes }) => {
                                 renderInput={(params) => (
                                   <TextField {...params} 
                                   variant="outlined" 
-                                  label="Haircut categories " 
-                                  placeholder="More haircut"
+                                  label={t("Haircut categories")} 
+                                  placeholder={t("More haircut")}
                                   />
                                 )}
                               />;
@@ -365,6 +433,7 @@ const AddSalonForm = ({ classes }) => {
                                 limitTags={3}
                                 id="size-small-standard-multi"
                                 size="small"
+                                getOptionLabel={option => t(`${option}`)}
                                 options={categories}
                                 onChange={(event,value) => {
                                   setNailsCategories(data.nailsCat.filter(item => value.includes(item.title)).map(item => item.id))
@@ -372,8 +441,8 @@ const AddSalonForm = ({ classes }) => {
                                 renderInput={(params) => (
                                   <TextField {...params} 
                                   variant="outlined" 
-                                  label="Nails categories " 
-                                  placeholder="More nails" />
+                                  label={("Nails categories")} 
+                                  placeholder={t("More nails")} />
                                 )}
                               />;
                             }}
@@ -391,6 +460,7 @@ const AddSalonForm = ({ classes }) => {
                                 limitTags={3}
                                 id="size-small-standard-multi"
                                 size="small"
+                                getOptionLabel={option => t(`${option}`)}
                                 options={categories}
                                 onChange={(event,value) => {
                                   setHairRemovalCategories(data.hairRemovalCat.filter(item => value.includes(item.title)).map(item => item.id))
@@ -398,8 +468,8 @@ const AddSalonForm = ({ classes }) => {
                                 renderInput={(params) => (
                                   <TextField {...params} 
                                   variant="outlined" 
-                                  label="Hair removal categories " 
-                                  placeholder="More hair removal" />
+                                  label={t("Hair removal categories")} 
+                                  placeholder={t("More hair removal")} />
                                 )}
                               />;
                             }}
@@ -417,6 +487,7 @@ const AddSalonForm = ({ classes }) => {
                                 limitTags={3}
                                 id="size-small-standard-multi"
                                 size="small"
+                                getOptionLabel={option => t(`${option}`)}
                                 options={categories}
                                 onChange={(event,value) => {
                                   setMakeupCategories(data.makeupCat.filter(item => value.includes(item.title)).map(item => item.id))
@@ -424,8 +495,8 @@ const AddSalonForm = ({ classes }) => {
                                 renderInput={(params) => (
                                   <TextField {...params} 
                                   variant="outlined" 
-                                  label="Makeup categories " 
-                                  placeholder="More makeup" />
+                                  label={t("Makeup categories")} 
+                                  placeholder={t("More makeup")} />
                                 )}
                               />;
                             }}
@@ -443,6 +514,7 @@ const AddSalonForm = ({ classes }) => {
                                 limitTags={3}
                                 id="size-small-standard-multi"
                                 size="small"
+                                getOptionLabel={option => t(`${option}`)}
                                 options={categories}
                                 onChange={(event,value) => {
                                   setMassageCategories(data.massageCat.filter(item => value.includes(item.title)).map(item => item.id))
@@ -450,8 +522,8 @@ const AddSalonForm = ({ classes }) => {
                                 renderInput={(params) => (
                                   <TextField {...params} 
                                   variant="outlined" 
-                                  label="Massage categories " 
-                                  placeholder="More massage" />
+                                  label={t("Massage/spa categoriesSpa categories")} 
+                                  placeholder={t("More massage")} />
                                 )}
                               />;
                             }}
@@ -469,6 +541,7 @@ const AddSalonForm = ({ classes }) => {
                                 limitTags={3}
                                 id="size-small-standard-multi"
                                 size="small"
+                                getOptionLabel={option => t(`${option}`)}
                                 options={categories}
                                 onChange={(event,value) => {
                                   setEyebrowCategories(data.eyebrowCat.filter(item => value.includes(item.title)).map(item => item.id))
@@ -476,8 +549,8 @@ const AddSalonForm = ({ classes }) => {
                                 renderInput={(params) => (
                                   <TextField {...params} 
                                   variant="outlined" 
-                                  label="Eyebrow categories " 
-                                  placeholder="More eyebrow" />
+                                  label={t("Eyebrow/lashes categories")} 
+                                  placeholder={t("More eyebrow")} />
                                 )}
                               />;
                             }}
@@ -495,6 +568,7 @@ const AddSalonForm = ({ classes }) => {
                                 limitTags={3}
                                 id="size-small-standard-multi"
                                 size="small"
+                                getOptionLabel={option => t(`${option}`)}
                                 options={categories}
                                 onChange={(event,value) => {                              
                                   setCosmetologyCategories(data.cosmetologyCat.filter(item => value.includes(item.title)).map(item => item.id))
@@ -502,8 +576,8 @@ const AddSalonForm = ({ classes }) => {
                                 renderInput={(params) => (
                                   <TextField {...params} 
                                   variant="outlined" 
-                                  label="Cosmetology categories " 
-                                  placeholder="More cosmetology" />
+                                  label={t("Cosmetology categories")} 
+                                  placeholder={t("More cosmetology")} />
                                 )}
                               />;
                             }}
@@ -521,6 +595,7 @@ const AddSalonForm = ({ classes }) => {
                                 limitTags={3}
                                 id="size-small-standard-multi"
                                 size="small"
+                                getOptionLabel={option => t(`${option}`)}
                                 options={categories}
                                 onChange={(event,value) => {
                                   setTattooCategories(data.tattooCat.filter(item => value.includes(item.title)).map(item => item.id))
@@ -528,8 +603,8 @@ const AddSalonForm = ({ classes }) => {
                                 renderInput={(params) => (
                                   <TextField {...params} 
                                   variant="outlined" 
-                                  label="Tattoo categories " 
-                                  placeholder="More tattoo" />
+                                  label={t("Tattoo/piercing categories")} 
+                                  placeholder={t("More tattoo")} />
                                 )}
                               />;
                             }}
@@ -547,6 +622,7 @@ const AddSalonForm = ({ classes }) => {
                                 limitTags={3}
                                 id="size-small-standard-multi"
                                 size="small"
+                                getOptionLabel={option => t(`${option}`)}
                                 options={categories}
                                 onChange={(event,value) => {
                                   setAestheticsCategories(data.aestheticsCat.filter(item => value.includes(item.title)).map(item => item.id))
@@ -554,8 +630,8 @@ const AddSalonForm = ({ classes }) => {
                                 renderInput={(params) => (
                                   <TextField {...params} 
                                   variant="outlined" 
-                                  label="Aesthetics categories " 
-                                  placeholder="More aesthetics" />
+                                  label={t("Aesthetics categories")} 
+                                  placeholder={t("More aesthetics")} />
                                 )}
                               />;
                             }}
@@ -566,7 +642,7 @@ const AddSalonForm = ({ classes }) => {
                       id="photoMain"
                       required
                       type="file"
-                      accept="image/*"
+                      accept=".jpg, .jpeg, .png"
                       className={classes.input}
                       onChange={handlePhotoMainChange}
                     />
@@ -578,10 +654,10 @@ const AddSalonForm = ({ classes }) => {
                         component="span"
                         className={classes.button}
                       >
-                        Main photo
+                        {t("Main photo")}
                       </Button>
                       {img0 && img0.name}
-                      <FormHelperText>{fileError}</FormHelperText>
+                      <FormHelperText>{fileError.sizeError0}</FormHelperText>
                     </label>
                   </FormControl>
                   <FormControl fullWidth error={Boolean(fileError)}>
@@ -600,10 +676,10 @@ const AddSalonForm = ({ classes }) => {
                         component="span"
                         className={classes.button}
                       >
-                        Photo 1
+                        {t("Photo 1")}
                       </Button>
                       {photo1 && photo1.name}
-                      <FormHelperText>{fileError}</FormHelperText>
+                      <FormHelperText>{fileError.sizeError1}</FormHelperText>
                     </label>
                   </FormControl>
                   <FormControl fullWidth error={Boolean(fileError)}>
@@ -622,10 +698,10 @@ const AddSalonForm = ({ classes }) => {
                         component="span"
                         className={classes.button}
                       >
-                        Photo 2
+                        {t("Photo 2")}
                       </Button>
                       {photo2 && photo2.name}
-                      <FormHelperText>{fileError}</FormHelperText>
+                      <FormHelperText>{fileError.sizeError2}</FormHelperText>
                     </label>
                   </FormControl>
                   <FormControl fullWidth error={Boolean(fileError)}>
@@ -644,12 +720,78 @@ const AddSalonForm = ({ classes }) => {
                         component="span"
                         className={classes.button}
                       >
-                        Photo 3
+                        {t("Photo 3")}
                       </Button>
                       {photo3 && photo3.name}
-                      <FormHelperText>{fileError}</FormHelperText>
+                      <FormHelperText>{fileError.sizeError3}</FormHelperText>
                     </label>
                   </FormControl>
+                  <FormControl fullWidth error={Boolean(fileError)}>
+                    <input
+                      id="photo4"
+                      type="file"
+                      accept=".jpg, .jpeg, .png"
+                      className={classes.input}
+                      onChange={handlePhoto4Change}
+                    />
+                    <label htmlFor="photo4">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color={photo4 ? "secondary" : "inherit"}
+                        component="span"
+                        className={classes.button}
+                      >
+                        {t("Photo 4")}
+                      </Button>
+                      {photo4 && photo4.name}
+                      <FormHelperText>{fileError.sizeError4}</FormHelperText>
+                    </label>
+                  </FormControl>
+                  <FormControl fullWidth error={Boolean(fileError)}>
+                    <input
+                      id="photo5"
+                      type="file"
+                      accept=".jpg, .jpeg, .png"
+                      className={classes.input}
+                      onChange={handlePhoto5Change}
+                    />
+                    <label htmlFor="photo5">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color={photo5 ? "secondary" : "inherit"}
+                        component="span"
+                        className={classes.button}
+                      >
+                        {t("Photo 5")}
+                      </Button>
+                      {photo5 && photo5.name}
+                      <FormHelperText>{fileError.sizeError5}</FormHelperText>
+                    </label>
+                  </FormControl>
+                  <FormControl fullWidth error={Boolean(fileError)}>
+                    <input
+                      id="photo6"
+                      type="file"
+                      accept=".jpg, .jpeg, .png"
+                      className={classes.input}
+                      onChange={handlePhoto6Change}
+                    />
+                    <label htmlFor="photo6">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color={photo6 ? "secondary" : "inherit"}
+                        component="span"
+                        className={classes.button}
+                      >
+                        {t("Photo 6")}
+                      </Button>
+                      {photo6 && photo6.name}
+                      <FormHelperText>{fileError.sizeError6}</FormHelperText>
+                    </label>
+                  </FormControl>                                                      
                   <Box
                     mt={1}
                     justifyContent="center"
@@ -664,7 +806,7 @@ const AddSalonForm = ({ classes }) => {
                                    }}
                     className={classes.cancel}
                   >
-                    Cancel
+                    {t("Cancel")}
                   </Button>
                   {/* <Box flexGrow={1} /> */}
                   <Button
@@ -684,7 +826,7 @@ const AddSalonForm = ({ classes }) => {
                     {submitting ? (
                       <CircularProgress className={classes.save} size={24} />
                     ) : (
-                      "Add Salon"
+                      `${t("Add Salon")}`
                     )}
                   </Button>
                   </Box>
@@ -702,11 +844,11 @@ const AddSalonForm = ({ classes }) => {
           TransitionComponent={Transition}
           >
             <DialogTitle>
-              Salon successfully created!
+              {t("Salon successfully created!")}
             </DialogTitle>
             <DialogContent>
               <DialogContentText>
-                We will review your posting before publishing on the website.
+                {t("We will review your posting before publishing on the website.")}
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -718,7 +860,7 @@ const AddSalonForm = ({ classes }) => {
                 }}
               >
                 <Link to="/">
-                  Return to the main page.
+                  {t("Return to the main page.")}
                 </Link>
               </Button>
             </DialogActions>
@@ -755,9 +897,8 @@ const CITY_QUERY = gql`
 {
     city {
         id
-        title
-        
-      }
+        title        
+    }
 }
 `;
 
@@ -766,6 +907,10 @@ const AREA_QUERY = gql`
     area {
         id
         title
+        city {
+          id
+          title
+        }
         salonSet{
           name
         }

@@ -172,7 +172,7 @@ class Query(graphene.ObjectType):
     
     def resolve_bookings(self, info, id=None, email=None):
       if id:
-        return Booking.objects.filter(salon__id=int(id))
+        return Booking.objects.filter(master__salon__id=int(id))
       if email:
         return Booking.objects.filter(customer__email=email)
       
@@ -653,7 +653,17 @@ class UploadFile(graphene.Mutation):
 
         # open saved img and resize it before passing to createSalon
         img = Image.open(BytesIO(response.content))
-        resized_img = img.resize((512,288)) # aspect ratio 16:9
+        w,h=img.size 
+        # 16/9 aspect ratio equals 1.7
+        left = (w-h*1.7)/2
+        right = (w-h*1.7)/2+h*1.7
+        top = (h-w/1.7)/2 
+        bottom = (h-w/1.7)/2+w/1.7
+        if w/h > 1.7: 
+          resized_img = img.crop((left,0,right,h)) 
+        else: 
+          resized_img = img.crop((0,top,w,bottom)) 
+        # resized_img = img.resize((512,288)) # aspect ratio 16:9
         image_file = BytesIO()
         # resized_img.save(upl_url+filename)
         resized_img.save(image_file, format='JPEG', quality=180)

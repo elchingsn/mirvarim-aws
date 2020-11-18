@@ -88,8 +88,8 @@ class City(models.Model):
       return self.title  
 
 class Area(models.Model):
+    city = models.ForeignKey(City, null=True, on_delete=models.CASCADE)
     title = models.CharField(max_length = 100)
-
     def __str__(self):
       return self.title  
 
