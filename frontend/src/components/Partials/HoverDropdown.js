@@ -14,12 +14,11 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import Grow from "@material-ui/core/Grow";
-import Divider from "@material-ui/core/Divider";
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from "./Button.js";
 //import headersStyle from "../../assets/jss/headersStyle.js";
-import styles from "../../assets/jss/customDropdownStyle.js";
+import styles from "assets/jss/customDropdownStyle.js";
 
 const useStyles = makeStyles(styles);
 
@@ -34,9 +33,9 @@ const HoverDropdown = (props) => {
     
     const handleButtonClick = (event) => {
         setButtonon(true);
-        if (!menuon){setMenuon(!menuon)}; 
-        setAnchorEl(event.currentTarget);
-        console.log(props)
+        if (!menuon){setMenuon(!menuon)}
+        setAnchorEl(event.currentTarget)
+        //console.log(props)
     };
 
     const handleMenuClick = () =>{
@@ -97,10 +96,8 @@ const HoverDropdown = (props) => {
     });
   
     const onMenuItemClick = (category) =>{
-      console.log({category})
       // if (window.location.pathname === "/salon") 
       //   {window.location.reload()}
-      console.log(props)
     }
     return (
       // <div className={classes.root}>
@@ -197,12 +194,15 @@ const HoverDropdown = (props) => {
 export const SALON_QUERY = gql`
   {
     salons (search: "hair1"){
+      id
       name
       city {
+        id
         title
       }
       address
       hairCategories {
+        id
         title
       }
     }

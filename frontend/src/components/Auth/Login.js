@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import FacebookLogin from 'react-facebook-login';
 import { Mutation } from '@apollo/react-components';
 import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import gql from "graphql-tag";
 import { Link, useHistory } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 
 import withStyles from "@material-ui/core/styles/withStyles";
 import Typography from "@material-ui/core/Typography";
@@ -31,7 +31,7 @@ function Transition(props) {
 // login component
 const Login = ({ classes, setNewUser, setLoginOpen }) => {
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
@@ -88,7 +88,6 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
   const [tokenAuth] = useMutation(LOGIN_MUTATION);
   const [register] = useMutation(REGISTER_MUTATION,
     {onCompleted ({register}) {
-      console.log('data', register);
       localStorage.setItem("accessToken", register.token);
       localStorage.setItem("refreshToken", register.refreshToken);
       client.writeData({ data: { isLoggedIn: true } });
@@ -104,37 +103,31 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
     });
   } 
 
-  function handleFBRegistration (username, email, password) {
-    console.log(username, email, password);
+  function handleFBRegistration (username, email, password, key) {
     tokenAuth({variables:{ username, password }}).then((res) => {
-      console.log('res', res);
+      //console.log('res', res);
       if (res.data.tokenAuth.success) {
         localStorage.setItem("accessToken", res.data.tokenAuth.token);
         localStorage.setItem("refreshToken", res.data.tokenAuth.refreshToken);
-        console.log('over here');
         client.writeData({ data: { isLoggedIn: true } });
       } else {
-        register( {variables: {username, email, role: "1", password1: password, password2: password}});
+        register( {variables: {username, email, role: "1", password1: password, password2: password, key}});
         //window.location.reload();
       }
     })
   }
 
   function statusChangeCallback(response) {  // Called with the results from FB.getLoginStatus().
-    console.log('statusChangeCallback');
     if (response.status === 'connected') {   // Logged into your webpage and Facebook.
       //testAPI();  
-      console.log('FB response', response);   
       window.FB.api('/me?fields=id,name,email,permissions', function(response) {
       // localStorage.setItem('facebook', "connected");
-      handleFBRegistration (response.name.split(' ')[0], response.email, response.name.split(' ')[0].concat(response.id));
-      console.log(response);
-      // console.log('Good to see you, ' + response.email + ' '+ response.name.split(' ',1) + '.');
-      });                // The current login status of the person.
+      handleFBRegistration (response.name.split(' ')[0], response.email, response.name.split(' ')[0].concat(response.id),response.id);
+      });                
     } else {
       window.FB.login(function(response) {
         // handle the response
-        console.log(response);
+        //console.log(response);
         statusChangeCallback(response);
       }, {scope: 'public_profile, email'});
     }
@@ -268,8 +261,8 @@ const LOGIN_MUTATION = gql`
 `;
 
 const REGISTER_MUTATION = gql`
-  mutation($username: String!, $email: String!, $role:String!, $password1: String!, $password2: String!) {
-    register(username: $username, email: $email, role: $role, password1: $password1, password2: $password2) {
+  mutation($username:String!, $email:String!, $role:String!, $password1:String!, $password2:String!, $key:String) {
+    register(username:$username, email:$email, role:$role, password1:$password1, password2:$password2, key:$key) {
       success,
       errors,
       token,
@@ -318,5 +311,11 @@ const styles = theme => ({
     marginBottom: theme.spacing.unit * 2
   }
 });
+
+Login.propTypes = {
+  classes: PropTypes.object,
+  setNewUser: PropTypes.func,
+  setLoginOpen: PropTypes.func
+}
 
 export default withStyles(styles)(Login);

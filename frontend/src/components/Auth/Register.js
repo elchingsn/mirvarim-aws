@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Mutation } from '@apollo/react-components';
 import gql from "graphql-tag";
 import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 
 import withStyles from "@material-ui/core/styles/withStyles";
 import Typography from "@material-ui/core/Typography";
@@ -19,7 +20,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
-import Gavel from "@material-ui/icons/Gavel";
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
 import FormHelperText from '@material-ui/core/FormHelperText';
 import NativeSelect from '@material-ui/core/NativeSelect';
@@ -27,7 +28,6 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import Error from "../Shared/Error";
-import { SubjectTwoTone } from "@material-ui/icons";
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -35,7 +35,7 @@ function Transition(props) {
 
 const Register = ({ classes, setNewUser }) => {
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
@@ -55,13 +55,11 @@ const Register = ({ classes, setNewUser }) => {
     register();
   };
 
-  console.log('failure',failureOpen);
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <Gavel />
+          <VpnKeyIcon />
         </Avatar>
         <Typography variant="headline">{t("Register")}</Typography>
 
@@ -69,14 +67,13 @@ const Register = ({ classes, setNewUser }) => {
           mutation={REGISTER_MUTATION}
           variables={{ username, email, role, password1, password2 }}
           onCompleted={data => {
-            console.log({ data });
             if (data.register.success) {
               setSuccessOpen(true) 
             }
              else {
             //   const err = data.register.errors.map(e => e.map(e => e.message))
-               console.log('err', data.register.errors);
-               setErr(data.register.errors);
+               //console.log('err', data.register.errors);
+              setErr(data.register.errors);
             //   setFailureOpen({ 
             //     ...failureOpen, 
             //     open: false, 
@@ -85,7 +82,6 @@ const Register = ({ classes, setNewUser }) => {
           }}
         >
           {(register, { loading, error }) => {
-            console.log('error', err);
             return (
               <form
                 onSubmit={event => handleSubmit(event, register)}
@@ -96,7 +92,7 @@ const Register = ({ classes, setNewUser }) => {
                     value={role}
                     onChange={event => {
                       setRole(event.target.value);
-                      console.log(role);}}
+                    }}
                     name="role"
                     className={classes.selectEmpty}
                     inputProps={{ 'aria-label': 'role' }}
@@ -314,5 +310,10 @@ const styles = theme => ({
     color: "red"
   }
 });
+
+Register.propTypes = {
+  classes: PropTypes.object,
+  setNewUser: PropTypes.func
+}
 
 export default withStyles(styles)(Register);

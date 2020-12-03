@@ -238,14 +238,7 @@ const headerStyle = theme => ({
     MsFlexAlign: "center",
     alignItems: "center",
     justifyContent:"center"
-  },
-  closeButtonDrawer: {
-    position: "absolute",
-    right: "8px",
-    top: "9px",
-    zIndex: "1"
   }
-
 });
 
 export default headerStyle;

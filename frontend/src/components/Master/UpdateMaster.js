@@ -2,41 +2,31 @@
 import React, { useState, useEffect, useContext} from "react";
 import { Link } from "react-router-dom";
 import { Mutation } from '@apollo/react-components';
-import { Query } from "@apollo/react-components";
-import { useMutation, useQuery } from '@apollo/react-hooks';
-import { useHistory, Redirect } from 'react-router-dom';
+//import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useHistory } from 'react-router-dom';
 import gql from "graphql-tag";
-import classNames from "classnames";
 import { useTranslation } from 'react-i18next';
 
 import Box from "@material-ui/core/Box";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
 import FormControl from "@material-ui/core/FormControl";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
 //import Button from "components/Partials/Button"
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
+// import DialogContent from "@material-ui/core/DialogContent";
+// import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
-import Gavel from "@material-ui/icons/Gavel";
-import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
-import FormHelperText from '@material-ui/core/FormHelperText';
-import NativeSelect from '@material-ui/core/NativeSelect';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { UserContext } from "App.js"
 import {ME_QUERY} from "App.js"
 
 import Error from "../Shared/Error"; 
-import Loading from "../Shared/Loading";
+//import Loading from "../Shared/Loading";
 import InputMask from 'react-input-mask';
 
 //import styles from "../assets/jss/salonDetailStyle.js";
@@ -47,7 +37,7 @@ function Transition(props) {
 
 const UpdateMaster = ({classes}) => {
     //query the salon data updated by the current user
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const currentUser = useContext(UserContext);
   if (!currentUser.salonSet[0]) {
       return <div> {t("No salon added. Please add a salon")} </div>
@@ -59,7 +49,7 @@ const UpdateMaster = ({classes}) => {
 }
 
 const SelectMaster = ({classes, currentUser}) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedMaster, setSelectedMaster] = useState({});
   return (
@@ -73,8 +63,7 @@ const SelectMaster = ({classes, currentUser}) => {
                   size="small"
                   options={currentUser.salonSet[0].masterSet.map(item => item.masterName).flat(1)}
                   onChange={(event,value) => {
-                            setSelectedMaster(currentUser.salonSet[0].masterSet.filter(item => item.masterName == value)[0]);
-                            console.log('selected cat', value[0])
+                            setSelectedMaster(currentUser.salonSet[0].masterSet.filter(item => item.masterName === value)[0]);
                   }}
                   renderInput={(params) => (
                     <TextField {...params} 
@@ -116,14 +105,12 @@ const SelectMaster = ({classes, currentUser}) => {
 
 const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen }) => {
   const userId = currentUser.id;
-  const salonId = currentUser.salonSet[0].id;
-  console.log('selected master', selectedMaster);
+  //const salonId = currentUser.salonSet[0].id;
   const history = useHistory();
 
   const [masterData, setMasterData] = useState({})
   
   useEffect(() => {
-      console.log('over here')
       setMasterData({
         ...masterData,
         name: selectedMaster.masterName,
@@ -133,7 +120,6 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen }) => {
     
   }, [selectedMaster]);
 
-  console.log('master data', masterData)
   const [disabled, setDisabled] = useState(true)
   const [submitting, setSubmitting] = useState(false);
 
@@ -160,7 +146,7 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen }) => {
         <Mutation
           mutation={UPDATE_MASTER_MUTATION}
           onCompleted={data => {
-          console.log({ data });
+          //console.log({ data });
           setSubmitting(false);
           setOpen(true);
           }}

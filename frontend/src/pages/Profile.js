@@ -1,5 +1,5 @@
 import React from "react";
-import { ApolloConsumer, Query } from "@apollo/react-components";
+import { Query } from "@apollo/react-components";
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useTranslation } from 'react-i18next';
 import gql from "graphql-tag";
@@ -15,8 +15,7 @@ import ThumbUpIcon from "@material-ui/icons/ThumbUpTwoTone";
 import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from "@material-ui/core/Divider";
 import Button from '@material-ui/core/Button';
-import Badge from '@material-ui/core/Badge';
-import format from "date-fns/format";
+//import format from "date-fns/format";
 import { DELETE_BOOKING } from "components/Partner/Dashboard/views/calendar/CalendarView/CreateEventForm.js"
 
 import GridContainer from "components/Partials/GridContainer.js";
@@ -31,10 +30,9 @@ const useStyles = makeStyles(styles);
 
 
 const Profile = ({ match }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const classes = useStyles();
   const id = match.params.id;
-  console.log(id);
 
   React.useEffect(() => {
     window.scrollTo(0, 0);
@@ -58,7 +56,6 @@ const Profile = ({ match }) => {
         if (loading) return <Loading />;
         if (error) return <Error error={error} />;
         const favoriteSalons = data.user.likeSet.map(el => el.salon);
-        console.log(data);
        return (
           <div className={classes.container}>
             {/* User Info Card */}
@@ -212,6 +209,7 @@ export const PROFILE_QUERY = gql`
       reviewSet {
         id
         salon {
+          id
           name
         }
         comment

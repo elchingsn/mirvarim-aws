@@ -1,19 +1,13 @@
-import React, {useState} from "react";
+import React from "react";
 import classNames from "classnames";
 
 import { makeStyles } from "@material-ui/core/styles";
 
-import Parallax from "../components/Partials/Parallax.js";
-import GridContainer from "../components/Partials/GridContainer.js";
-import GridItem from "../components/Partials/GridItem.js";
-import Card from "../components/Partials/Card.js";
-import CardBody from "../components/Partials/CardBody.js";
-import SearchSalons from "../components/Partials/SearchSalons.js";
 import Filter from "../components/Partials/Filter.js";
 
 
 import styles from "../assets/jss/salonStyle.js";
-import { areIntervalsOverlapping } from "date-fns";
+//import { areIntervalsOverlapping } from "date-fns";
 const useStyles = makeStyles(styles);
 
 const Salon=({location}) => {
@@ -27,7 +21,6 @@ const Salon=({location}) => {
       });
 
     React.useEffect(() =>{
-      console.log(location.state);
 
       return () => {console.log(location.state)}
 
@@ -39,12 +32,10 @@ const Salon=({location}) => {
     let initCheckedCat = []
     let initValues = []
 
-    console.log(initCheckedCat);
-
     if (location.state) {
       initValues = location.state;
       initCatValue = initValues["catValue"];
-      if (initValues["checkedCat"]) {initCheckedCat.push(initValues["checkedCat"])};
+      if (initValues["checkedCat"]) {initCheckedCat.push(initValues["checkedCat"])}
       initServiceValue = initValues["search"];
       initAreaValue = initValues["location"];
     }

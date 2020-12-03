@@ -2,32 +2,21 @@ import React, { useState, useEffect, useContext } from "react";
 import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
 import { Mutation } from '@apollo/react-components';
-import { Query } from "@apollo/react-components";
-import { useMutation } from '@apollo/react-hooks';
+// import { useMutation } from '@apollo/react-hooks';
 import gql from "graphql-tag";
-import axios from "axios";
-import Cookies from 'js-cookie';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Box from "@material-ui/core/Box";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
 import FormControl from "@material-ui/core/FormControl";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
-import Gavel from "@material-ui/icons/Gavel";
-import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
-import FormHelperText from '@material-ui/core/FormHelperText';
-import NativeSelect from '@material-ui/core/NativeSelect';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Checkbox from '@material-ui/core/Checkbox';
 
@@ -74,13 +63,13 @@ NumberFormatCustom.propTypes = {
 };
 
 const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const classes = formStyles();
   const history = useHistory();
 
   const [promo, setPromo] = React.useState(false);
   const [submitting, setSubmitting] = useState(false);
-  console.log('salon_data', data_salon);
+  //console.log('salon_data', data_salon);
 
   const [serviceData, setServiceData] = useState({
     salonId: data_salon.id,
@@ -94,7 +83,7 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
   })
 
   useEffect(() => {
-    if (role == "A_2") {
+    if (role === "A_2") {
       setServiceData({
         ...serviceData, 
         masterIds: data_salon.masterSet[0].id
@@ -108,7 +97,6 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
     setSubmitting(true);
   
   
-    console.log( "inputs", serviceData);
     // serviceMutation({variables: { serviceData: {salonId: serviceData.salonId, categoryId: serviceData.categoryId,
     //   title: serviceData.title, description: serviceData.description, duration: serviceData.duration,
     //   price: serviceData.price, promotionPrice: serviceData.promotionPrice }
@@ -121,7 +109,6 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
       history.push('/login');
     });
   };
-  console.log( "inputs", serviceData);
 
   return(
     <form onSubmit={event => handleSubmit(event, serviceMutation)}>
@@ -155,7 +142,7 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
         variant="outlined"
         />
       </FormControl>
-      { role == "A_3" &&
+      { role === "A_3" &&
       <FormControl fullWidth required className={classes.field}>
         <Autocomplete
           multiple
@@ -263,7 +250,7 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
           submitting ||
           !serviceData.title.trim() ||
           !serviceData.price ||
-          serviceData.masterIds.length == 0
+          serviceData.masterIds.length === 0
         }
         type="submit"
         className={classes.save}
@@ -280,7 +267,7 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
 } 
 
 const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   switch (catValue) {
     case t("category types", {returnObjects: true})["HairType"]:
@@ -288,7 +275,7 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_HAIR_SERVICE_MUTATION}
           onCompleted={data => {
-          console.log({ data });
+          //console.log({ data });
           //setSubmitting(false);
           setOpen(true);
           }}
@@ -308,7 +295,6 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_NAILS_SERVICE_MUTATION}
           onCompleted={data => {
-          console.log({ data });
           //setSubmitting(false);
           setOpen(true);
           }}
@@ -328,7 +314,6 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_HAIR_REMOVAL_SERVICE_MUTATION}
           onCompleted={data => {
-          console.log({ data });
           //setSubmitting(false);
           setOpen(true);
           }}
@@ -348,7 +333,6 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_MAKEUP_SERVICE_MUTATION}
           onCompleted={data => {
-          console.log({ data });
           //setSubmitting(false);
           setOpen(true);
           }}
@@ -368,7 +352,6 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_MASSAGE_SERVICE_MUTATION}
           onCompleted={data => {
-          console.log({ data });
           //setSubmitting(false);
           setOpen(true);
           }}
@@ -388,7 +371,6 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_EYEBROW_SERVICE_MUTATION}
           onCompleted={data => {
-          console.log({ data });
           //setSubmitting(false);
           setOpen(true);
           }}
@@ -408,7 +390,6 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_COSMETOLOGY_SERVICE_MUTATION}
           onCompleted={data => {
-          console.log({ data });
           //setSubmitting(false);
           setOpen(true);
           }}
@@ -428,7 +409,6 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_TATTOO_SERVICE_MUTATION}
           onCompleted={data => {
-          console.log({ data });
           //setSubmitting(false);
           setOpen(true);
           }}
@@ -448,7 +428,6 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_AESTHETICS_SERVICE_MUTATION}
           onCompleted={data => {
-          console.log({ data });
           //setSubmitting(false);
           setOpen(true);
           }}
@@ -470,7 +449,7 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
 
 const CreateService = ({classes}) => {
   const currentUser = useContext(UserContext);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   if (!currentUser.salonSet[0]) {
     return <div> {t("No salon added. Please add a salon")}</div>
@@ -484,7 +463,7 @@ const CreateServiceForm = ({classes, currentUser}) => {
   const userId = currentUser.id;
   const data_salon = currentUser.salonSet[0];
   const salonId = data_salon.id;
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const hairService_set = data_salon.hairCategories.map(item => item.__typename);
   const nailsService_set = data_salon.nailsCategories.map(item => item.__typename);
@@ -500,13 +479,12 @@ const CreateServiceForm = ({classes, currentUser}) => {
                       massageService_set,eyebrowService_set,cosmetologyService_set,tattooService_set,aestheticsService_set);
   // translate the array and filter unique/distinct elements of above categories array. The latter is [...new Set(original_array)]
   const category_set = [...new Set(_category_set.map((key) => t("category types", {returnObjects: true})[key]))];
-  console.log('service cat', category_set);
 
   const [catValue, setCatValue] = useState("");
   const [open, setOpen] = useState(false);
   //const [hairCategories, setHairCategories] = useState([]);
 
-  const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
+  //const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
 
 
   // const handleUpdateCache = (cache, { data: { createTrack } }) => {
@@ -529,7 +507,6 @@ const CreateServiceForm = ({classes, currentUser}) => {
                   onChange={(event,value) => {
                             // setHairCategories({...data, hairCat: data.hairCat.filter(item => value.includes(item.title))});
                             setCatValue(value);
-                            console.log('selected cat', value[0])
                   }}
                   renderInput={(params) => (
                     <TextField {...params} 

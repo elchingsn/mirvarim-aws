@@ -9,7 +9,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
 import Hidden from "@material-ui/core/Hidden";
 import Drawer from "@material-ui/core/Drawer";
 // @material-ui/icons
@@ -69,7 +68,7 @@ export default function Header(props) {
     <AppBar className={appBarClasses}>
       <Toolbar className={classes.container}> 
         {/* <Button className={classes.title}> */}
-          <Link to="/"><img src={mirvarim_logo} style={{width: 140, height: 50, marginTop: "0px"}}/></Link>
+          <Link to="/"><img src={mirvarim_logo} alt="logo" style={{width: 140, height: 50, marginTop: "0px"}}/></Link>
         {/* </Button> */}
         <Hidden smDown implementation="css" className={classes.hidden}>
           {/* <div className={classes.collapse1}>{links.props.children[1]}</div>

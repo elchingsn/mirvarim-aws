@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { duration, makeStyles } from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -15,10 +15,10 @@ import TextField from "@material-ui/core/TextField";
 import Box from "@material-ui/core/Box";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import { useTranslation } from 'react-i18next';
 
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+//import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import CancelIcon from '@material-ui/icons/Cancel';
 
@@ -26,17 +26,16 @@ import DatePicker from "utils/DatePicker/DatePicker.js"
 import formatISO from 'date-fns/formatISO'
 import _ from 'lodash';
 import InputMask from 'react-input-mask';
-import { DayCellContent } from '@fullcalendar/react';
-import { setDay } from 'date-fns';
+// import { DayCellContent } from '@fullcalendar/react';
+// import { setDay } from 'date-fns';
 
-import {CREATE_BOOKING, UPDATE_BOOKING, DELETE_BOOKING} from "components/Partner/Dashboard/views/calendar/CalendarView/CreateEventForm.js"
+import {CREATE_BOOKING } from "components/Partner/Dashboard/views/calendar/CalendarView/CreateEventForm.js"
 import { PROFILE_QUERY } from "pages/Profile.js"
 
 export default function Booking({services, salon, currentUser, setBookingDialog}) {
 
-  const { t, i18n } = useTranslation();
-  console.log(services);
-  console.log('all bookings', salon)
+  const { t } = useTranslation();
+  //console.log('all bookings', salon)
   const [masterBookings, setMasterbookings] = useState([]);
   //console.log('filter bookings', bookings)
   const classes = useStyles();
@@ -51,7 +50,6 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
 
 
   const [bookingData, setBookingData] = useState({
-    //salonId: salon.id,
     //masterId: salon.masterSet[0].id,
     masterId: "",
     customerName: currentUser.username, 
@@ -63,8 +61,6 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
     start: ''
   })
 
-  console.log('bookingdata', bookingData)
-  console.log('master bookings', masterBookings)
   const [den, setDen] = useState("");
   const [busyTime, setBusyTime] = useState({});
 
@@ -97,7 +93,6 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
 
   const [createBooking, { data: create_data }] = useMutation(CREATE_BOOKING, {
     onCompleted({ booking }) {
-      console.log('completed');
       setSnack ({
       ...snack,
       snackOpen: true,
@@ -109,15 +104,14 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
     refetchQueries: [{ query: PROFILE_QUERY, variables: { id:currentUser.id }}],
     awaitRefetchQueries: true,
   });
-  console.log('snack', snack)
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
+  // const handleBack = () => {
+  //   setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  // };
 
   const handleCancel = () => {
     setBookingDialog(false);
@@ -146,11 +140,11 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
   }
 
   const selectedDay = val => {
-    console.log(formatISO(val));
+    //console.log(formatISO(val));
     let bookings = []
     let master_id = bookingData.masterId;
     //choose default master by least booking in the calendar
-    if (bookingData.masterId == "" || bookingData.masterId == undefined || masterBookings == undefined) {
+    if (bookingData.masterId === "" || bookingData.masterId === undefined || masterBookings === undefined) {
       const sorted_bookingSet = _.map(salon.masterSet, function(item, index) {
         return {
           id: item.id,
@@ -159,15 +153,13 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
       }).sort(function(a, b){
         return a.bookingSet.length - b.bookingSet.length
       }); 
-      console.log('sorted_bookingSet', sorted_bookingSet)
       bookings = sorted_bookingSet[0].bookingSet;
       master_id = sorted_bookingSet[0].id;
-    } else if (salon.masterSet.length == 1) {
+    } else if (salon.masterSet.length === 1) {
       bookings = salon.masterSet[0].bookingSet
     } else {
       bookings = masterBookings.filter(booking => (new Date(booking.end)-new Date())>0)
     }
-    console.log('filtered bookings', bookings)
 
     let _val = new Date(val.setMinutes(0,0,0));
     let init_hour = 10;
@@ -181,22 +173,19 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
     for(let i=init_hour; i<22; i++) {
       let k = new Date(_val.setHours(i));
       let existing_booking = bookings.filter(b => ( (((k-new Date(b.end))<=600000)&&(k>=new Date(b.end)))|| (((new Date(b.start)-k)<=600000)&&(k<=new Date(b.start)))))
-      console.log(existing_booking);
-      if (existing_booking.length == 0) {
+      //console.log(existing_booking);
+      if (existing_booking.length === 0) {
         available_hours.push(i);
         hour_arr[i]=false;
       }
-    };
+    }
     setBusyTime(hour_arr);
     setBookingData({ ...bookingData, masterId: master_id });
     //setBookingData({...bookingData, start: formatISO(val)})
   };
-  console.log('busyTime', busyTime)
-  console.log('den', den)
 
   const handleServiceSelect = (value) => {
-    let selectedService = services.filter(service => service.title==value)[0]
-    console.log(selectedService)
+    let selectedService = services.filter(service => service.title===value)[0]
     setBookingData({
       ...bookingData, 
       serviceTitle: value,
@@ -223,14 +212,14 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
               inputProps={{ 'aria-label': 'role' }}
             > 
               {services.map(service => (
-              <option value={service.title} duration={service.duration}>
+              <option key={service.id} value={service.title} duration={service.duration}>
                 {t(`${service.title}`)} - {service.promotionPrice ? Math.min(service.price,service.promotionPrice) : service.price} AZN
               </option>
               ))}
             </NativeSelect>
           <FormHelperText>{t("Choose a service")}</FormHelperText>
         </FormControl>
-        {salon.createdBy.role == "A_3" && 
+        {salon.createdBy.role === "A_3" && 
         <FormControl margin="normal" required fullWidth>
           <Autocomplete
             id="size-small-standard-multi"
@@ -239,9 +228,9 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
             onChange={(event,value) => {
                       setBookingData({
                         ...bookingData, 
-                        masterId: salon.masterSet.filter(item => item.masterName == value).map(item => item.id)[0]
+                        masterId: salon.masterSet.filter(item => item.masterName === value).map(item => item.id)[0]
                       })    
-                      setMasterbookings(salon.masterSet.filter(item => item.masterName == value).map(item => item.bookingSet)[0])                  
+                      setMasterbookings(salon.masterSet.filter(item => item.masterName === value).map(item => item.bookingSet)[0])                  
             }}
             renderInput={(params) => (
               <TextField {...params} 
@@ -272,6 +261,7 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
             {_.range(10,22).map(i => {
               return(
                 <Button
+                  key={i}
                   disabled={busyTime[i]}
                   variant="outlined"
                   className={classes.button}

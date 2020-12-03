@@ -19,6 +19,7 @@ import {
   
   const salonDetailStyle = {
     mlAuto,
+    mrAuto,
     main,
     tab:{
         background: whiteColor,
@@ -240,7 +241,7 @@ import {
       display: "flex",
       alignItems: "left",
       justifyContent: "space-between",
-      padding: "0rem 1rem",
+      padding: "0rem 0.3rem",
       position: "absolute",
       zIndex: "1",
       width: "100%"

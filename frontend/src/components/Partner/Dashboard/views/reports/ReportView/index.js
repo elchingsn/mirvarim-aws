@@ -7,7 +7,7 @@ const Report = ({classes}) => {
   return (
     <div className={classes.container}>
       <h6>
-        Data analytics is available for standard package.
+        Data analytics is coming soon.
       </h6>
    </div>
   );

@@ -6,6 +6,7 @@ from graphene_file_upload.scalars import Upload
 from django.core.files.storage import FileSystemStorage
 from mirvarix.storage_backends import PublicMediaStorage
 from PIL import Image
+from PIL import ExifTags
 from io import BytesIO
 from resizeimage import resizeimage
 import datetime
@@ -653,17 +654,28 @@ class UploadFile(graphene.Mutation):
 
         # open saved img and resize it before passing to createSalon
         img = Image.open(BytesIO(response.content))
+        # check exif orientation and rotate ifnecessary
+        for orientation in ExifTags.TAGS.keys():
+          if ExifTags.TAGS[orientation] == 'Orientation':
+            break
+        exif = dict(img._getexif().items())
+        if exif[orientation] == 3:
+          img = img.rotate(180, expand=True)
+        elif exif[orientation] == 6:
+          img = img.rotate(270, expand=True)
+        elif exif[orientation] == 8:
+          img = img.rotate(90, expand=True)
+        # crop image in 16:9 (~1.7) aspect ratio  
         w,h=img.size 
-        # 16/9 aspect ratio equals 1.7
         left = (w-h*1.7)/2
         right = (w-h*1.7)/2+h*1.7
         top = (h-w/1.7)/2 
         bottom = (h-w/1.7)/2+w/1.7
         if w/h > 1.7: 
-          resized_img = img.crop((left,0,right,h)) 
+          cropped_img = img.crop((left,0,right,h)) 
         else: 
-          resized_img = img.crop((0,top,w,bottom)) 
-        # resized_img = img.resize((512,288)) # aspect ratio 16:9
+          cropped_img = img.crop((0,top,w,bottom)) 
+        resized_img = cropped_img.resize((512,288)) # aspect ratio 16:9
         image_file = BytesIO()
         # resized_img.save(upl_url+filename)
         resized_img.save(image_file, format='JPEG', quality=180)

@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { withRouter } from 'react-router-dom';
-import { ApolloConsumer, Query } from "@apollo/react-components";
+import React, { useState } from "react";
+import { Query } from "@apollo/react-components";
 import gql from "graphql-tag";
 import Loading from "../Shared/Loading";
 import Error from "../Shared/Error";
-import Auth from "../Auth";
 
 import { useTranslation } from 'react-i18next';
 
@@ -14,23 +12,11 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import Typography from "@material-ui/core/Typography";
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import Icon from "@material-ui/core/Icon";
-
 import HoverDropdown from "../../components/Partials/HoverDropdown";
-import CreateSalon from "../../components/Salon/CreateSalon.js";
 
-import { Link } from "react-router-dom";
-import Signout from "../Auth/Signout";
-
-import aze_flag from "assets/img/aze.png"
-import ru_flag from "assets/img/ru.png"
-import en_flag from "assets/img/eng.png"
+// import aze_flag from "assets/img/aze.png"
+// import ru_flag from "assets/img/ru.png"
+// import en_flag from "assets/img/eng.png"
 
 import styles from "../../assets/jss/navbarStyle.js";
 
@@ -74,30 +60,25 @@ export default function HeaderLinks(props) {
     };
     animateScroll();
   };
-  var onClickSections = {};
-
   const { dropdownHoverColor } = props;
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
-  const [form, setForm] = useState(false);
-  const [fbUser, setFbUser] = useState("");
-  const [flag, setFlag] = useState(localStorage.getItem("i18nextLng"));
-
   const { t, i18n } = useTranslation();
 
-  const handleLoginOpen = () => {
-    setOpen(true);
-  };
+  //const [open, setOpen] = useState(false);
+  //const [flag, setFlag] = useState(localStorage.getItem("i18nextLng"));
 
-  const handleLoginClose = () => {
-    setOpen(false);
-  };
+  // const handleLoginOpen = () => {
+  //   setOpen(true);
+  // };
 
-  const changeLang = (code) => {
-    i18n.changeLanguage(code);
-    setFlag(code);
-  }
+  // const handleLoginClose = () => {
+  //   setOpen(false);
+  // };
 
+  // const changeLang = (code) => {
+  //   i18n.changeLanguage(code);
+  //   setFlag(code);
+  // }
 
   return (
       <div className={classes.collapse}>
@@ -331,6 +312,7 @@ const HAIR_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
@@ -343,6 +325,7 @@ const NAILS_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
@@ -355,6 +338,7 @@ const HAIR_REMOVAL_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
@@ -367,6 +351,7 @@ const MAKEUP_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
@@ -379,6 +364,7 @@ const MASSAGE_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
@@ -391,6 +377,7 @@ const EYEBROW_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
@@ -403,6 +390,7 @@ const COSMETOLOGY_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
@@ -415,6 +403,7 @@ const TATTOO_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }
@@ -427,6 +416,7 @@ const AESTHETICS_QUERY = gql`
         id
         title
         salonSet{
+          id
           name
         }
       }

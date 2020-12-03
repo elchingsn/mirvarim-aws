@@ -2,45 +2,31 @@ import React, {useState, useContext, useRef} from "react";
 import {Link} from "react-router-dom";
 import classNames from "classnames";
 import ImageGallery from "react-image-gallery";
-import { useHistory } from 'react-router-dom';
+//import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import {Query, Mutation} from "@apollo/react-components";
-import { ApolloProvider, useQuery, useMutation } from "@apollo/react-hooks";
+import {Query} from "@apollo/react-components";
+import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
 import { makeStyles } from "@material-ui/core/styles";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import ShoppingCart from "@material-ui/icons/ShoppingCart";
-import DateRangeIcon from '@material-ui/icons/DateRange';
 import Rating from '@material-ui/lab/Rating';
-import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Dialog from '@material-ui/core/Dialog';
 import Box from '@material-ui/core/Box';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Divider from '@material-ui/core/Divider';
 
 import GridContainer from "components/Partials/GridContainer.js";
 import GridItem from "components/Partials/GridItem.js";
-import Card from "components/Partials/Card.js";
-import CardBody from "components/Partials/CardBody.js";
-import Filter from "components/Partials/Filter.js";
 import Button from "components/Partials/Button.js";
 
 import Loading from "components/Shared/Loading";
 import Error from "components/Shared/Error";
-import Auth from "components/Auth"
 
 // import Sticky from 'utils/sticky/Sticky.js';
 
-import { UserContext, ME_QUERY } from "App";
-import {PROFILE_QUERY} from "pages/Profile";
+import { UserContext } from "App";
+//import {PROFILE_QUERY} from "pages/Profile";
 
 import styles from "assets/jss/salonDetailStyle.js";
 import ReviewList from "components/Partials/ReviewList.js";
@@ -80,7 +66,7 @@ const RatingDistribution = ({value, progress, quantity}) => {
 
 const Service = ({title, duration, promotionPrice, price }) => {
   const classes = useStyles();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <CardFooter style={{paddingTop:"5px",paddingBottom:"10px",paddingLeft:"0px"}}>
@@ -118,7 +104,6 @@ const Service = ({title, duration, promotionPrice, price }) => {
 const ViewSalon=() => {
     const classes = useStyles()
     const currentUser = useContext(UserContext);
-    console.log(currentUser)
     if (!currentUser.salonSet[0]) {
         return <div className={classes.paddingTLR}> No salon added. Please add a salon</div>
     } else {
@@ -128,11 +113,10 @@ const ViewSalon=() => {
 
 const BrowseSalon = ({currentUser}) => {
   const classes = useStyles();
-  const history = useHistory();
-  const { t, i18n } = useTranslation();
+  //const history = useHistory();
+  const { t } = useTranslation();
 
-  const [open, setOpen] = useState(false);
-  const [colorSelect, setColorSelect] = useState("0");
+  //const [colorSelect, setColorSelect] = useState("0");
   const [tabIndex, setTabIndex] = useState(0);
   const [smallViewSize, setSmallViewSize] = useState(true)
   const [loadButton, setLoadButton] = useState(true)
@@ -146,7 +130,7 @@ const BrowseSalon = ({currentUser}) => {
       window.scrollTo(0, 0);
       document.body.scrollTop = 0;
     }, []);
-
+  
   const [isSticky, setSticky] = React.useState(false);
   const stickyRef = useRef(null);
   const aboutRef = useRef(null);
@@ -167,19 +151,19 @@ const BrowseSalon = ({currentUser}) => {
   );
 
   const handleScroll = () => {
-      // console.log("REF",stickyRef);
       stickyRef.current && stickyRef.current.getBoundingClientRect().top < 0
       ? setSticky(true)
       : setSticky(false)
 
       if (reviewRef.current && reviewRef.current.getBoundingClientRect().top<0) {
-        setTabIndex(2)
+        setTabIndex(3)
       } else if (servicesRef.current && servicesRef.current.getBoundingClientRect().top<0) {
+        setTabIndex(2)
+      } else if (masterRef.current && masterRef.current.getBoundingClientRect().top<0) {
         setTabIndex(1)
       } else {
         setTabIndex(0)
       }
-      console.log(tabIndex);
   };
 
   const handleTabChange = (event, newValue) => {
@@ -195,12 +179,15 @@ const BrowseSalon = ({currentUser}) => {
         handleScrollTo(servicesRef);
         break;
       case 3: handleScrollTo(reviewRef);
+        break;
+      default:
+        handleScrollTo(aboutRef);
+        break;
     }
   };
 
   const handleScrollTo = (elRef) =>{
     const el = elRef.current ? elRef.current : elRef;
-    console.log(el);
     el.scrollIntoView({
       behavior: 'smooth',
       block: 'start'
@@ -237,7 +224,6 @@ const BrowseSalon = ({currentUser}) => {
       {({ data, loading, error }) => {
           if (loading) return <Loading />;
           if (error) return <Error error={error} />;
-          console.log(data.salonSelected[0]);
 
           const salon = data.salonSelected[0];
           const hairServices = salon.hairserviceSet
@@ -263,18 +249,15 @@ const BrowseSalon = ({currentUser}) => {
             }
           ];
 
-          console.log(images);
-
           for (let i=1; i<numImages; i++){
               const photo = _images[i];
               let src = `${API_BASE}/${photo}`;
-              console.log(src);
               images.push(
                   { original: src,
                   thumbnail: src,
                   }
               );
-          };
+          }
 
           return (
           <div className={classNames(classes.section, classes.sectionGray)}>
@@ -297,8 +280,10 @@ const BrowseSalon = ({currentUser}) => {
 
                         <GridItem md={6} sm={6} xs={12}>
                             <Rating name="read-only" size="small" value={salon.rating} readOnly />
-                            <h5>{t("View all reviews")}</h5>
-                          </GridItem>
+                            <Link onClick={()=> handleScrollTo(reviewRef)}>
+                              <h5>{t("View all reviews")}</h5>
+                            </Link>
+                        </GridItem>
                         </GridContainer>
                     </GridItem>
                     </GridContainer>):
@@ -318,8 +303,10 @@ const BrowseSalon = ({currentUser}) => {
 
                   <GridItem md={6} sm={6}>
                       <Rating name="read-only" size="small" value={salon.rating} readOnly />
-                      <h5>{t("View all reviews")}</h5>
-                    </GridItem>
+                      <Link onClick={()=> handleScrollTo(reviewRef)}>
+                          <h5>{t("View all reviews")}</h5>
+                      </Link>
+                  </GridItem>
                   </GridContainer>
 
               </GridItem>
@@ -329,8 +316,7 @@ const BrowseSalon = ({currentUser}) => {
 
               <div className={classes.container} ref={stickyRef} >
                 <div className={classNames(classes.main, classes.mainRaised)} ref={aboutRef}>
-                <nav className={isSticky ?
-                  classNames(classes.navbar, classes.navbarSticky) : classes.navbar}>
+                <nav className={isSticky? classNames(classes.navbar, classes.navbarSticky) : classes.navbar}>
                   <Tabs
                       value={tabIndex}
                       onChange={handleTabChange}
@@ -360,7 +346,7 @@ const BrowseSalon = ({currentUser}) => {
                     <GridItem md={12} sm={12} className={classNames(classes.paddingLR, classes.paddingT)}>
                       <p style={{fontSize:"18px", color:"inherit"}}>{t("Masters")} </p>
                       {salon.masterSet.map(master => (
-                        <CardFooter style={{paddingTop:"5px",paddingBottom:"10px",paddingLeft:"0px"}}>
+                        <CardFooter key={master.id} style={{paddingTop:"5px",paddingBottom:"10px",paddingLeft:"0px"}}>
                         <>
                           <div className={classes.priceContainer}>
                             {master.masterName}
@@ -384,7 +370,7 @@ const BrowseSalon = ({currentUser}) => {
                     {hairServices[0] && (
                       <Accordion title={t("Hair Services")}>
                         {hairServices.map(service => (
-                          <div>
+                          <div key={service.id}>
                           <Service 
                             title={service.title} 
                             duration={service.duration} 
@@ -398,7 +384,7 @@ const BrowseSalon = ({currentUser}) => {
                     {nailsServices[0] && (
                       <Accordion title={t("Nails Services")}>
                         {nailsServices.map(service => (
-                          <div>
+                          <div key={service.id}>
                           <Service 
                             title={service.title} 
                             duration={service.duration} 
@@ -412,7 +398,7 @@ const BrowseSalon = ({currentUser}) => {
                     {hairRemovalServices[0] && (
                       <Accordion title={t("Hair Removal Services")}>
                         {hairRemovalServices.map(service => (
-                          <div>
+                          <div key={service.id}>
                           <Service 
                             title={service.title} 
                             duration={service.duration} 
@@ -426,7 +412,7 @@ const BrowseSalon = ({currentUser}) => {
                     {makeupServices[0] && (
                       <Accordion title={t("Makeup Services")}>
                         {makeupServices.map(service => (
-                          <div>
+                          <div key={service.id}>
                           <Service 
                             title={service.title} 
                             duration={service.duration} 
@@ -440,7 +426,7 @@ const BrowseSalon = ({currentUser}) => {
                     {massageServices[0] && (
                       <Accordion title={t("Massage/Spa Services")}>
                         {massageServices.map(service => (
-                          <div>
+                          <div key={service.id}>
                           <Service 
                             title={service.title} 
                             duration={service.duration} 
@@ -454,7 +440,7 @@ const BrowseSalon = ({currentUser}) => {
                       {eyebrowServices[0] && (
                         <Accordion title={t("Eyebrow Services")}>
                           {eyebrowServices.map(service => (
-                            <div>
+                            <div key={service.id}>
                             <Service 
                               title={service.title} 
                               duration={service.duration} 
@@ -468,7 +454,7 @@ const BrowseSalon = ({currentUser}) => {
                       {cosmetologyServices[0] && (
                         <Accordion title={t("Cosmetology Services")}>
                           {cosmetologyServices.map(service => (
-                            <div>
+                            <div key={service.id}>
                             <Service 
                               title={service.title} 
                               duration={service.duration} 
@@ -482,7 +468,7 @@ const BrowseSalon = ({currentUser}) => {
                       {tattooServices[0] && (
                         <Accordion title={t("Tattoo/Piercing Services")}>
                           {tattooServices.map(service => (
-                            <div>
+                            <div key={service.id}>
                             <Service 
                               title={service.title} 
                               duration={service.duration} 
@@ -496,7 +482,7 @@ const BrowseSalon = ({currentUser}) => {
                       {aestheticsServices[0] && (
                         <Accordion title={t("Aesthetics Services")}>
                           {aestheticsServices.map(service => (
-                            <div>
+                            <div key={service.id}>
                             <Service 
                               title={service.title} 
                               duration={service.duration} 
@@ -541,7 +527,6 @@ const BrowseSalon = ({currentUser}) => {
                       const progressTwo = ratedTwo*100/countReviews
                       const progressOne= ratedOne*100/countReviews
                       const avgRating = ((ratedFive*5+ratedFour*4+ratedThree*3+ratedTwo*2+ratedOne*1)/countReviews).toFixed(1)
-                      console.log(avgRating, !Number.isNaN(parseFloat(avgRating)))
                       return (
                         <div>
                         {smallViewSize ?
@@ -636,12 +621,12 @@ const BrowseSalon = ({currentUser}) => {
                               skip: review_data.reviews.length
                             },
                             updateQuery: (prev, {fetchMoreResult}) => {
-                              console.log('prev',prev);
-                              console.log('more',fetchMoreResult);
-                              if (fetchMoreResult.reviews.length == 0) {
+                              //console.log('prev',prev);
+                              //console.log('more',fetchMoreResult);
+                              if (fetchMoreResult.reviews.length === 0) {
                                 setLoadButton(false)
                                 return prev
-                              };
+                              }
                               return Object.assign({}, prev, {
                                 reviews: [...prev.reviews, ...fetchMoreResult.reviews]
                               });

@@ -37,7 +37,6 @@ const styles = {
   ...tooltipsStyle,
   checkRoot: {
     paddingTop: "5px",
-    paddingTop: "5px",
     paddingLeft: "14px",
     paddingRight: "14px",
     "&:hover": {

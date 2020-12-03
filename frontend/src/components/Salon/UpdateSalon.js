@@ -1,38 +1,29 @@
 // noValidate in the form ignores required html input fields in the form
-import React, { useState, useEffect, useContext} from "react";
+import React, { useState, useContext} from "react";
 import { Link } from "react-router-dom";
 import { Mutation } from '@apollo/react-components';
 import { Query } from "@apollo/react-components";
-import { useMutation, useQuery } from '@apollo/react-hooks';
-import { useHistory, Redirect } from 'react-router-dom';
+import { useMutation } from '@apollo/react-hooks';
+import { useHistory } from 'react-router-dom';
 import gql from "graphql-tag";
-import axios from "axios";
-import Cookies from 'js-cookie';
 import { useTranslation } from 'react-i18next';
 
 import Box from "@material-ui/core/Box";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
 import FormControl from "@material-ui/core/FormControl";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
 //import Button from "components/Partials/Button"
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
-import Gavel from "@material-ui/icons/Gavel";
-import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
 import FormHelperText from '@material-ui/core/FormHelperText';
-import NativeSelect from '@material-ui/core/NativeSelect';
+//import NativeSelect from '@material-ui/core/NativeSelect';
 import CircularProgress from "@material-ui/core/CircularProgress";
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { UserContext } from "App.js"
 import {ME_QUERY} from "App.js"
 
@@ -47,7 +38,7 @@ function Transition(props) {
 }
 
 const UpdateSalon = ({classes}) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
     //query the salon data updated by the current user
     const currentUser = useContext(UserContext);
     if (!currentUser.salonSet[0]) {
@@ -62,9 +53,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
   const data_salon = currentUser.salonSet[0];
   const salonId = data_salon.id;
   //const { data: data_user } = useQuery(PROFILE_QUERY, {variables: {id:userId}});
-  console.log('update salon user', currentUser);
   const history = useHistory();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [name, setName] = useState(data_salon.name);
   const [address, setAddress] = useState(data_salon.address);
@@ -86,15 +76,13 @@ const UpdateSalonForm = ({classes, currentUser}) => {
   const [female, setFemale] = useState(false);
   const [email, setEmail] = useState(data_salon.email ? data_salon.email : "");
   const [phone, setPhone] = useState(data_salon.phone ? data_salon.phone : "");
-  const [img0, setImg0] = useState("");
-  const [photo1, setPhoto1] = useState("");
-  const [photo2, setPhoto2] = useState("");
-  const [photo3, setPhoto3] = useState("");
-  const [photo4, setPhoto4] = useState("");
-  const [photo5, setPhoto5] = useState("");
-  const [photo6, setPhoto6] = useState("");
-  console.log('data photo1', data_salon.photo1, 'photo1', photo1)
-  console.log('massage',massageCategories);
+  const [img0, setImg0] = useState(data_salon.photoMain ? data_salon.photoMain : "");
+  const [photo1, setPhoto1] = useState(data_salon.photo1 ? data_salon.photo1 : "");
+  const [photo2, setPhoto2] = useState(data_salon.photo2 ? data_salon.photo2 : "");
+  const [photo3, setPhoto3] = useState(data_salon.photo3 ? data_salon.photo3 : "");
+  const [photo4, setPhoto4] = useState(data_salon.photo4 ? data_salon.photo4 : "");
+  const [photo5, setPhoto5] = useState(data_salon.photo5 ? data_salon.photo5 : "");
+  const [photo6, setPhoto6] = useState(data_salon.photo6 ? data_salon.photo6 : "");
 
   const [disabled, setDisabled] = useState(true)
   const [open, setOpen] = useState(false);
@@ -108,12 +96,11 @@ const UpdateSalonForm = ({classes, currentUser}) => {
     sizeError5: "",
     sizeError6: "",
   });
-  const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
+  //const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
 
   const [uploadImg] = useMutation(FILE_MUTATION);
 
   const handlePhotoMainChange = event => {
-    console.log(event.target.files);
     const selectedFile = event.target.files[0];
     const fileSizeLimit = 5000000; // 5mb
     if (selectedFile && selectedFile.size > fileSizeLimit) {
@@ -193,11 +180,11 @@ const UpdateSalonForm = ({classes, currentUser}) => {
   const handleImageUpload = async (img) => {
     try {
       const res = await uploadImg({variables:{file: img}});
-      console.log(res);
       return res.data.uploadImg.url;
     } catch (err) {
       console.error("Error uploading file", err);
       setSubmitting(false);
+      history.push(`/partner/${userId}/salon/view`);
     }
   };
 
@@ -223,16 +210,8 @@ const UpdateSalonForm = ({classes, currentUser}) => {
       } else {
         uploadedUrl[i] = photo;
       }
-      console.log(uploadedUrl)
     }
 
-    console.log( salonId, name, address, cityId, areaId, description, priceRange, masters, hairCategories, nailsCategories,
-      hairRemovalCategories, makeupCategories, massageCategories, eyebrowCategories, cosmetologyCategories,
-      tattooCategories, aestheticsCategories,
-      male, female, email, phone, uploadedUrl[0],
-      uploadedUrl[1], uploadedUrl[2], uploadedUrl[3],
-      uploadedUrl[4], uploadedUrl[5], uploadedUrl[6] );
-    console.log('massage', massageCategories)
     updateSalon({variables: {
                  salonData: {
                     name, address, cityId, areaId, description, priceRange, masters, hairCategories, nailsCategories, 
@@ -253,7 +232,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
           <Mutation
             mutation={UPDATE_SALON_MUTATION}
             onCompleted={data => {
-            console.log({ data });
+            //console.log({ data });
             setSubmitting(false);
             setOpen(true);
             }}
@@ -317,7 +296,6 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                                     }}
                     </Query>
                   </FormControl>
-                  
                   <FormControl fullWidth className={classes.field}>
                     <Query query={AREA_QUERY}>
                               {({data, loading, error}) => {
@@ -336,7 +314,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                                         onChange={(event,value) => {
                                           //it returns nested city instance data->city->id,title
                                           // setArea({...data, area: data.area.filter(item => item.title == value)});
-                                          setAreaId(data.area.filter(item => item.title == value)[0].id); 
+                                          setAreaId(data.area.filter(item => item.title === value)[0].id); 
                                         }}
                                         renderInput={(params) => (
                                           <TextField {...params} 
@@ -389,7 +367,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                     value={priceRange}
                     onChange={event => {
                       setPriceRange(parseInt(event.target.value));
-                      console.log(priceRange);}}
+                      }}
                     name="priceRange"
                     className={classes.selectEmpty}
                     inputProps={{ 'aria-label': 'priceRange' }}
@@ -421,13 +399,12 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                               onChange={(event,value) => {
                                         // setHairCategories({...data, hairCat: data.hairCat.filter(item => value.includes(item.title))});
                                         setHairCategories(data.hairCat.filter(item => value.includes(item.title)).map(item => item.id))
-                                        console.log(hairCategories)
                               }}
                               renderInput={(params) => (
                                 <TextField {...params} 
                                 variant="outlined" 
-                                label={t("Haircut categories")} 
-                                placeholder={t("More haircut")}
+                                label={t("Hair categories")} 
+                                placeholder={t("More hair")}
                                 />
                               )}
                             />;
@@ -675,19 +652,32 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                     className={classes.input}
                     onChange={handlePhotoMainChange}
                   />
-                  <label htmlFor="photoMain">
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color={img0||data_salon.photoMain ? "secondary" : "inherit"}
-                      component="span"
-                      className={classes.button}
-                    >
-                      {t("Main photo")}
-                    </Button>
-                    {img0 ? img0.name : '\xa0\xa0'+data_salon.photoMain.split('/').pop()}
-                    <FormHelperText>{fileError.sizeError0}</FormHelperText>
-                  </label>
+                  <Box display="flex" justifyContent="flex-start">
+                    <label htmlFor="photoMain">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color={img0||data_salon.photoMain ? "secondary" : "inherit"}
+                        component="span"
+                        className={classes.button}
+                      >
+                        {t("Main photo")}
+                      </Button>
+                      {(img0 && typeof(img0)!=="string")? 
+                      img0.name : 
+                      img0 ? '\xa0\xa0'+img0.split('/').pop() : ""}
+                      <FormHelperText>{fileError.sizeError0}</FormHelperText>
+                    </label>
+                    {img0 && !disabled &&
+                    (<Box ml={1} mt={0.5}>
+                      <DeleteForeverIcon 
+                          disabled={disabled}
+                          fontSize="small" 
+                          onClick={() => setImg0("")} 
+                          className={classes.button2}
+                      />
+                    </Box>)}
+                  </Box>
                 </FormControl>
                 <FormControl fullWidth error={Boolean(fileError)}>
                   <input
@@ -698,21 +688,32 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                     className={classes.input}
                     onChange={handlePhoto1Change}
                   />
-                  <label htmlFor="photo1">
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color={photo1||data_salon.photo1 ? "secondary" : "inherit"}
-                      component="span"
-                      className={classes.button}
-                    >
-                      {t("Photo 1")}
-                    </Button>
-                    { photo1 ? 
+                  <Box display="flex" justifyContent="flex-start">
+                    <label htmlFor="photo1">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color={photo1||data_salon.photo1 ? "secondary" : "inherit"}
+                        component="span"
+                        className={classes.button}
+                      >
+                        {t("Photo 1")}
+                      </Button>
+                      {(photo1 && typeof(photo1)!=="string")? 
                       photo1.name : 
-                      data_salon.photo1 ? '\xa0\xa0'+data_salon.photo1.split('/').pop() : "" }
-                    <FormHelperText>{fileError.sizeError1}</FormHelperText>
-                  </label>
+                      photo1 ? '\xa0\xa0'+photo1.split('/').pop() : ""}
+                      <FormHelperText>{fileError.sizeError1}</FormHelperText>
+                    </label>
+                    {photo1 && !disabled &&
+                    (<Box ml={1} mt={0.5}>
+                      <DeleteForeverIcon 
+                          disabled={disabled}
+                          fontSize="small" 
+                          onClick={() => setPhoto1("")} 
+                          className={classes.button2}
+                      />
+                    </Box>)}
+                  </Box>
                 </FormControl>
                 <FormControl fullWidth error={Boolean(fileError)}>
                   <input
@@ -723,21 +724,32 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                     className={classes.input}
                     onChange={handlePhoto2Change}
                   />
-                  <label htmlFor="photo2">
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color={photo2||data_salon.photo2 ? "secondary" : "inherit"}
-                      component="span"
-                      className={classes.button}
-                    >
-                      {t("Photo 2")}
-                    </Button>
-                    { photo2 ? 
+                  <Box display="flex" justifyContent="flex-start">
+                    <label htmlFor="photo2">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color={photo2||data_salon.photo2 ? "secondary" : "inherit"}
+                        component="span"
+                        className={classes.button}
+                      >
+                        {t("Photo 2")}
+                      </Button>
+                      {(photo2 && typeof(photo2)!=="string")? 
                       photo2.name : 
-                      data_salon.photo2 ? '\xa0\xa0'+data_salon.photo2.split('/').pop() : "" }
-                    <FormHelperText>{fileError.sizeError2}</FormHelperText>
-                  </label>
+                      photo2 ? '\xa0\xa0'+photo2.split('/').pop() : ""}
+                      <FormHelperText>{fileError.sizeError2}</FormHelperText>
+                    </label>
+                    {photo2 && !disabled &&
+                    (<Box ml={1} mt={0.5}>
+                      <DeleteForeverIcon 
+                          disabled={disabled}
+                          fontSize="small" 
+                          onClick={() => setPhoto2("")} 
+                          className={classes.button2}
+                      />
+                    </Box>)}
+                  </Box>
                 </FormControl>
                 <FormControl fullWidth error={Boolean(fileError)}>
                   <input
@@ -748,21 +760,32 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                     className={classes.input}
                     onChange={handlePhoto3Change}
                   />
-                  <label htmlFor="photo3">
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color={photo3||data_salon.photo3 ? "secondary" : "inherit"}
-                      component="span"
-                      className={classes.button}
-                    >
-                      {t("Photo 3")}
-                    </Button>
-                    { photo3 ? 
+                  <Box display="flex" justifyContent="flex-start">
+                    <label htmlFor="photo3">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color={photo3||data_salon.photo3 ? "secondary" : "inherit"}
+                        component="span"
+                        className={classes.button}
+                      >
+                        {t("Photo 3")}
+                      </Button>
+                      {(photo3 && typeof(photo3)!=="string")? 
                       photo3.name : 
-                      data_salon.photo3 ? '\xa0\xa0'+data_salon.photo3.split('/').pop() : "" }
-                    <FormHelperText>{fileError.sizeError3}</FormHelperText>
-                  </label>
+                      photo3 ? '\xa0\xa0'+photo3.split('/').pop() : ""}
+                      <FormHelperText>{fileError.sizeError3}</FormHelperText>
+                    </label>
+                    {photo3 && !disabled &&
+                    (<Box ml={1} mt={0.5}>
+                      <DeleteForeverIcon 
+                          disabled={disabled}
+                          fontSize="small" 
+                          onClick={() => setPhoto3("")} 
+                          className={classes.button2}
+                      />
+                    </Box>)}
+                  </Box>
                 </FormControl>
                 <FormControl fullWidth error={Boolean(fileError)}>
                     <input
@@ -773,6 +796,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                       className={classes.input}
                       onChange={handlePhoto4Change}
                     />
+                  <Box display="flex" justifyContent="flex-start">
                     <label htmlFor="photo4">
                       <Button
                         variant="outlined"
@@ -781,13 +805,23 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                         component="span"
                         className={classes.button}
                       >
-                      {t("Photo 4")}
+                        {t("Photo 4")}
                       </Button>
-                      { photo4 ? 
-                        photo4.name : 
-                        data_salon.photo4 ? '\xa0\xa0'+data_salon.photo4.split('/').pop() : "" }
+                      {(photo4 && typeof(photo4)!=="string")? 
+                      photo4.name : 
+                      photo4 ? '\xa0\xa0'+photo4.split('/').pop() : ""}
                       <FormHelperText>{fileError.sizeError4}</FormHelperText>
                     </label>
+                    {photo4 && !disabled &&
+                    (<Box ml={1} mt={0.5}>
+                      <DeleteForeverIcon 
+                          disabled={disabled}
+                          fontSize="small" 
+                          onClick={() => setPhoto4("")} 
+                          className={classes.button2}
+                      />
+                    </Box>)}
+                  </Box>
                   </FormControl>
                   <FormControl fullWidth error={Boolean(fileError)}>
                     <input
@@ -798,6 +832,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                       className={classes.input}
                       onChange={handlePhoto5Change}
                     />
+                  <Box display="flex" justifyContent="flex-start">
                     <label htmlFor="photo5">
                       <Button
                         variant="outlined"
@@ -806,13 +841,23 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                         component="span"
                         className={classes.button}
                       >
-                      {t("Photo 5")}
+                        {t("Photo 5")}
                       </Button>
-                      { photo5 ? 
-                        photo5.name : 
-                        data_salon.photo5 ? '\xa0\xa0'+data_salon.photo5.split('/').pop() : "" } 
+                      {(photo5 && typeof(photo5)!=="string")? 
+                      photo5.name : 
+                      photo5 ? '\xa0\xa0'+photo5.split('/').pop() : ""}
                       <FormHelperText>{fileError.sizeError5}</FormHelperText>
                     </label>
+                    {photo5 && !disabled &&
+                    (<Box ml={1} mt={0.5}>
+                      <DeleteForeverIcon 
+                          disabled={disabled}
+                          fontSize="small" 
+                          onClick={() => setPhoto5("")} 
+                          className={classes.button2}
+                      />
+                    </Box>)}
+                  </Box>
                   </FormControl>
                   <FormControl fullWidth error={Boolean(fileError)}>
                     <input
@@ -823,6 +868,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                       className={classes.input}
                       onChange={handlePhoto6Change}
                     />
+                  <Box display="flex" justifyContent="flex-start">
                     <label htmlFor="photo6">
                       <Button
                         variant="outlined"
@@ -831,13 +877,23 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                         component="span"
                         className={classes.button}
                       >
-                      {t("Photo 6")}
+                        {t("Photo 6")}
                       </Button>
-                      { photo6 ? 
-                        photo6.name : 
-                        data_salon.photo6 ? '\xa0\xa0'+data_salon.photo6.split('/').pop() : "" } 
+                      {(photo6 && typeof(photo6)!=="string")? 
+                      photo6.name : 
+                      photo6 ? '\xa0\xa0'+photo6.split('/').pop() : ""}
                       <FormHelperText>{fileError.sizeError6}</FormHelperText>
                     </label>
+                    {photo6 && !disabled &&
+                    (<Box ml={1} mt={0.5}>
+                      <DeleteForeverIcon 
+                          disabled={disabled}
+                          fontSize="small" 
+                          onClick={() => setPhoto6("")} 
+                          className={classes.button2}
+                      />
+                    </Box>)}
+                  </Box>
                   </FormControl>                                                                      
                 {disabled ? 
                   (<Box
@@ -918,7 +974,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                 setOpen(false);
               }}
             >
-              <Link to={`/partner/${userId}/salon/browse`}>
+              <Link to={`/partner/${userId}/salon/view`}>
                 {t("Return to the main.")}
               </Link>
             </Button>
@@ -972,6 +1028,7 @@ const AREA_QUERY = gql`
           title
         }
         salonSet{
+          id
           name
         }
       }
@@ -1091,6 +1148,13 @@ const styles = theme => ({
   button: {
     //margin: theme.spacing.unit * 2
     margin: "0px"
+  },
+  button2: {
+    color: "#c0c0c0",
+    cursor: "pointer",
+    "&:hover,&:focus": {
+      color: "red"
+    }
   },
   icon: {
     marginLeft: theme.spacing.unit

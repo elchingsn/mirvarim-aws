@@ -33,7 +33,7 @@ const Toolbar = ({
   view,
   ...rest
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const viewOptions = [
     {
@@ -59,7 +59,6 @@ const Toolbar = ({
   ];
 
   const classes = useStyles();
-  console.log('toolbar date', date)
   //{format(new Date(date),'dd')} - {format(new Date(new Date(date).getTime() + 7*1440*60000),'dd MMMM yyyy')}
 
   return (
@@ -83,7 +82,7 @@ const Toolbar = ({
             variant="h5"
             color="textPrimary"
           >
-            {(view == 'listWeek') ?
+            {(view === 'listWeek') ?
               `${format(new Date(date),'dd')} - ${format(new Date(new Date(date).getTime() + 7*1440*60000),'dd MMMM yyyy')}` :
               format(new Date(date),'MMMM yyyy')
             } 

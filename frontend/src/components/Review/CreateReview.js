@@ -1,37 +1,23 @@
 import React, {useState} from "react";
 import {Link} from "react-router-dom";
-import { useMutation } from '@apollo/react-hooks';
-import axios from "axios";
+import PropTypes from 'prop-types';
 import classNames from "classnames";
 import { useTranslation } from 'react-i18next';
 
-import { ApolloConsumer, Query, Mutation } from "@apollo/react-components";
+import { Mutation } from "@apollo/react-components";
 import { useHistory } from 'react-router-dom';
 import gql from "graphql-tag";
 
 import { makeStyles } from "@material-ui/core/styles"; 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import Paper from "@material-ui/core/Paper";
-import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField";
 import { IconButton } from '@material-ui/core';
 import MoodIcon from '@material-ui/icons/Mood';
 import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 import NotInterestedIcon from '@material-ui/icons/NotInterested';
-
-import Parallax from "components/Partials/Parallax.js";
-import Footer from "components/Partials/Footer.js";
 import GridContainer from "components/Partials/GridContainer.js";
 import GridItem from "components/Partials/GridItem.js";
-import Card from "components/Partials/Card.js";
-import CardBody from "components/Partials/CardBody.js";
-import CustomInput from "components/Partials/CustomInput.js";
 import StarRating from "components/Partials/StarRating.js";
-
-import presentationStyle from "assets/jss/presentationStyle.js";
-
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -43,18 +29,18 @@ import {container} from "assets/jss/mirvarix-react"
 
 // const useStyles = makeStyles(presentationStyle);
 
-const labels = {
-  0: 'Not rated',
-  1: 'Useless',
-  2: 'Poor',
-  3: 'Ok',
-  4: 'Good',
-  5: 'Excellent',
-};
-
 const Review = ({match})=>{
     // const [form, setForm] = useState(false);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+
+  const labels = {
+    0: `${t("Not rated")}`,
+    1: `${t("Useless")}`,
+    2: `${t("Poor")}`,
+    3: `${t("Ok")}`,
+    4: `${t("Good")}`,
+    5: `${t("Excellent")}`
+  };
 
   React.useEffect(() => {
       window.scrollTo(0, 0);
@@ -78,10 +64,10 @@ const Review = ({match})=>{
   const salon_id = match.params.id;
 
   function getSteps() {
-    return [`${t("Provide feedback")}`, `${t("Add rating")}`, `${t("Add comment [optional]")}`, `${t("Submit")}`];
+    return [`${t("Provide feedback")}`, `${t("Add rating")}`, `${t("Add comment [optional]")}`, `${t("Send")}`];
   }
 
-  const Question = ({setQuestion, number, question, style, selected}) => {
+  const Question = ({setQuestion, number, question, styles, selected}) => {
     return(
       <div>
         <GridContainer style = {{width:"100%"}}>
@@ -89,7 +75,7 @@ const Review = ({match})=>{
           <h4 style = {{marginLeft: "30px", marginBottom: "0"}}> {number} {question} </h4>
           </GridItem>
           <GridItem xs={6} sm={2} md={2} lg={1} className = {classes.grid}>
-              <IconButton className = {classNames({[classes[`${style}`]] : selected === 1})}
+              <IconButton className = {classNames({[classes[`${styles}`]] : selected === 1})}
               aria-label="question1" onClick = {() => setQuestion(1)}
               >
                 <MoodIcon className = {classes.button} color="primary"/>
@@ -97,21 +83,21 @@ const Review = ({match})=>{
               <h5 style = {{ textAlign: "center", margin: "0"}} > {t("Yes")} </h5>
           </GridItem> 
           <GridItem xs={6} sm={2} md={2} lg={1} className = {classes.grid}>
-          <IconButton className = {classNames({[classes[`${style}`]] : selected === 2})}
+          <IconButton className = {classNames({[classes[`${styles}`]] : selected === 2})}
               aria-label="question1" onClick = {() => setQuestion(2)} >
                 <SentimentSatisfiedIcon className = {classes.button} color="secondary" />
               </IconButton>
               <h5 style = {{ textAlign: "center", margin: "0"}} > {t("Almost")} </h5>
           </GridItem> 
           <GridItem xs={6} sm={2} md={2} lg={1} className = {classes.grid}>
-          <IconButton className = {classNames({[classes[`${style}`]] : selected === 3})}
+          <IconButton className = {classNames({[classes[`${styles}`]] : selected === 3})}
               aria-label="question1" onClick = {() => setQuestion(3)} >
                 <SentimentVeryDissatisfiedIcon className = {classes.button} color="error" />
               </IconButton>
               <h5 style = {{ textAlign: "center", margin: "0"}} > {t("No")} </h5>
           </GridItem> 
           <GridItem xs={6} sm={2} md={2} lg={1} className = {classes.grid}>
-          <IconButton className = {classNames({[classes[`${style}`]] : selected === 4})}
+          <IconButton className = {classNames({[classes[`${styles}`]] : selected === 4})}
               aria-label="question1" onClick = {() => setQuestion(4)} >
                 <NotInterestedIcon className = {classes.button} />
               </IconButton>
@@ -129,12 +115,11 @@ const Review = ({match})=>{
         return (
           <div>
             <h3 style = {{marginLeft: "20px"}}> {t("Please answer below questions")}</h3>
-            <Question setQuestion={setQuestion1} number="1." question={t("Was it clean?")} style="button1" selected={question1}/>
-            <Question setQuestion={setQuestion2} number="2." question={t("Was it professional?")} style="button1" selected={question2}/>
-            <Question setQuestion={setQuestion3} number="3." question={t("Was it punctual?")} style="button1" selected={question3}/>
-            <Question setQuestion={setQuestion4} number="4." question={t("Was it easy to find?")} style="button1" selected={question4}/>
-            <Question setQuestion={setQuestion5} number="5." question={t("Was it good value for money?")} style="button1" selected={question5}/>
-            {console.log (question1, question2, question3, question4, question5)}
+            <Question setQuestion={setQuestion1} number="1." question={t("Was it clean?")} styles="button1" selected={question1}/>
+            <Question setQuestion={setQuestion2} number="2." question={t("Was it professional?")} styles="button1" selected={question2}/>
+            <Question setQuestion={setQuestion3} number="3." question={t("Was it punctual?")} styles="button1" selected={question3}/>
+            <Question setQuestion={setQuestion4} number="4." question={t("Was it easy to find?")} styles="button1" selected={question4}/>
+            <Question setQuestion={setQuestion5} number="5." question={t("Was it good value for money?")} styles="button1" selected={question5}/>
           </div>
         );
       case 1:
@@ -147,8 +132,7 @@ const Review = ({match})=>{
             setRating={setRating}
             setHover={setHover}
           />
-          {console.log(rating)}
-          <h4>{labels[hover == 0 ? rating: hover]}</h4>
+          <h4>{labels[hover === 0 ? rating: hover]}</h4>
           </div>
         );
       case 2:
@@ -174,7 +158,7 @@ const Review = ({match})=>{
       case 3:
         return (
           <div style = {{marginLeft: "30px"}}>
-            <h3> {("Thank you for your feedback!")} </h3>
+            <h3> {t("Thank you for your feedback!")} </h3>
           </div>
         );      
       default:
@@ -207,12 +191,12 @@ const Review = ({match})=>{
   }
 
   return(
-    <div className={classes.root, classes.container}>
+    <div className={classNames(classes.root, classes.container)}>
       <Mutation
         mutation={CREATE_REVIEW_MUTATION}
-        onCompleted={data => {
-          console.log(data)
-        }}
+        // onCompleted={data => {
+        //   console.log(data)
+        // }}
         // update={handleUpdateCache}
         // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
       >
@@ -245,16 +229,16 @@ const Review = ({match})=>{
                           onClick={handleBack}
                           className={classes.backButton}
                         >
-                          Back
+                          {t("Back")}
                         </Button>
                         {activeStep === steps.length - 1 ?
                           ( <Button variant="contained" color="primary" 
                           className={classes.backButton} onClick={() => handleSubmit(createReview)}>
-                            Submit
+                            {t("Send")}
                           </Button>) :
                           ( <Button variant="contained" color="primary" 
                           className={classes.backButton} onClick={handleNext}>
-                            Next
+                            {t("Next")}
                           </Button>)
                         }
                       </div>
@@ -268,6 +252,13 @@ const Review = ({match})=>{
     </div>
     );
 
+  // Question.propTypes = {
+  //   setQuestion: PropTypes.func,
+  //   number: PropTypes.string,
+  //   question: PropTypes.string,
+  //   styles: PropTypes.string,
+  //   selected: PropTypes.number
+  // }
 } 
 
 export default Review;
@@ -278,10 +269,12 @@ const CREATE_REVIEW_MUTATION = gql`
       review {
         id
         salon {
+          id
           name
         }
         rating
         postedBy {
+          id
           username
         }
       }
@@ -369,4 +362,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+Review.propTypes = {
+  match: PropTypes.object
+}
 

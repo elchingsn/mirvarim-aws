@@ -1,41 +1,30 @@
 import React, { useState, useEffect, useContext } from "react";
 import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
-import { Mutation } from '@apollo/react-components';
-import { Query } from "@apollo/react-components";
 import { useMutation } from '@apollo/react-hooks';
 import gql from "graphql-tag";
-import axios from "axios";
-import Cookies from 'js-cookie';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Box from "@material-ui/core/Box";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
 import FormControl from "@material-ui/core/FormControl";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
-import Gavel from "@material-ui/icons/Gavel";
-import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
 import FormHelperText from '@material-ui/core/FormHelperText';
-import NativeSelect from '@material-ui/core/NativeSelect';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Checkbox from '@material-ui/core/Checkbox';
 
 import { UserContext } from "App.js"
 import { useTranslation } from 'react-i18next';
 import NumberFormat from 'react-number-format';
-import Error from "../Shared/Error"; 
-import Loading from "../Shared/Loading";
+// import Error from "../Shared/Error"; 
+// import Loading from "../Shared/Loading";
 import { useHistory } from 'react-router-dom';
 import {ME_QUERY} from "App.js"
 
@@ -76,12 +65,12 @@ NumberFormatCustom.propTypes = {
 const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedService, data_salon }) => {
   const classes = formStyles();
   const history = useHistory();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [promo, setPromo] = React.useState(Boolean(selectedService.promotionPrice));
   const [disabled, setDisabled] = useState(true)
   const [submitting, setSubmitting] = useState(false);
-  console.log('salon_data', data_salon);
+  //console.log('salon_data', data_salon);
 
   const [serviceData, setServiceData] = useState({
     masterIds: selectedService.master.map(item => item.id).flat(1),
@@ -92,15 +81,29 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
     promotionPrice: selectedService.promotionPrice
   })
 
+  // useEffect(() => {
+  //   if (selectedService.title) {
+  //     setServiceData({
+  //       ...serviceData, 
+  //       masterIds: selectedService.master.map(item => item.id).flat(1),
+  //       title: selectedService.title,
+  //       description: selectedService.description,
+  //       duration: selectedService.duration,
+  //       price: selectedService.price,
+  //       promotionPrice: selectedService.promotionPrice
+  //     })
+  //   }
+  // }, [])
+
   useEffect(() => {
-    if (role == "A_2") {
+    if (role === "A_2") {
       setServiceData({
         ...serviceData, 
         masterIds: data_salon.masterSet[0].id
       })
     }
   }, [role])
-  
+
   const handleSubmit = async (event, updateMutation) => {
     event.preventDefault();
     //setSubmitting(true);
@@ -110,7 +113,6 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
       history.push('/login');
     });
   };
-  console.log( "inputs", serviceData);
 
   return(
     <form onSubmit={event => handleSubmit(event, updateMutation)}>
@@ -141,7 +143,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
         variant="outlined"
         />
       </FormControl>
-      { role == "A_3" &&
+      { role === "A_3" && 
       <FormControl fullWidth required className={classes.field}>
         <Autocomplete
           multiple
@@ -215,6 +217,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
       <h4> {t("Is promotion available?")} </h4>
       <Checkbox
           checked={promo}
+          disabled={disabled}
           color="primary"
           onChange={() => {
             setPromo(!promo);
@@ -280,7 +283,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
           //submitting ||
           !serviceData.title.trim() ||
           !serviceData.price ||
-          serviceData.masterIds.length == 0
+          serviceData.masterIds.length === 0
         }
         type="submit"
         className={classes.save}
@@ -298,12 +301,12 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
 } 
 
 const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen, userId}) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const history = useHistory();
 
   const [updateHairService, { data: update_data }] = useMutation(UPDATE_HAIR_SERVICE_MUTATION, {
     onCompleted({ updateHairService }) {
-      console.log('completed');
+      history.push(`/partner/${userId}/salon/view`);
     //   setSnack ({
     //   ...snack,
     //   snackOpen: true,
@@ -322,9 +325,121 @@ const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen,
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
+  const [updateNailsService] = useMutation(UPDATE_NAILS_SERVICE_MUTATION, {
+    onCompleted({ updateNailsService }) {
+      history.push(`/partner/${userId}/salon/view`);
+  },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [deleteNailsService] = useMutation(DELETE_NAILS_SERVICE_MUTATION, {
+    onCompleted({ deleteNailsService }) {
+      history.push(`/partner/${userId}/salon/view`);
+    },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [updateHairRemovalService] = useMutation(UPDATE_HAIR_REMOVAL_SERVICE_MUTATION, {
+    onCompleted({ updateHairRemovalService }) {
+      history.push(`/partner/${userId}/salon/view`);
+  },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [deleteHairRemovalService] = useMutation(DELETE_HAIR_REMOVAL_SERVICE_MUTATION, {
+    onCompleted({ deleteHairRemovalService }) {
+      history.push(`/partner/${userId}/salon/view`);
+    },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [updateMakeupService] = useMutation(UPDATE_MAKEUP_SERVICE_MUTATION, {
+    onCompleted({ updateMakeupService }) {
+      history.push(`/partner/${userId}/salon/view`);
+  },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [deleteMakeupService] = useMutation(DELETE_MAKEUP_SERVICE_MUTATION, {
+    onCompleted({ deleteMakeupService }) {
+      history.push(`/partner/${userId}/salon/view`);
+    },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [updateMassageService] = useMutation(UPDATE_MASSAGE_SERVICE_MUTATION, {
+    onCompleted({ updateMassageService }) {
+      history.push(`/partner/${userId}/salon/view`);
+  },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [deleteMassageService] = useMutation(DELETE_MASSAGE_SERVICE_MUTATION, {
+    onCompleted({ deleteMassageService }) {
+      history.push(`/partner/${userId}/salon/view`);
+    },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [updateEyebrowService] = useMutation(UPDATE_EYEBROW_SERVICE_MUTATION, {
+    onCompleted({ updateEyebrowService }) {
+      history.push(`/partner/${userId}/salon/view`);
+  },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [deleteEyebrowService] = useMutation(DELETE_EYEBROW_SERVICE_MUTATION, {
+    onCompleted({ deleteEyebrowService }) {
+      history.push(`/partner/${userId}/salon/view`);
+    },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [updateCosmetologyService] = useMutation(UPDATE_COSMETOLOGY_SERVICE_MUTATION, {
+    onCompleted({ updateCosmetologyService }) {
+      history.push(`/partner/${userId}/salon/view`);
+  },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [deleteCosmetologyService] = useMutation(DELETE_COSMETOLOGY_SERVICE_MUTATION, {
+    onCompleted({ deleteCosmetologyService }) {
+      history.push(`/partner/${userId}/salon/view`);
+    },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [updateTattooService] = useMutation(UPDATE_TATTOO_SERVICE_MUTATION, {
+    onCompleted({ updateTattooService }) {
+      history.push(`/partner/${userId}/salon/view`);
+  },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [deleteTattooService] = useMutation(DELETE_TATTOO_SERVICE_MUTATION, {
+    onCompleted({ deleteTattooService }) {
+      history.push(`/partner/${userId}/salon/view`);
+    },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [updateAestheticsService] = useMutation(UPDATE_AESTHETICS_SERVICE_MUTATION, {
+    onCompleted({ updateAestheticsService }) {
+      history.push(`/partner/${userId}/salon/view`);
+  },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
+  const [deleteAestheticsService] = useMutation(DELETE_AESTHETICS_SERVICE_MUTATION, {
+    onCompleted({ deleteAestheticsService }) {
+      history.push(`/partner/${userId}/salon/view`);
+    },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
+    awaitRefetchQueries: true,
+  });
 
   switch (catValue) {
-    case "HairServiceType":
+    case t("category types", {returnObjects: true})["HairType"]:
       return(
         <ServiceForm 
           role={role} 
@@ -337,170 +452,98 @@ const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen,
       );   
     case t("category types", {returnObjects: true})["NailsType"]:
       return(
-        <Mutation
-          mutation={CREATE_NAILS_SERVICE_MUTATION}
-          onCompleted={data => {
-          console.log({ data });
-          //setSubmitting(false);
-          setOpen(true);
-          }}
-          // update={handleUpdateCache}
-          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
-          >
-          {(createNailsService, { loading, error }) => {
-          if (error) return <Error error={error} />;
-            return(
-              <ServiceForm role={role} serviceMutation={createNailsService} catType="nailsCategories" data_salon={data_salon} />
-            );
-          }}
-        </Mutation>
+        <ServiceForm 
+          role={role} 
+          updateMutation={updateNailsService} 
+          deleteMutation={deleteNailsService}
+          catType="nailsCategories" 
+          selectedService={selectedService} 
+          data_salon={data_salon}
+        />
       );          
     case t("category types", {returnObjects: true})["HairRemovalType"]:
       return(
-        <Mutation
-          mutation={CREATE_HAIR_REMOVAL_SERVICE_MUTATION}
-          onCompleted={data => {
-          console.log({ data });
-          //setSubmitting(false);
-          setOpen(true);
-          }}
-          // update={handleUpdateCache}
-          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
-          >
-          {(createHairRemovalService, { loading, error }) => {
-          if (error) return <Error error={error} />;
-            return(
-              <ServiceForm role={role} serviceMutation={createHairRemovalService} catType="hairRemovalCategories" data_salon={data_salon} />
-            );
-          }}
-        </Mutation>
+        <ServiceForm 
+          role={role} 
+          updateMutation={updateHairRemovalService} 
+          deleteMutation={deleteHairRemovalService}
+          catType="hairRemovalCategories" 
+          selectedService={selectedService} 
+          data_salon={data_salon}
+        />
       );          
     case t("category types", {returnObjects: true})["MakeupType"]:
       return(
-        <Mutation
-          mutation={CREATE_MAKEUP_SERVICE_MUTATION}
-          onCompleted={data => {
-          console.log({ data });
-          //setSubmitting(false);
-          setOpen(true);
-          }}
-          // update={handleUpdateCache}
-          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
-          >
-          {(createMakeupService, { loading, error }) => {
-          if (error) return <Error error={error} />;
-            return(
-              <ServiceForm role={role} serviceMutation={createMakeupService} catType="makeupCategories" data_salon={data_salon} />
-            );
-          }}
-        </Mutation>
+        <ServiceForm 
+          role={role} 
+          updateMutation={updateMakeupService} 
+          deleteMutation={deleteMakeupService}
+          catType="makeupCategories" 
+          selectedService={selectedService} 
+          data_salon={data_salon}
+        />
       );   
     case t("category types", {returnObjects: true})["MassageType"]:
       return(
-        <Mutation
-          mutation={CREATE_MASSAGE_SERVICE_MUTATION}
-          onCompleted={data => {
-          console.log({ data });
-          //setSubmitting(false);
-          setOpen(true);
-          }}
-          // update={handleUpdateCache}
-          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
-          >
-          {(createMassageService, { loading, error }) => {
-          if (error) return <Error error={error} />;
-            return(
-              <ServiceForm role={role} serviceMutation={createMassageService} catType="massageCategories" data_salon={data_salon} />
-            );
-          }}
-        </Mutation>
+        <ServiceForm 
+          role={role} 
+          updateMutation={updateMassageService} 
+          deleteMutation={deleteMassageService}
+          catType="massageCategories" 
+          selectedService={selectedService} 
+          data_salon={data_salon}
+        />
       );          
     case t("category types", {returnObjects: true})["EyebrowType"]:
       return(
-        <Mutation
-          mutation={CREATE_EYEBROW_SERVICE_MUTATION}
-          onCompleted={data => {
-          console.log({ data });
-          //setSubmitting(false);
-          setOpen(true);
-          }}
-          // update={handleUpdateCache}
-          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
-          >
-          {(createEyebrowService, { loading, error }) => {
-          if (error) return <Error error={error} />;
-            return(
-              <ServiceForm role={role} serviceMutation={createEyebrowService} catType="eyebrowCategories" data_salon={data_salon} />
-            );
-          }}
-        </Mutation>
+        <ServiceForm 
+          role={role} 
+          updateMutation={updateEyebrowService} 
+          deleteMutation={deleteEyebrowService}
+          catType="eyebrowCategories" 
+          selectedService={selectedService} 
+          data_salon={data_salon}
+        />
       );          
     case t("category types", {returnObjects: true})["CosmetologyType"]:
       return(
-        <Mutation
-          mutation={CREATE_COSMETOLOGY_SERVICE_MUTATION}
-          onCompleted={data => {
-          console.log({ data });
-          //setSubmitting(false);
-          setOpen(true);
-          }}
-          // update={handleUpdateCache}
-          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
-          >
-          {(createCosmetologyService, { loading, error }) => {
-          if (error) return <Error error={error} />;
-            return(
-              <ServiceForm role={role} serviceMutation={createCosmetologyService} catType="cosmetologyCategories" data_salon={data_salon} />
-            );
-          }}
-        </Mutation>
+        <ServiceForm 
+          role={role} 
+          updateMutation={updateCosmetologyService} 
+          deleteMutation={deleteCosmetologyService}
+          catType="cosmetologyCategories" 
+          selectedService={selectedService} 
+          data_salon={data_salon}
+        />
       );   
     case t("category types", {returnObjects: true})["TattooType"]:
       return(
-        <Mutation
-          mutation={CREATE_TATTOO_SERVICE_MUTATION}
-          onCompleted={data => {
-          console.log({ data });
-          //setSubmitting(false);
-          setOpen(true);
-          }}
-          // update={handleUpdateCache}
-          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
-          >
-          {(createTattooService, { loading, error }) => {
-          if (error) return <Error error={error} />;
-            return(
-              <ServiceForm role={role} serviceMutation={createTattooService} catType="tattooCategories" data_salon={data_salon} />
-            );
-          }}
-        </Mutation>
+        <ServiceForm 
+          role={role} 
+          updateMutation={updateTattooService} 
+          deleteMutation={deleteTattooService}
+          catType="tattooCategories" 
+          selectedService={selectedService} 
+          data_salon={data_salon}
+        />
       );          
     case t("category types", {returnObjects: true})["AestheticsType"]:
       return(
-        <Mutation
-          mutation={CREATE_AESTHETICS_SERVICE_MUTATION}
-          onCompleted={data => {
-          console.log({ data });
-          //setSubmitting(false);
-          setOpen(true);
-          }}
-          // update={handleUpdateCache}
-          refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
-          >
-          {(createAestheticsService, { loading, error }) => {
-          if (error) return <Error error={error} />;
-            return(
-              <ServiceForm role={role} serviceMutation={createAestheticsService} catType="aestheticsCategories" data_salon={data_salon} />
-            );
-          }}
-        </Mutation>
+        <ServiceForm 
+          role={role} 
+          updateMutation={updateAestheticsService} 
+          deleteMutation={deleteAestheticsService}
+          catType="aestheticsCategories" 
+          selectedService={selectedService} 
+          data_salon={data_salon}
+        />
       );                
     default:
       return null;
   }
 }
 
-const CreateService = ({classes}) => {
+const UpdateService = ({classes}) => {
   const currentUser = useContext(UserContext);
   if (!currentUser.salonSet[0]) {
     return <div> No salon added. Please add a salon</div>
@@ -515,8 +558,22 @@ const UpdateServiceForm = ({classes, currentUser}) => {
   const data_salon = currentUser.salonSet[0];
   const salonId = data_salon.id;
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
+  const hairService_set = data_salon.hairCategories.map(item => item.__typename);
+  const nailsService_set = data_salon.nailsCategories.map(item => item.__typename);
+  const hairRemovalService_set = data_salon.hairRemovalCategories.map(item => item.__typename);
+  const makeupService_set = data_salon.makeupCategories.map(item => item.__typename);
+  const massageService_set = data_salon.massageCategories.map(item => item.__typename);
+  const eyebrowService_set = data_salon.eyebrowCategories.map(item => item.__typename);
+  const cosmetologyService_set = data_salon.cosmetologyCategories.map(item => item.__typename);
+  const tattooService_set = data_salon.tattooCategories.map(item => item.__typename);
+  const aestheticsService_set = data_salon.aestheticsCategories.map(item => item.__typename);
+  
+  const _category_set = [].concat(hairService_set,nailsService_set,hairRemovalService_set,makeupService_set,
+                      massageService_set,eyebrowService_set,cosmetologyService_set,tattooService_set,aestheticsService_set);
+  // translate the array and filter unique/distinct elements of above categories array. The latter is [...new Set(original_array)]
+  const category_set = [...new Set(_category_set.map((key) => t("category types", {returnObjects: true})[key]))];
   const hairServices = data_salon.hairserviceSet
   const nailsServices = data_salon.nailsserviceSet
   const hairRemovalServices = data_salon.hairremovalserviceSet 
@@ -529,13 +586,8 @@ const UpdateServiceForm = ({classes, currentUser}) => {
   const services = [...hairServices, ...nailsServices, ...hairRemovalServices, ...makeupServices, ...massageServices,
                     ...eyebrowServices, ...cosmetologyServices, ...tattooServices, ...aestheticsServices]    
   
-  // translate the array and filter unique/distinct elements of above categories array. The latter is [...new Set(original_array)]
-  //const category_set = [...new Set(_category_set.map((key) => t("category types", {returnObjects: true})[key]))];
-  console.log('services', services);
-
   const [catValue, setCatValue] = useState("");
   const [selectedService, setSelectedService] = useState({});
-
   const [open, setOpen] = useState(false);
 
   // const handleUpdateCache = (cache, { data: { createTrack } }) => {
@@ -548,81 +600,82 @@ const UpdateServiceForm = ({classes, currentUser}) => {
     <div className={classes.container}>
       <Paper className={classes.paper}>
           <h3>{t("Update Service")}</h3>
-              <FormControl fullWidth className={classes.field}> 
+          <FormControl fullWidth className={classes.field}>
+            <Autocomplete
+              id="size-small-clearOnEsc"
+              disableClearable
+              size="small"
+              //getOptionLabel={option => t(`${option}`)}
+              options={category_set}
+              onChange={(event,value) => {
+                        setCatValue(value);
+              }}
+              renderInput={(params) => (
+                <TextField {...params} 
+                variant="outlined" 
+                label={t("Category")} 
+                placeholder={t("Select service category")}
+                />
+              )}
+            />
+            <FormHelperText>{t("Choose a category")}</FormHelperText>
+          </FormControl> 
+          {catValue &&               
+            (<FormControl fullWidth className={classes.field}> 
                 <Autocomplete
                   id="size-small-clearOnEsc"
                   disableClearable
                   size="small"
                   getOptionLabel={option => t(`${option}`)}
-                  options={services.map(service => t(`${service.title}`))}
-                  options={services.map(service => service.title)}
+                  options={services.filter(cat=>t("service types", {returnObjects: true})[cat.__typename]===catValue)
+                    .map(service=>service.title)}
                   onChange={(event,value) => {
-                            setCatValue(services.filter(item => item.title == value)[0].__typename);
-                            setSelectedService(services.filter(item => item.title == value)[0])
-                            console.log('selected cat', services.filter(item => item.title == value)[0].__typename)
+                            setSelectedService(services.filter(item => item.title === value)[0])
                   }}
                   renderInput={(params) => (
                     <TextField {...params} 
                     variant="outlined" 
-                    label={t("Category")} 
-                    placeholder={t("Select service category")}
+                    label={t("Service")} 
+                    placeholder={t("Select service")}
                     />
                   )}
                 />
                 <FormHelperText>{t("Choose a service")}</FormHelperText>
-              </FormControl>     
-              <CategoryServices 
-                role={currentUser.role}
-                data_salon={data_salon} 
-                catValue={catValue} 
-                selectedService={selectedService}
-                setOpen={setOpen} 
-                userId={userId}
-              />     
+              </FormControl>)}
+          {catValue && selectedService.title &&    
+            (<CategoryServices 
+              role={currentUser.role}
+              data_salon={data_salon} 
+              catValue={catValue} 
+              selectedService={selectedService}
+              setOpen={setOpen} 
+              userId={userId}
+            />)} 
       </Paper>
       <Dialog
-          open={open}
-          disableBackdropClick={true}
-          TransitionComponent={Transition}
-          >
-            <DialogTitle>
-              {t("Service successfully updated!")}
-            </DialogTitle>
-            <DialogActions>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => {
-                  setOpen(false);
-                }}
-              >
-                <Link to={`/partner/${userId}/salon/view`}>
-                  {t("Back to salon page")}
-                </Link>
-              </Button>
-            </DialogActions>
-        </Dialog>
+        open={open}
+        disableBackdropClick={true}
+        TransitionComponent={Transition}
+        >
+          <DialogTitle>
+            {t("Service successfully updated!")}
+          </DialogTitle>
+          <DialogActions>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              <Link to={`/partner/${userId}/salon/view`}>
+                {t("Back to salon page")}
+              </Link>
+            </Button>
+          </DialogActions>
+      </Dialog>
     </div>
   )};
-
-const CREATE_HAIR_SERVICE_MUTATION = gql`
-  mutation($serviceData:HairServiceInput!) {
-    createHairService(serviceData: $serviceData) {
-      hairService {
-          id
-        salon {
-          id
-          name
-        }
-        category {
-          id 
-          title
-        }
-      }
-    }
-  }
-`;
-
 
 const UPDATE_HAIR_SERVICE_MUTATION = gql`
   mutation($serviceData:HairServiceInput!,$serviceId:Int!) {
@@ -638,11 +691,11 @@ const UPDATE_HAIR_SERVICE_MUTATION = gql`
     }
   }
 `;
-
 const DELETE_HAIR_SERVICE_MUTATION = gql`
   mutation($serviceId:Int!) {
     deleteHairService(serviceId: $serviceId) {
       hairService {
+        id
         category {
           id 
           title
@@ -653,145 +706,233 @@ const DELETE_HAIR_SERVICE_MUTATION = gql`
   }
 `;
 
-const CREATE_NAILS_SERVICE_MUTATION = gql`
-  mutation($serviceData:NailsServiceInput!) {
-    createNailsService(serviceData: $serviceData) {
+const UPDATE_NAILS_SERVICE_MUTATION = gql`
+  mutation($serviceData:NailsServiceInput!,$serviceId:Int!) {
+    updateNailsService(serviceData: $serviceData, serviceId: $serviceId) {
       nailsService {
-          id
-        salon {
-          id
-          name
-        }
+        id
         category {
           id 
           title
         }
+        title
+      }
+    }
+  }
+`;
+const DELETE_NAILS_SERVICE_MUTATION = gql`
+  mutation($serviceId:Int!) {
+    deleteNailsService(serviceId: $serviceId) {
+      nailsService {
+        id
+        category {
+          id 
+          title
+        }
+        title
       }
     }
   }
 `;
 
-const CREATE_HAIR_REMOVAL_SERVICE_MUTATION = gql`
-  mutation($serviceData:HairRemovalServiceInput!) {
-    createHairRemovalService(serviceData: $serviceData) {
+const UPDATE_HAIR_REMOVAL_SERVICE_MUTATION = gql`
+  mutation($serviceData:HairRemovalServiceInput!,$serviceId:Int!) {
+    updateHairRemovalService(serviceData: $serviceData, serviceId: $serviceId) {
       hairRemovalService {
-          id
-        salon {
-          id
-          name
-        }
+        id
         category {
           id 
           title
         }
+        title
+      }
+    }
+  }
+`;
+const DELETE_HAIR_REMOVAL_SERVICE_MUTATION = gql`
+  mutation($serviceId:Int!) {
+    deleteHairRemovalService(serviceId: $serviceId) {
+      hairRemovalService {
+        id
+        category {
+          id 
+          title
+        }
+        title
       }
     }
   }
 `;
 
-const CREATE_MAKEUP_SERVICE_MUTATION = gql`
-  mutation($serviceData:MakeupServiceInput!) {
-    createMakeupService(serviceData: $serviceData) {
+const UPDATE_MAKEUP_SERVICE_MUTATION = gql`
+  mutation($serviceData:MakeupServiceInput!,$serviceId:Int!) {
+    updateMakeupService(serviceData: $serviceData, serviceId: $serviceId) {
       makeupService {
-          id
-        salon {
-          id
-          name
-        }
+        id
         category {
           id 
           title
         }
+        title
+      }
+    }
+  }
+`;
+const DELETE_MAKEUP_SERVICE_MUTATION = gql`
+  mutation($serviceId:Int!) {
+    deleteMakeupService(serviceId: $serviceId) {
+      makeupService {
+        id
+        category {
+          id 
+          title
+        }
+        title
       }
     }
   }
 `;
 
-const CREATE_MASSAGE_SERVICE_MUTATION = gql`
-  mutation($serviceData:MassageServiceInput!) {
-    createMassageService(serviceData: $serviceData) {
+const UPDATE_MASSAGE_SERVICE_MUTATION = gql`
+  mutation($serviceData:MassageServiceInput!,$serviceId:Int!) {
+    updateMassageService(serviceData: $serviceData, serviceId: $serviceId) {
       massageService {
-          id
-        salon {
-          id
-          name
-        }
+        id
         category {
           id 
           title
         }
+        title
+      }
+    }
+  }
+`;
+const DELETE_MASSAGE_SERVICE_MUTATION = gql`
+  mutation($serviceId:Int!) {
+    deleteMassageService(serviceId: $serviceId) {
+      massageService {
+        id
+        category {
+          id 
+          title
+        }
+        title
       }
     }
   }
 `;
 
-const CREATE_EYEBROW_SERVICE_MUTATION = gql`
-  mutation($serviceData:EyebrowServiceInput!) {
-    createEyebrowService(serviceData: $serviceData) {
+const UPDATE_EYEBROW_SERVICE_MUTATION = gql`
+  mutation($serviceData:EyebrowServiceInput!,$serviceId:Int!) {
+    updateEyebrowService(serviceData: $serviceData, serviceId: $serviceId) {
       eyebrowService {
-          id
-        salon {
-          id
-          name
-        }
+        id
         category {
           id 
           title
         }
+        title
+      }
+    }
+  }
+`;
+const DELETE_EYEBROW_SERVICE_MUTATION = gql`
+  mutation($serviceId:Int!) {
+    deleteEyebrowService(serviceId: $serviceId) {
+      eyebrowService {
+        id
+        category {
+          id 
+          title
+        }
+        title
       }
     }
   }
 `;
 
-const CREATE_COSMETOLOGY_SERVICE_MUTATION = gql`
-  mutation($serviceData:CosmetologyServiceInput!) {
-    createCosmetologyService(serviceData: $serviceData) {
+const UPDATE_COSMETOLOGY_SERVICE_MUTATION = gql`
+  mutation($serviceData:CosmetologyServiceInput!,$serviceId:Int!) {
+    updateCosmetologyService(serviceData: $serviceData, serviceId: $serviceId) {
       cosmetologyService {
-          id
-        salon {
-          id
-          name
-        }
+        id
         category {
           id 
           title
         }
+        title
+      }
+    }
+  }
+`;
+const DELETE_COSMETOLOGY_SERVICE_MUTATION = gql`
+  mutation($serviceId:Int!) {
+    deleteCosmetologyService(serviceId: $serviceId) {
+      cosmetologyService {
+        id
+        category {
+          id 
+          title
+        }
+        title
       }
     }
   }
 `;
 
-const CREATE_TATTOO_SERVICE_MUTATION = gql`
-  mutation($serviceData:TattooServiceInput!) {
-    createTattooService(serviceData: $serviceData) {
+const UPDATE_TATTOO_SERVICE_MUTATION = gql`
+  mutation($serviceData:TattooServiceInput!,$serviceId:Int!) {
+    updateTattooService(serviceData: $serviceData, serviceId: $serviceId) {
       tattooService {
-          id
-        salon {
-          id
-          name
-        }
+        id
         category {
           id 
           title
         }
+        title
+      }
+    }
+  }
+`;
+const DELETE_TATTOO_SERVICE_MUTATION = gql`
+  mutation($serviceId:Int!) {
+    deleteTattooService(serviceId: $serviceId) {
+      tattooService {
+        id
+        category {
+          id 
+          title
+        }
+        title
       }
     }
   }
 `;
 
-const CREATE_AESTHETICS_SERVICE_MUTATION = gql`
-  mutation($serviceData:AestheticsServiceInput!) {
-    createAestheticsService(serviceData: $serviceData) {
+const UPDATE_AESTHETICS_SERVICE_MUTATION = gql`
+  mutation($serviceData:AestheticsServiceInput!,$serviceId:Int!) {
+    updateAestheticsService(serviceData: $serviceData, serviceId: $serviceId) {
       aestheticsService {
-          id
-        salon {
-          id
-          name
-        }
+        id
         category {
           id 
           title
         }
+        title
+      }
+    }
+  }
+`;
+const DELETE_AESTHETICS_SERVICE_MUTATION = gql`
+  mutation($serviceId:Int!) {
+    deleteAestheticsService(serviceId: $serviceId) {
+      aestheticsService {
+        id
+        category {
+          id 
+          title
+        }
+        title
       }
     }
   }
@@ -900,5 +1041,5 @@ const formStyles = makeStyles(theme => ({
 }));
 
 
-export default withStyles(styles)(CreateService)
+export default withStyles(styles)(UpdateService)
   

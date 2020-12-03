@@ -15,6 +15,7 @@ import CreateReview from "components/Review/CreateReview";
 import CreateSalon from "components/Salon/CreateSalon";
 import Privacy from "pages/Privacy"
 import Contact from "pages/Contact"
+import Pricing from "pages/Pricing"
 
 import Navbar from "components/Partials/Navbar";
 import MainFooter from "components/Partials/MainFooter"
@@ -38,7 +39,7 @@ const App = () => (
         return <Error error = {error} />
       };
       if (!data.me) { window.location.reload() }
-      console.log('me query in index files',data);
+      //console.log('me query in index files',data);
       const currentUser = data.me;
       const {id} = currentUser;
 
@@ -60,17 +61,16 @@ const App = () => (
               <Route exact path="/partner/:id" component={Partner} /> 
               <Route exact path="/privacy" component={Privacy} />
               <Route exact path="/contact" component={Contact} />
+              <Route exact path="/pricing" component={Pricing} />
               {renderRoutes(routes)}
             </Switch>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
             <Hidden smDown implementation="css">
               <MainFooter currentUser={currentUser}/>
             </Hidden>
             <Hidden mdUp implementation="css">
+              <br/>
+              <br/>
+              <br/>  
               <FooterMenu currentUser={currentUser}/>
             </Hidden>
           </UserContext.Provider>
@@ -99,7 +99,7 @@ export const ME_QUERY = gql`
         name
         address
         email
-        phone        
+        phone
         isPublished
         isFeatured
         appointment

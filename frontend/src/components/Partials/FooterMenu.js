@@ -1,11 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, withRouter } from "react-router-dom";
-import { ApolloConsumer, Query } from "@apollo/react-components";
-import gql from "graphql-tag";
-import Loading from "../Shared/Loading";
-import Error from "../Shared/Error";
 
-import { useTranslation } from 'react-i18next';
 import classNames from "classnames";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from 'components/Partials/Button.js';
@@ -20,9 +15,7 @@ import IconButton from "@material-ui/core/IconButton";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 // @material-ui/icons
-import HomeIcon from '@material-ui/icons/Home';
 import style from "assets/jss/footerMenuStyle.js";
-import Signout from "../Auth/Signout";
 
 const useStyles = makeStyles(style);
 
@@ -33,7 +26,6 @@ const FooterMenu = (props) => {
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
-  console.log("searchOpen", searchOpen)
 
   const handleSearchOpen = () => {
     setSearchOpen(true);
@@ -42,8 +34,6 @@ const FooterMenu = (props) => {
   const handleSearchClose = () => {
     setSearchOpen(false);
   };
-
-  console.log(currentUser);
 
   if(props.location.pathname.match(/partner/)){
     return (null);
@@ -71,7 +61,7 @@ const FooterMenu = (props) => {
               onClick={e => e.preventDefault()}
             >
               <Link style={{color:"white"}} to="/">
-              <i class="fas fa-home"></i>
+              <i className="fas fa-home"></i>
               </Link>
               {/* 
                <HomeIcon fontSize="large" />
@@ -123,7 +113,7 @@ const FooterMenu = (props) => {
               simple
               onClick={handleSearchOpen}
             >
-              <i class="fas fa-search" ></i>
+              <i className="fas fa-search" ></i>
               {/* <Link style={{color:"white"}} to="/salon">
               <i class="fas fa-search" ></i>
               </Link> */}
@@ -167,7 +157,7 @@ const FooterMenu = (props) => {
               onClick={e => e.preventDefault()}
             >
               <Link style={{color:"white"}} to={`/profile/${currentUser.id}`}>
-              <i class="fas fa-user" ></i>
+              <i className="fas fa-user" ></i>
               </Link>
             </Button> )
             :(<div>
@@ -178,7 +168,7 @@ const FooterMenu = (props) => {
                 href="#pablo"
                 onClick={() => setOpen(true)} 
                 >
-                <i class="fas fa-user" ></i>
+                <i className="fas fa-user" ></i>
               </Button> 
               <Dialog
                 open={open}
@@ -198,7 +188,7 @@ const FooterMenu = (props) => {
               onClick={e => e.preventDefault()}
             >
               <Link style={{color:"white"}} to="/contact">
-              <i class="fas fa-envelope" ></i>
+              <i className="fas fa-envelope" ></i>
               </Link>
             </Button>
           </GridItem>

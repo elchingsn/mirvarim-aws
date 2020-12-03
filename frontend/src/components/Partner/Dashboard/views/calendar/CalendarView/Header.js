@@ -4,16 +4,14 @@ import { useTranslation } from 'react-i18next';
 import classNames from "classnames";
 import PropTypes from 'prop-types';
 import {
-  Button,
   Breadcrumbs,
   Grid,
   Link,
-  SvgIcon,
   Typography,
   makeStyles
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import ControlPointIcon from '@material-ui/icons/ControlPoint';
+//import ControlPointIcon from '@material-ui/icons/ControlPoint';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -30,7 +28,7 @@ const Header = ({
   //onAddClick,
   ...rest
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (

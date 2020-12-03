@@ -1,33 +1,24 @@
 import React, {useState, useContext, useRef} from "react";
-import {Link} from "react-router-dom";
 import classNames from "classnames";
 import { useHistory } from 'react-router-dom';
 
-import {Query, Mutation} from "@apollo/react-components";
-import { ApolloProvider, useQuery, useMutation } from "@apollo/react-hooks";
+import {Query} from "@apollo/react-components";
+//import { ApolloProvider, useQuery, useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from '@material-ui/core/Paper';
-import Dialog from '@material-ui/core/Dialog';
-import Box from '@material-ui/core/Box';
 
 import Divider from '@material-ui/core/Divider';
 
 import GridContainer from "components/Partials/GridContainer.js";
 import GridItem from "components/Partials/GridItem.js";
-import Button from "components/Partials/Button.js";
 
 import Loading from "components/Shared/Loading";
 import Error from "components/Shared/Error";
-import Auth from "components/Auth"
-
 
 import { UserContext, ME_QUERY } from "App";
-import {PROFILE_QUERY} from "pages/Profile";
 
 import styles from "assets/jss/salonDetailStyle.js";
-import ReviewList from "components/Partials/ReviewList.js";
 import CardFooter from "components/Partials/CardFooter.js";
 import ShowMoreText from "utils/truncate/ShowMoreText.js";
 import Accordion from "components/Partials/Accordion"
@@ -75,7 +66,6 @@ const ViewService=() => {
     const classes = useStyles();
     const currentUser = useContext(UserContext);
     const id = currentUser.salonSet[0].id;
-    console.log(currentUser)
     const history = useHistory();
 
     // const { isSticky, element } = Sticky()
@@ -116,7 +106,7 @@ const ViewService=() => {
                     {hairServices[0] && (
                       <Accordion title="Hair Services">
                         {hairServices.map(service => (
-                          <div>
+                          <div key={service.id}>
                           <Service 
                             title={service.title} 
                             duration={service.duration} 
@@ -130,7 +120,7 @@ const ViewService=() => {
                     {nailsServices[0] && (
                       <Accordion title="Nails Services">
                         {nailsServices.map(service => (
-                          <div>
+                          <div key={service.id}>
                           <Service 
                             title={service.title} 
                             duration={service.duration} 
@@ -144,7 +134,7 @@ const ViewService=() => {
                     {hairRemovalServices[0] && (
                       <Accordion title="Hair Removal Services">
                         {hairRemovalServices.map(service => (
-                          <div>
+                          <div key={service.id}>
                           <Service 
                             title={service.title} 
                             duration={service.duration} 
@@ -158,7 +148,7 @@ const ViewService=() => {
                     {makeupServices[0] && (
                       <Accordion title="Makeup Services">
                         {makeupServices.map(service => (
-                          <div>
+                          <div key={service.id}>
                           <Service 
                             title={service.title} 
                             duration={service.duration} 
@@ -172,7 +162,7 @@ const ViewService=() => {
                     {massageServices[0] && (
                       <Accordion title="Massage Services">
                         {massageServices.map(service => (
-                          <div>
+                          <div key={service.id}>
                           <Service 
                             title={service.title} 
                             duration={service.duration} 
@@ -293,31 +283,5 @@ query salon_review ($id:Int!, $first:Int, $skip:Int) {
 }
 `;
 
-const CREATE_LIKE = gql`
-  mutation($salonId: Int!) {
-    createLike(salonId: $salonId) {
-      like {
-        id
-        salon {
-          id
-          name
-        }
-        likedBy {
-          id
-          username
-          email
-        }
-      }
-    }
-  }
-`;
-
-const DELETE_LIKE = gql`
-  mutation($likeId: Int!) {
-    deleteLike(likeId: $likeId) {
-      likeId
-    }
-  }
-`;
 export default ViewService;
 

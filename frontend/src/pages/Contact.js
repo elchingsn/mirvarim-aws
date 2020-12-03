@@ -156,9 +156,9 @@ const Contact = ({classes}) => {
                 </p>
                 <Mutation
                   mutation={SEND_FEEDBACK}
-                  onCompleted={data => {
-                  console.log({ data });
-                  }}
+                  // onCompleted={data => {
+                  // console.log({ data });
+                  // }}
                 >
                   {(sendFeedback, { loading, error }) => {
                   if (error) return <Error error={error} />;

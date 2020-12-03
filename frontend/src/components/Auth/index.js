@@ -1,5 +1,5 @@
 import React, { useState, useContext} from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { UserContext } from "App.js"
 import withRoot from "../../withRoot";
@@ -11,12 +11,11 @@ import Register from "./Register";
 export default withRoot(( {setLoginOpen} ) => {
   const currentUser = useContext(UserContext);
   const history = useHistory();
-  console.log(currentUser)
   if (currentUser !== undefined) {
     if(window.location.pathname.includes('login')){
       history.push('/');
     } else if(window.location.pathname.includes('partner')) {
-      history.push(`/partner/${currentUser.id}`);
+      history.push(`/partner/${currentUser.id}/salon/view`);
     }
   } 
     

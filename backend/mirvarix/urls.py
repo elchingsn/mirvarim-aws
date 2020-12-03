@@ -30,8 +30,7 @@ urlpatterns = [
     # local apps
     # path('', include('pages.urls')),
     # path('salons/', include('salons.urls')),
-    # path('accounts/', include('users.urls')),
-
+    path('accounts/', include('users.urls')),
 ] 
 
 if settings.DEBUG:

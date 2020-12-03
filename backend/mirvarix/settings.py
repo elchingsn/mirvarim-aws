@@ -164,8 +164,8 @@ AUTH_USER_MODEL = 'users.CustomUser'
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
     'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
-    'JWT_EXPIRATION_DELTA': timedelta(minutes=60),
-    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),
+    'JWT_EXPIRATION_DELTA': timedelta(minutes=180),
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=14),
 
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",

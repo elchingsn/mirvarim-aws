@@ -4,9 +4,6 @@ import {
   mrAuto,
   title,
   description,
-  blackColor,
-  whiteColor,
-  hexToRgb
 } from "assets/jss/mirvarix-react.js";
 
 const features = {

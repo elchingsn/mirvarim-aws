@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Link} from "react-router-dom";
+// import {Link} from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { Trans } from 'react-i18next'
 
@@ -7,7 +7,7 @@ import { Trans } from 'react-i18next'
 import SearchSalons from "components/Partials/SearchSalons";
 import Listings from "components/Partials/Listings";
 
-import { ApolloConsumer, Query } from "@apollo/react-components";
+import { Query } from "@apollo/react-components";
 import gql from "graphql-tag";
 
 
@@ -15,23 +15,20 @@ import gql from "graphql-tag";
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles"; 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
+// import List from "@material-ui/core/List";
+// import ListItem from "@material-ui/core/ListItem";
 import Hidden from "@material-ui/core/Hidden";
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from "@material-ui/core/IconButton";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 // core components
-import Header from "../components/Partials/Header.js";
 // import HeaderLinks from "../components/Partials/HeaderLinks.js";
 import Parallax from "components/Partials/Parallax.js";
-import Footer from "components/Partials/Footer.js";
 import GridContainer from "components/Partials/GridContainer.js";
 import GridItem from "components/Partials/GridItem.js";
 import Button from "components/Partials/Button.js";
 import Card from "components/Partials/Card.js";
 import CardBody from "components/Partials/CardBody.js";
-import CustomInput from "components/Partials/CustomInput.js";
 import Features from "components/Partials/Features.js"
 // sections for this page
 
@@ -41,7 +38,7 @@ import presentationStyle from "assets/jss/presentationStyle.js";
 const useStyles = makeStyles(presentationStyle);
 
 export default function Home() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [searchResults, setSearchResults] = useState([]);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -98,7 +95,7 @@ export default function Home() {
         </Card>
         </Dialog>
         <Parallax
-            image={`${smallViewSize ? require("assets/img/home_parallax.jpeg") : require("assets/img/p_home2.jpg")}`}
+            image={`${smallViewSize ? require("assets/img/home_parallax.jpeg").default : require("assets/img/p_home2.jpg").default}`}
             className={classes.parallax}
         >
             <div className={classes.container}>
@@ -153,7 +150,7 @@ export default function Home() {
                   round
                   onClick={handleSearchOpen}
                 >
-                  <i class="fas fa-search" > {t("Search salon or service")}</i>
+                  <i className="fas fa-search" > {t("Search salon or service")}</i>
                 </Button>
                 </Hidden>
                 </div>
@@ -183,10 +180,9 @@ export default function Home() {
                 {({ data, loading, error }) => {
                   if (loading) return <div>Loading</div>;
                   if (error) return <div>Error</div>;
-                  const publishedSalons = data.salons.filter(el => el.isPublished == true)
-                  const featuredSalons = publishedSalons.filter(el => el.isFeatured == true)
-                  console.log('salon list', data.salons);
-                  console.log('featured salons', featuredSalons);
+                  const publishedSalons = data.salons.filter(el => el.isPublished === true)
+                  const featuredSalons = publishedSalons.filter(el => el.isFeatured === true)
+
                   return (
                     <div>
                     <h3 className={classes.title1}>{t("Featured Salons")}</h3> 
@@ -199,9 +195,9 @@ export default function Home() {
                 {({ data, loading, error }) => {
                   if (loading) return <div>Loading</div>;
                   if (error) return <div>Error</div>;
-                  const publishedSalons = data.salons.filter(el => el.isPublished == true)
+                  const publishedSalons = data.salons.filter(el => el.isPublished === true)
                   const latestSalons = publishedSalons.slice().sort((a,b) => new Date(b.listDate)-new Date(a.listDate)).slice(0,4)
-                  console.log(data.salons.slice().sort((a,b) => new Date(b.listDate)-new Date(a.listDate)))
+                  //console.log(data.salons.slice().sort((a,b) => new Date(b.listDate)-new Date(a.listDate)))
                   return (
                     <div>
                     <h3 className={classes.title1}>{t("Latest Salons")}</h3> 
@@ -231,7 +227,7 @@ export default function Home() {
       </div>
     </div>
     );
-};
+}
 
 const SALON_QUERY = gql`
 {
@@ -247,6 +243,7 @@ const SALON_QUERY = gql`
         payment
         appointment
         reviewSet{
+          id
           rating
         }
         isFeatured

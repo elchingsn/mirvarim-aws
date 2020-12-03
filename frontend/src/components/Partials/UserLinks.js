@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { withRouter } from 'react-router-dom';
-import { ApolloConsumer, Query } from "@apollo/react-components";
-import gql from "graphql-tag";
+import React, { useState } from "react";
+// import { withRouter } from 'react-router-dom';
+// import { ApolloConsumer, Query } from "@apollo/react-components";
+// import gql from "graphql-tag";
 import { useTranslation } from 'react-i18next';
-import Loading from "../Shared/Loading";
-import Error from "../Shared/Error";
+// import Loading from "../Shared/Loading";
+// import Error from "../Shared/Error";
 import Auth from "../Auth";
 
 import PropTypes from "prop-types";
@@ -13,7 +13,6 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import Typography from "@material-ui/core/Typography";
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -23,10 +22,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import Icon from "@material-ui/core/Icon";
-
-import HoverDropdown from "../../components/Partials/HoverDropdown";
-import CreateSalon from "../../components/Salon/CreateSalon.js";
 
 import { Link } from "react-router-dom";
 import Signout from "../Auth/Signout";
@@ -77,7 +72,7 @@ export default function UserLinks(props) {
     };
     animateScroll();
   };
-  var onClickSections = {};
+  //var onClickSections = {};
 
   const { t, i18n } = useTranslation();
 
@@ -126,13 +121,13 @@ export default function UserLinks(props) {
                   label="flag"
                 >
                   <MenuItem value="aze">
-                    <img src={aze_flag} style={{width: 30, height: 30}}/>
+                    <img alt="az" src={aze_flag} style={{width: 30, height: 30}}/>
                   </MenuItem>
                   <MenuItem value="ru">
-                    <img src={ru_flag} style={{width: 30, height: 30}}/>
+                    <img alt="ru" src={ru_flag} style={{width: 30, height: 30}}/>
                   </MenuItem>
                   <MenuItem value="en">
-                    <img src={en_flag} style={{width: 30, height: 30}}/>
+                    <img alt="en" src={en_flag} style={{width: 30, height: 30}}/>
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -191,13 +186,13 @@ export default function UserLinks(props) {
                   label="flag"
                 >
                   <MenuItem value="aze">
-                    <img src={aze_flag} style={{width: 30, height: 30}}/>
+                    <img alt="az" src={aze_flag} style={{width: 30, height: 30}}/>
                   </MenuItem>
                   <MenuItem value="ru">
-                    <img src={ru_flag} style={{width: 30, height: 30}}/>
+                    <img alt="ru" src={ru_flag} style={{width: 30, height: 30}}/>
                   </MenuItem>
                   <MenuItem value="en">
-                    <img src={en_flag} style={{width: 30, height: 30}}/>
+                    <img alt="en" src={en_flag} style={{width: 30, height: 30}}/>
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -246,67 +241,6 @@ export default function UserLinks(props) {
       </div>
   );
 }
-
-
-const HAIR_QUERY = gql`
-{
-    hairCat{
-        id
-        title
-        salonSet{
-          name
-        }
-      }
-}
-`;
-
-const NAILS_QUERY = gql`
-{
-    nailsCat{
-        id
-        title
-        salonSet{
-          name
-        }
-      }
-}
-`;
-
-const HAIR_REMOVAL_QUERY = gql`
-{
-    hairRemovalCat{
-        id
-        title
-        salonSet{
-          name
-        }
-      }
-}
-`;
-
-const MAKEUP_QUERY = gql`
-{
-    makeupCat{
-        id
-        title
-        salonSet{
-          name
-        }
-      }
-}
-`;
-
-const MASSAGE_QUERY = gql`
-{
-    massageCat{
-        id
-        title
-        salonSet{
-          name
-        }
-      }
-}
-`;
 
 UserLinks.defaultProps = {
   hoverColor: "primary"

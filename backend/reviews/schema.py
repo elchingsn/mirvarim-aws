@@ -107,6 +107,24 @@ class CreateVote(graphene.Mutation):
         vote.save()
         return CreateVote(vote=vote)
 
+class DeleteVote(graphene.Mutation):
+    vote_id = graphene.Int()
+
+    class Arguments:
+        vote_id = graphene.Int(required=True)
+    
+    @staticmethod
+    def mutate(root,info,vote_id):
+        user = info.context.user
+        vote = Vote.objects.get(id=vote_id)
+
+        if vote.voted_by != user:
+            raise GraphQLError('Not permitted to delete this vote.')
+
+        vote.delete()
+
+        return DeleteVote(vote_id=vote_id)
+
 class CreateLike(graphene.Mutation):
     like = graphene.Field(LikeType)
 
@@ -170,6 +188,7 @@ class SendFeedback(graphene.Mutation):
 class ReviewMutation(graphene.ObjectType):
     create_review = CreateReview.Field() 
     create_vote = CreateVote.Field() 
+    delete_vote = DeleteVote.Field()
     create_like = CreateLike.Field() 
     delete_like = DeleteLike.Field() 
     send_feedback = SendFeedback.Field()

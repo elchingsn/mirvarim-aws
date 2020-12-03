@@ -1,28 +1,23 @@
 import React, { useState, useRef, useEffect } from "react";
 import {Link} from "react-router-dom";
-import { ApolloConsumer, useApolloClient, useQuery } from "@apollo/react-hooks";
+import { ApolloConsumer, useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import { useTranslation } from 'react-i18next';
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from "@material-ui/core/styles"; 
-// import withStyles from "@material-ui/core/styles/withStyles";
 import TextField from "@material-ui/core/TextField";
-// import Paper from "@material-ui/core/Paper";
-import ClearIcon from "@material-ui/icons/Clear";
-import IconButton from "@material-ui/core/IconButton";
-import SearchIcon from "@material-ui/icons/Search";
+//import SearchIcon from "@material-ui/icons/Search";
 
-import GridContainer from "./GridContainer.js";
-import GridItem from "./GridItem.js";     
-import Button from "./Button.js"
-import CustomInput from "./CustomInput.js"; 
+import GridContainer from "components/Partials/GridContainer.js";
+import GridItem from "components/Partials/GridItem.js";     
+import Button from "components/Partials/Button.js"
 
-import presentationStyle from "../../assets/jss/presentationStyle.js";
+import presentationStyle from "assets/jss/presentationStyle.js";
 const useStyles = makeStyles(presentationStyle);
 
 const SearchSalons = ({state, setSearchOpen}) =>{
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const classes = useStyles();
     //needed to pass search field values from home page to search component of salon page
     // const [search, setSearch] = useState(state["search"]);
@@ -35,7 +30,7 @@ const SearchSalons = ({state, setSearchOpen}) =>{
     const [searchOptions, setSearchOptions] = useState([]);
     const [locationOptions, setLocationOptions] = useState([]);
     const [salonId, setSalonId] = useState("0");
-    const inputEl = useRef();
+    // const inputEl = useRef();
     // state from footer panel
 
     useEffect(() => {
@@ -60,7 +55,6 @@ const SearchSalons = ({state, setSearchOpen}) =>{
     //         variables: {search}
     //     });
     //     client.writeData({data: {search: {search}}});
-    //     console.log('search salons', submitResults.data.salons);
     //     setSearchResults(submitResults.data.salons);
     //     };
 
@@ -75,7 +69,6 @@ const SearchSalons = ({state, setSearchOpen}) =>{
 
     //const { data: data_salon } = useQuery(SEARCH_SALONS_QUERY, {variables: {search}});
     const { data: data_salon } = useQuery(SEARCH_SALONS_QUERY);
-    console.log(data_salon);
     const { data: data_area } = useQuery(AREA_QUERY, {variables: {location}});
     let options1 = [];
     let options2 = [];
@@ -97,9 +90,8 @@ const SearchSalons = ({state, setSearchOpen}) =>{
           const aestheticsService_set = data_salon.salons.map(el => (el.aestheticsCategories.map(item => item.title))).flat(1);
           const search_set = [].concat(salon_set,hairService_set,nailsService_set,hairRemovalService_set,makeupService_set,
                               massageService_set,eyebrowService_set,cosmetologyService_set,tattooService_set,aestheticsService_set);
-          if (search) { options1 = search_set.filter(el => t(el).toLowerCase().includes(search.toLowerCase()))};
-          console.log(search);
-          console.log(searchOptions);
+          if (search) { options1 = search_set.filter(el => t(el).toLowerCase().includes(search.toLowerCase()))}
+
           // when search field is cleared no drop down option will be visible
           search ? setSearchOptions(options1) : setSearchOptions([]);
           if (salon_set.includes(search)) 
@@ -114,8 +106,8 @@ const SearchSalons = ({state, setSearchOpen}) =>{
           if (cosmetologyService_set.includes(search)) {setCatValue("Cosmetology")}
           if (tattooService_set.includes(search)) {setCatValue("Tattoo")}
           if (aestheticsService_set.includes(search)) {setCatValue("Aesthetics")}
-        };
-    }, [search]);
+        }
+    }, [search])
 
     useEffect(() => {   
       if (data_area) { 
@@ -124,7 +116,7 @@ const SearchSalons = ({state, setSearchOpen}) =>{
           }
           location ? setLocationOptions(options2) : setLocationOptions([]);
           console.log(options2)
-      };
+      }
     }, [location]);
 
 
@@ -159,25 +151,7 @@ const SearchSalons = ({state, setSearchOpen}) =>{
                 >
                     <GridContainer>
                     <GridItem xs={12} sm={6} md={6}>
-                        {/* <CustomInput
-                        id="name"
-                        inputProps={{
-                            placeholder: "Find service or salon"
-                        }}
-                        formControlProps={{
-                            fullWidth: true,
-                            className: classes.formControl
-                        }} 
-                        onChange={event => {
-                            console.log(event.target.value);
-                            return (
-                                setSearch(event.target.value)
-                            )
-                        }}
-                        value={search}
-                        inputRef={inputEl}
-                        /> */}
-                        <Autocomplete
+                      <Autocomplete
                         id="search"
                         freeSolo
                         size="small"
@@ -248,11 +222,6 @@ const SearchSalons = ({state, setSearchOpen}) =>{
                           color="primary"
                           className={classes.button}
                           type = "submit"
-                          // onClick={event=>
-                          //   {
-                          //   handleSubmit(event,client);
-                          //   window.location.href="/salon";
-                          // }}
                           onClick={()=>setSearchOpen(false)}
                           >
                             {t("Search")}
@@ -356,49 +325,11 @@ const AREA_QUERY = gql`
           id
           title
           salonSet{
+            id
             name
           }
         }
   }
   `;
 
-
 export default SearchSalons; 
-
- // return (
-    //     <ApolloConsumer>
-    //         {client => (
-    //             <form onSubmit={event => handleSubmit(event, client)}>
-    //             <Paper className={classes.root} elevation={1}>
-    //                 <IconButton onClick={clearSearchInput}>
-    //                 <ClearIcon />
-    //                 </IconButton>
-    //                 <TextField
-    //                 fullWidth
-    //                 placeholder="Search All Salons"
-    //                 InputProps={{
-    //                     disableUnderline: true
-    //                 }}
-    //                 onChange={event => setSearch(event.target.value)}
-    //                 value={search}
-    //                 inputRef={inputEl}
-    //                 />
-    //                 <IconButton type="submit">
-    //                 <SearchIcon />
-    //                 </IconButton>
-    //             </Paper>
-    //             </form>
-    //         )}
-    //     </ApolloConsumer>
-    // );
-
-    // const styles = theme => ({
-//     root: {
-//       padding: "2px 4px",
-//       margin: theme.spacing.unit,
-//       display: "flex",
-//       alignItems: "center"
-//     }
-//   });
-  
-//   export default withStyles(styles)(SearchSalons);

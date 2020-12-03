@@ -1,6 +1,7 @@
 import React from "react";
-import { ApolloConsumer, useQuery } from "@apollo/react-hooks";
+import { ApolloConsumer } from "@apollo/react-hooks";
 import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 
 import withStyles from "@material-ui/core/styles/withStyles";
 import ExitToApp from "@material-ui/icons/ExitToApp";
@@ -11,7 +12,6 @@ export const handleSignout = client => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       client.writeData({ data: { isLoggedIn: false } });
-      // console.log("Signed out user", client);
       //client.clearStore()
 };
 
@@ -44,5 +44,9 @@ const styles = {
     marginLeft: "5px"
   }
 };
+
+Signout.propTypes = {
+  classes: PropTypes.object
+}
 
 export default withStyles(styles)(Signout);

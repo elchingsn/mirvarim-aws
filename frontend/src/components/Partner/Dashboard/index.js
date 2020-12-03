@@ -1,18 +1,10 @@
-import React, {
-  Suspense,
-  Fragment,
-  lazy,
-  useContext,
-  useState
-} from 'react';
+import React, { useState } from 'react';
 import { Query } from "@apollo/react-components";
-import {
-  Switch,
-  Redirect,
-  Route
-} from 'react-router-dom';
-import Dashboard from 'components/Partner/Dashboard';
-import LoadingScreen from 'components/Partials/LoadingScreen';
+// import {
+//   Switch,
+//   Redirect,
+//   Route
+// } from 'react-router-dom';
 
 import PropTypes from 'prop-types'; 
 import { makeStyles } from '@material-ui/core';
@@ -62,9 +54,8 @@ const DashboardLayout = ({ children }) => {
         if (loading) return <Loading />;
         if (error) {
           return <Error error = {error} />
-        };
+        }
         const currentUser = data.me;
-        console.log("inside Dashboard")
 
         return (
           <div className={classes.root}>

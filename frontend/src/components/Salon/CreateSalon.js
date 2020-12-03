@@ -5,20 +5,14 @@ import { Query } from "@apollo/react-components";
 import { useMutation } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
 import gql from "graphql-tag";
-import axios from "axios";
-import Cookies from 'js-cookie';
 import { useTranslation } from 'react-i18next';
 
 import Box from "@material-ui/core/Box";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
 import FormControl from "@material-ui/core/FormControl";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -26,10 +20,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
-import Gavel from "@material-ui/icons/Gavel";
-import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
 import FormHelperText from '@material-ui/core/FormHelperText';
-import NativeSelect from '@material-ui/core/NativeSelect';
+//import NativeSelect from '@material-ui/core/NativeSelect';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import InputMask from 'react-input-mask';
 
@@ -46,7 +38,7 @@ function Transition(props) {
 }
 
 const CreateSalon = ({classes}) => {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const currentUser = useContext(UserContext);
     if (currentUser.salonSet[0]) {
         return (
@@ -55,13 +47,13 @@ const CreateSalon = ({classes}) => {
           </div>
         ) 
     } else {
-      return <AddSalonForm classes={classes} />
+      return <AddSalonForm classes={classes} currentUser={currentUser} />
     }
 }
 
-const AddSalonForm = ({ classes }) => {
+const AddSalonForm = ({ classes, currentUser }) => {
     const history = useHistory();
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     const [name, setName] = useState("");
     const [address, setAddress] = useState("");
@@ -105,12 +97,11 @@ const AddSalonForm = ({ classes }) => {
 
     //const [addMaster, { data: master_data }] = useMutation(ADD_MASTER_MUTATION);
 
-    const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
+    //const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
 
     const [uploadImg] = useMutation(FILE_MUTATION);
 
     const handlePhotoMainChange = event => {
-      console.log(event.target.files);
       const selectedFile = event.target.files[0];
       const fileSizeLimit = 5000000; // 5mb
       if (selectedFile && selectedFile.size > fileSizeLimit) {
@@ -216,12 +207,12 @@ const AddSalonForm = ({ classes }) => {
         if (photo) {uploadedUrl[i] = await handleImageUpload(photo)}
       }
 
-      console.log( name, address, cityId, areaId, description, priceRange, masters, hairCategories, nailsCategories,
-        hairRemovalCategories, makeupCategories, massageCategories, eyebrowCategories, cosmetologyCategories,
-        tattooCategories, aestheticsCategories,
-        male, female, email, phone, uploadedUrl[0],
-        uploadedUrl[1], uploadedUrl[2], uploadedUrl[3],
-        uploadedUrl[4], uploadedUrl[5], uploadedUrl[6] );
+      // console.log( name, address, cityId, areaId, description, priceRange, masters, hairCategories, nailsCategories,
+      //   hairRemovalCategories, makeupCategories, massageCategories, eyebrowCategories, cosmetologyCategories,
+      //   tattooCategories, aestheticsCategories,
+      //   male, female, email, phone, uploadedUrl[0],
+      //   uploadedUrl[1], uploadedUrl[2], uploadedUrl[3],
+      //   uploadedUrl[4], uploadedUrl[5], uploadedUrl[6] );
       createSalon({variables: {
                    salonData: {
                       name, address, cityId, areaId, description, priceRange, masters, hairCategories, nailsCategories, 
@@ -232,9 +223,8 @@ const AddSalonForm = ({ classes }) => {
                   }}}).catch(err => {
                     console.error(err);
                     history.push('/login'); 
-                  });;
+                  });
       // if (currentUser.role == "A_2") {
-      //   console.log("adding master");
       //   addMaster({variables: { masterData: {} }}).catch(err => {
       //     console.error(err);
       //     history.push('/login');
@@ -295,7 +285,7 @@ const AddSalonForm = ({ classes }) => {
                                           options={categories}
                                           onChange={(event,value) => {
                                             // it returns the id of the selected city in the City model
-                                            setCityId(data.city.filter(item => item.title == value)[0].id); 
+                                            setCityId(data.city.filter(item => item.title === value)[0].id); 
                                           }}
                                           renderInput={(params) => (
                                             <TextField {...params} 
@@ -315,7 +305,6 @@ const AddSalonForm = ({ classes }) => {
                                 {({data, loading, error}) => {
                                   if (loading) return <Loading />;
                                   if (error) return <Error error={error} />;
-                                  console.log('area', data);
                                   const categories = data.area.filter(item => item.city.id == cityId).map(item => item.title); 
                                 
                                 return  <Autocomplete
@@ -328,7 +317,7 @@ const AddSalonForm = ({ classes }) => {
                                           onChange={(event,value) => {
                                             //it returns nested city instance data->city->id,title
                                             // setArea({...data, area: data.area.filter(item => item.title == value)});
-                                            setAreaId(data.area.filter(item => item.title == value)[0].id); 
+                                            setAreaId(data.area.filter(item => item.title === value)[0].id); 
                                           }}
                                           renderInput={(params) => (
                                             <TextField {...params} 
@@ -379,7 +368,7 @@ const AddSalonForm = ({ classes }) => {
                       value={priceRange}
                       onChange={event => {
                         setPriceRange(parseInt(event.target.value));
-                        console.log(priceRange);}}
+                      }}
                       name="priceRange"
                       className={classes.selectEmpty}
                       inputProps={{ 'aria-label': 'priceRange' }}
@@ -413,8 +402,8 @@ const AddSalonForm = ({ classes }) => {
                                 renderInput={(params) => (
                                   <TextField {...params} 
                                   variant="outlined" 
-                                  label={t("Haircut categories")} 
-                                  placeholder={t("More haircut")}
+                                  label={t("Hair categories")} 
+                                  placeholder={t("More hair")}
                                   />
                                 )}
                               />;
@@ -859,7 +848,7 @@ const AddSalonForm = ({ classes }) => {
                   setOpen(false);
                 }}
               >
-                <Link to="/">
+                <Link to={`/partner/${currentUser.id}/salon/view`}>
                   {t("Return to the main page.")}
                 </Link>
               </Button>
@@ -912,6 +901,7 @@ const AREA_QUERY = gql`
           title
         }
         salonSet{
+          id
           name
         }
       }

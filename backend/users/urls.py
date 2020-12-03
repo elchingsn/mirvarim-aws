@@ -1,9 +1,9 @@
-# from django.urls import path
+from django.urls import path
+from .views import DataDeletionView
+from django.views.decorators.csrf import csrf_exempt
 
-# from .views import SignupPageView
+urlpatterns = [
 
-# urlpatterns = [
+    path('deauthentication/',csrf_exempt(DataDeletionView.as_view()), name= 'deauthentication'),
 
-#     path('signup/',SignupPageView.as_view(), name= 'signup'),
-
-# ]
+]

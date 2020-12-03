@@ -19,9 +19,11 @@ class CustomUser(AbstractUser):
 
     email = models.EmailField(max_length=254, unique=True)
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, default=1)
+    key = models.CharField(max_length=50,null=True,blank=True)
 
     EMAIL_FIELD = 'email'
     ROLE_FIELD = 'role' 
+    KEY_FIELD = 'key'
   
 
   

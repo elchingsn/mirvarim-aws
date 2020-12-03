@@ -1,17 +1,15 @@
 import React, {useState, useEffect} from "react";
 import { Query } from "@apollo/react-components";
 import { useTranslation } from 'react-i18next';
-import { ApolloConsumer, useApolloClient, useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import Loading from "../Shared/Loading";
 import Error from "../Shared/Error";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // plugin that creates slider
-import Slider from "nouislider";
+//import Slider from "nouislider";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles"; 
-import Container from '@material-ui/core/Container';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -28,35 +26,30 @@ import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
 import Drawer from "@material-ui/core/Drawer";
 // @material-ui icons
-import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import Cached from "@material-ui/icons/Cached";
-import Subject from "@material-ui/icons/Subject";
 import Check from "@material-ui/icons/Check";
-import FilterListIcon from '@material-ui/icons/FilterList';
+//import FilterListIcon from '@material-ui/icons/FilterList';
 import Close from "@material-ui/icons/Close";
 
 // core components
-import FilterListings from "./FilterListings";
-import Accordion from "./Accordion.js";
-import GridContainer from "./GridContainer.js";
-import GridItem from "./GridItem.js";
-import Card from "./Card.js";
-import CardHeader from "./CardHeader.js";
-import CardBody from "./CardBody.js";
-import CardFooter from "./CardFooter.js";
-import Button from "./Button.js";
-import Clearfix from "./Clearfix.js";
+import FilterListings from "components/Partials/FilterListings";
+//import Accordion from "./Accordion.js";
+import GridContainer from "components/Partials/GridContainer.js";
+import GridItem from "components/Partials/GridItem.js";
+import Card from "components/Partials/Card.js";
+import CardBody from "components/Partials/CardBody.js";
+import Button from "components/Partials/Button.js";
+import Clearfix from "components/Partials/Clearfix.js";
 
-import styles from "../../assets/jss/filterStyle.js";
-import { node } from "prop-types";
+import styles from "assets/jss/filterStyle.js";
 
 const useStyles = makeStyles(styles);
 
 export default function Filter({initCatValue, initCheckedCat, initServiceValue, initAreaValue}) {
   
-  console.log('filter', initCatValue, initCheckedCat, initServiceValue, initAreaValue)
+  //console.log('filter', initCatValue, initCheckedCat, initServiceValue, initAreaValue)
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [booking, setBooking] = useState(false);
   const [onlysalons, setOnlysalons] = useState(false);
@@ -74,23 +67,18 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   
   const [areaSelected, setAreaSelected] = useState(0);
   // const [hairSelected, setHairSelected] = useState(0);
-  // const [nailsSelected, setNailsSelected] = useState(0);
-  // const [hairRemovalSelected, setHairRemovalSelected] = useState(0);
-  // const [makeupSelected, setMakeupSelected] = useState(0);
-  // const [massageSelected, setMassageSelected] = useState(0);
 
   const [areaTitle, setAreaTitle] = useState("Area");
   // const [hairTitle, setHairTitle] = useState("Hair Services");
-  // const [nailsTitle, setNailsTitle] = useState("Nails Services");
 
   const [catValue, setCatValue] = useState(initCatValue);
   const [catDisplay, setCatDisplay] = useState(true);
   const [checkedCat, setCheckedCat] = useState(initCheckedCat);
-  const [serviceValue, setServiceValue] = useState(initServiceValue);
+  //const [serviceValue, setServiceValue] = useState(initServiceValue);
 
   const [resultsnum, setResultsnum] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [salonsPerPage, setSalonsPerPage] = useState(3);
+  const [salonsPerPage, setSalonsPerPage] = useState(5);
   const [count, setCount] = useState(1);
   const indexOfLastSalon = currentPage * salonsPerPage;
   const indexOfFirstSalon = indexOfLastSalon - salonsPerPage;
@@ -100,16 +88,15 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   // const { data:nails_data } = useQuery(NAILS_QUERY);
 
   useEffect(() => {
-    if(initCatValue) {setCatDisplay(false)};
-    if(initAreaValue) {setArea(initAreaValue.split())};
+    if(initCatValue) {setCatDisplay(false)}
+    if(initAreaValue) {setArea(initAreaValue.split())}
   },[])
   
   useEffect(() => {
     (areaSelected)? setAreaTitle(`Area (${areaSelected} selected)`) : setAreaTitle("Area");
-  }, [areaSelected]);
+  }, [areaSelected])
 
   useEffect(() => {
-    console.log('component did update')
     setHair([]);
     setNails([]);
     setHairRemoval([]);
@@ -121,7 +108,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
     setAesthetics([]);      
     setCatValue(t(initCatValue));
     setCheckedCat(initCheckedCat);
-    if(initCatValue) { setTimeout(() => setCatDisplay(false), 1000) };
+    if(initCatValue) { setTimeout(() => setCatDisplay(false), 1000) }
     setCurrentPage(1);
   }, [initCatValue, initCheckedCat])
 
@@ -147,25 +134,6 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
     setCurrentPage(value)
   } 
   
-  // const [priceRange, setPriceRange] = React.useState([101, 790]);
-  // React.useEffect(() => {
-  //   if (
-  //     !document
-  //       .getElementById("sliderRegular")
-  //       .classList.contains("noUi-target")
-  //   ) {
-  //     Slider.create(document.getElementById("sliderRegular"), {
-  //       start: priceRange,
-  //       connect: true,
-  //       range: { min: 30, max: 900 },
-  //       step: 1
-  //     }).on("update", function(values) {
-  //       setPriceRange([Math.round(values[0]), Math.round(values[1])]);
-  //     });
-  //   }
-  //   return function cleanup() {};
-  // });
-
   // const {data} = useQuery(FILTERED_SALONS_QUERY, {variables:{area, hair, nails}}, { fetchPolicy: 'network-only' });
     
   const handleCatToggle = value => {
@@ -177,7 +145,6 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
       newCheckedCat.splice(currentIndex, 1);
     }
     setCheckedCat(newCheckedCat);
-    console.log('checked cat', checkedCat);
     setCurrentPage(1);
   };
 
@@ -197,10 +164,11 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                 if (error) return <Error error={error} />;
                 const categories = data.hairCat.map(item => item.title);
                 if (checkedCat.length) {setHair(checkedCat)}
-                else if (hair.length != categories.length) {setHair(categories)}
+                else if (hair.length !== categories.length) {setHair(categories)}
                 return(
                 categories.map(node => (
                   <FormControlLabel
+                    key={node}
                     control={
                     <Checkbox
                       onClick={() => handleCatToggle(node)}
@@ -241,10 +209,11 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                   if (error) return <Error error={error} />;
                   const categories = data.nailsCat.map(item => item.title);
                   if (checkedCat.length) {setNails(checkedCat)}
-                  else if (nails.length != categories.length) {setNails(categories)}
+                  else if (nails.length !== categories.length) {setNails(categories)}
                   return(
                   categories.map(node => (
                     <FormControlLabel
+                      key={node}
                       control={
                       <Checkbox
                         onClick={() => handleCatToggle(node)}
@@ -285,10 +254,11 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                 if (error) return <Error error={error} />;
                 const categories = data.hairRemovalCat.map(item => item.title);
                 if (checkedCat.length) {setHairRemoval(checkedCat)}
-                else if (hairRemoval.length != categories.length) {setHairRemoval(categories)}
+                else if (hairRemoval.length !== categories.length) {setHairRemoval(categories)}
                 return(
                 categories.map(node => (
                   <FormControlLabel
+                    key={node}
                     control={
                     <Checkbox
                       onClick={() => handleCatToggle(node)}
@@ -329,10 +299,11 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                 if (error) return <Error error={error} />;
                 const categories = data.makeupCat.map(item => item.title);
                 if (checkedCat.length) {setMakeup(checkedCat)}
-                else if (makeup.length != categories.length) {setMakeup(categories)}
+                else if (makeup.length !== categories.length) {setMakeup(categories)}
                 return(
                 categories.map(node => (
                   <FormControlLabel
+                    key={node}
                     control={
                     <Checkbox
                       onClick={() => handleCatToggle(node)}
@@ -373,10 +344,11 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                   if (error) return <Error error={error} />;
                   const categories = data.massageCat.map(item => item.title);
                   if (checkedCat.length) {setMassage(checkedCat)}
-                  else if (massage.length != categories.length) {setMassage(categories)}
+                  else if (massage.length !== categories.length) {setMassage(categories)}
                   return(
                   categories.map(node => (
                     <FormControlLabel
+                      key={node}
                       control={
                       <Checkbox
                         onClick={() => handleCatToggle(node)}
@@ -416,14 +388,13 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                 if (loading) return <Loading />;
                 if (error) return <Error error={error} />;
                 const categories = data.eyebrowCat.map(item => item.title);
-                console.log("checkedCat",checkedCat);
-                console.log("eyebrow",eyebrow);
-                console.log('categories',categories)
+
                 if (checkedCat.length) {setEyebrow(checkedCat)}
-                else if (eyebrow.length != categories.length) {setEyebrow(categories)}
+                else if (eyebrow.length !== categories.length) {setEyebrow(categories)}
                 return(
                 categories.map(node => (
                   <FormControlLabel
+                    key={node}
                     control={
                     <Checkbox
                       onClick={() => handleCatToggle(node)}
@@ -463,13 +434,13 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                   if (loading) return <Loading />;
                   if (error) return <Error error={error} />;
                   const categories = data.cosmetologyCat.map(item => item.title);
-                  console.log("checkedCat",checkedCat);
-                  console.log('categories',categories)
+
                   if (checkedCat.length) {setCosmetology(checkedCat)}
-                  else if (cosmetology.length != categories.length) {setCosmetology(categories)}
+                  else if (cosmetology.length !== categories.length) {setCosmetology(categories)}
                   return(
                   categories.map(node => (
                     <FormControlLabel
+                      key={node}
                       control={
                       <Checkbox
                         onClick={() => handleCatToggle(node)}
@@ -509,13 +480,13 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                     if (loading) return <Loading />;
                     if (error) return <Error error={error} />;
                     const categories = data.tattooCat.map(item => item.title);
-                    console.log("checkedCat",checkedCat);
-                    console.log('categories',categories)
+ 
                     if (checkedCat.length) {setTattoo(checkedCat)}
-                    else if (tattoo.length != categories.length) {setTattoo(categories)}
+                    else if (tattoo.length !== categories.length) {setTattoo(categories)}
                     return(
                     categories.map(node => (
                       <FormControlLabel
+                        key={node}
                         control={
                         <Checkbox
                           onClick={() => handleCatToggle(node)}
@@ -555,13 +526,13 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                       if (loading) return <Loading />;
                       if (error) return <Error error={error} />;
                       const categories = data.aestheticsCat.map(item => item.title);
-                      console.log("checkedCat",checkedCat);
-                      console.log('categories',categories)
+
                       if (checkedCat.length) {setAesthetics(checkedCat)}
-                      else if (aesthetics.length != categories.length) {setAesthetics(categories)}
+                      else if (aesthetics.length !== categories.length) {setAesthetics(categories)}
                       return(
                       categories.map(node => (
                         <FormControlLabel
+                          key={node}
                           control={
                           <Checkbox
                             onClick={() => handleCatToggle(node)}
@@ -715,7 +686,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                       if (loading) return <Loading />;
                       if (error) return <Error error={error} />;
                       const categories = data.area.map(item => item.title);
-                      const categories1 = data.area.map(item => item.id);
+                      //const categories1 = data.area.map(item => item.id);
                     return  <Autocomplete
                               multiple
                               limitTags={5}
@@ -1010,12 +981,10 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                 if (loading) return <Loading />;
                 if (error) return <Error error={error} />;
                 setResultsnum(data.salonsFiltered.length)
-                if (data.salonsFiltered.length == 0) return <p> {t("No listing found")} </p>
-                console.log('area', area)
+                if (data.salonsFiltered.length === 0) return <p> {t("No listing found")} </p>
                   // Get current salons
                 const currentSalons = data.salonsFiltered.slice(indexOfFirstSalon, indexOfLastSalon);
                 setCount(Math.ceil(data.salonsFiltered.length/salonsPerPage))
-                console.log(currentSalons)
                 return (
                   <div>
                     <p> {t("Listings found:")} {resultsnum} </p>
@@ -1040,7 +1009,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
               onClick={handleDrawerToggle}
               className={classes.button}
             >
-              <i class="fas fa-sliders-h"></i>
+              <i className="fas fa-sliders-h"></i>
               {/* <FilterListIcon /> */}
             </Button>
           </div>
@@ -1126,6 +1095,34 @@ query(
           promotionPrice
           duration
         }
+        eyebrowserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }     
+        cosmetologyserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }
+        tattooserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }
+        aestheticsserviceSet {
+          id
+          title
+          price
+          promotionPrice
+          duration
+        }                           
     }
 }
 `;

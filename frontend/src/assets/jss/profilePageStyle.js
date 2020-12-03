@@ -152,31 +152,11 @@ const profilePageStyle = {
     width: "auto",
     display: "block",
     padding: "15px",
-    marginLeft: "15px",
-    marginRight: "15px",
     marginTop: "15px",
     marginBottom: "15px",
     marginLeft: "auto",
     marginRight: "auto"
   },
-  // title: {
-  //   display: "flex",
-  //   alignItems: "center",
-  //   marginBottom: theme.spacing.unit * 2
-  // },
-  // audioIcon: {
-  //   color: "purple",
-  //   fontSize: 30,
-  //   marginRight: theme.spacing.unit
-  // },
-  // thumbIcon: {
-  //   color: "green",
-  //   marginRight: theme.spacing.unit
-  // },
-  // divider: {
-  //   marginTop: theme.spacing.unit,
-  //   marginBottom: theme.spacing.unit
-  // }
 };
 
 export default profilePageStyle;

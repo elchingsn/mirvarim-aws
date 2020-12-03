@@ -2,32 +2,21 @@ import React, { useState, useRef } from "react";
 import { Mutation } from '@apollo/react-components';
 import gql from "graphql-tag";
 import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 
 import withStyles from "@material-ui/core/styles/withStyles";
 import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
 import FormControl from "@material-ui/core/FormControl";
 import Paper from "@material-ui/core/Paper";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
-import Slide from "@material-ui/core/Slide";
-import Gavel from "@material-ui/icons/Gavel";
-import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
-import FormHelperText from '@material-ui/core/FormHelperText';
-import NativeSelect from '@material-ui/core/NativeSelect';
 
 import Error from "../Shared/Error";
 
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
-
 const SendPasswordReset = ({ classes, match }) => {
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [email, setEmail] = useState("");
   const [snack, setSnack] = useState({
@@ -44,17 +33,10 @@ const SendPasswordReset = ({ classes, match }) => {
 
   const [inputRef, setInputFocus] = useFocus()
 
-  function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-  }
-
-
   const handleSubmit = (event, sendPasswordResetEmail) => {
     event.preventDefault();
     sendPasswordResetEmail();
   };
-
-  console.log(match);
 
   return (
     <div className={classes.root}>
@@ -63,7 +45,7 @@ const SendPasswordReset = ({ classes, match }) => {
           mutation={PASSWORD_RESET_MUTATION}
           variables={{ email }}
           onCompleted={data => {
-            console.log({ data });
+            //console.log({ data });
             if (data.sendPasswordResetEmail.success) {
               setSnack ({
                 ...snack,
@@ -119,17 +101,6 @@ const SendPasswordReset = ({ classes, match }) => {
           }}
         </Mutation>
       </Paper>
-      {/* // <Snackbar 
-      //   open={snack.snackOpen} 
-      //   autoHideDuration={3000} 
-      //   //onClose={()=>setBookingDialog(false)}
-      // >
-      //   <Alert 
-      //     //onClose={()=>setBookingDialog(false)} 
-      //     severity={snack.snackType}>
-      //     {snack.snackMessage}
-      //   </Alert>
-      // </Snackbar> */}
     </div>  
   );
 };
@@ -142,7 +113,6 @@ const PASSWORD_RESET_MUTATION = gql`
     }
   }
 `;
-
 
 const styles = theme => ({
   root: {
@@ -185,5 +155,10 @@ const styles = theme => ({
     color: "green"
   }
 });
+
+SendPasswordReset.propTypes = {
+  classes: PropTypes.object,
+  match: PropTypes.object
+}
 
 export default withStyles(styles)(SendPasswordReset);

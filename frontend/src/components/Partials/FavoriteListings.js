@@ -3,20 +3,14 @@ import {Link} from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Rating from '@material-ui/lab/Rating';
-// @material-ui/icons
-// import  from "@material-ui/icons/";
 // core components
-import GridContainer from "./GridContainer.js";
-import GridItem from "./GridItem.js";
-import Card from "./Card.js";
-import CardAvatar from "./CardAvatar.js";
-import CardHeader from "./CardHeader.js";
-import CardBody from "./CardBody.js";
-import CardFooter from "./CardFooter.js";
-import Button from "./Button.js";
-import Muted from "./Muted.js";
+import GridContainer from "components/Partials/GridContainer.js";
+import GridItem from "components/Partials/GridItem.js";
+import Card from "components/Partials/Card.js";
+import CardHeader from "components/Partials/CardHeader.js";
+import CardBody from "components/Partials/CardBody.js";
 
-import styles from "../../assets/jss/listingsStyle.js";
+import styles from "assets/jss/listingsStyle.js";
 
 const useStyles = makeStyles(styles);
 
@@ -50,7 +44,7 @@ const FavoriteListings = ({listings}) => {
               const avgRating = ratingList.length ? (ratingList.reduce((avgRating,x) => avgRating + x)/countReviews).toFixed(1) : 0
 
               return (
-                <GridItem xs={12} sm={12} md={6}>
+                <GridItem key={listing.id} xs={12} sm={12} md={6}>
                 <Link to={`/salon/${listing.id}`}>
                 <Card plain profile>
                   <CardHeader image plain>

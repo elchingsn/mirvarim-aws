@@ -10,12 +10,11 @@ import React, {
   useContext
 } from 'react';
 import _ from 'lodash';
-import { Link } from "react-router-dom";
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
 import gql from "graphql-tag";
 import { UserContext } from "App.js"
-import {ME_QUERY} from "App.js"
+//import {ME_QUERY} from "App.js"
 import { useTranslation } from 'react-i18next';
 
 // import moment from 'moment';
@@ -37,8 +36,7 @@ import {
   makeStyles,
   Button,
   Grid,
-  SvgIcon,
-  Typography
+  SvgIcon
 } from '@material-ui/core';
 import ControlPointIcon from '@material-ui/icons/ControlPoint';
 // import Page from 'src/components/Page';
@@ -56,9 +54,9 @@ import Toolbar from './Toolbar';
 import CreateEventForm from './CreateEventForm';
 import UpdateEventForm from './UpdateEventForm';
 // new addition
-import toDate from 'date-fns/toDate'
+//import toDate from 'date-fns/toDate'
 import formatISO from 'date-fns/formatISO'
-import Error from "components/Shared/Error"; 
+//import Error from "components/Shared/Error"; 
 import Loading from "components/Shared/Loading";
 
 // const selectedEventSelector = (state) => {
@@ -80,14 +78,14 @@ const CalendarView = () => {
     pollInterval: 3000,
   })
   if (loading) return <Loading />;
-  if (error) { history.push('/login') };
-  console.log('all bookings',data)
+  if (error) { history.push('/login') }
+  //console.log('all bookings',data)
 
   return <SelectedCalendar currentUser={currentUser} bookings={data.bookings}/>
 }
 
 const SelectedCalendar =({currentUser, bookings}) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const classes = useStyles();
   const salon = currentUser.salonSet[0];
   const [isModalOpen, setModalOpen] = useState(false)
@@ -98,7 +96,7 @@ const SelectedCalendar =({currentUser, bookings}) => {
   })
 
   useEffect(() => {
-    if (selectedMaster.masterName == "All") {
+    if (selectedMaster.masterName === "All") {
       setSelectedMaster ({
         ...selectedMaster,
         masterBookings: bookings
@@ -106,13 +104,13 @@ const SelectedCalendar =({currentUser, bookings}) => {
     } else {
       setSelectedMaster ({
         ...selectedMaster,
-        masterBookings: bookings.filter(booking => booking.master.masterName == selectedMaster.masterName)
+        masterBookings: bookings.filter(booking => booking.master.masterName === selectedMaster.masterName)
       })
     }
   }, [bookings])
 
   const handleMasterSelect = (value) => {
-    if (value == "All") {
+    if (value === "All") {
       setSelectedMaster ({
         ...selectedMaster,
         masterName: value,
@@ -123,12 +121,11 @@ const SelectedCalendar =({currentUser, bookings}) => {
       setSelectedMaster ({
         ...selectedMaster,
         masterName: value,
-        masterId: salon.masterSet.filter(master => master.masterName == value)[0].id,
-        masterBookings: bookings.filter(booking => booking.master.masterName == value)
+        masterId: salon.masterSet.filter(master => master.masterName === value)[0].id,
+        masterBookings: bookings.filter(booking => booking.master.masterName === value)
       })
     }
   }
-  console.log('master data', selectedMaster)
 
   return (
     <div>
@@ -148,8 +145,8 @@ const SelectedCalendar =({currentUser, bookings}) => {
             inputProps={{ 'aria-label': 'role' }}
           > 
             <option value="All">{t("All")}</option>
-            {[...new Set(bookings.map(booking => booking.master.masterName))].map(name => (
-              <option value={name}>
+            {[...new Set(bookings.map(booking => booking.master.masterName))].map((name,index) => (
+              <option  key={index} value={name}>
                 {name} 
               </option>
             ))}
@@ -186,8 +183,7 @@ const SelectedCalendar =({currentUser, bookings}) => {
 }
 
 const Calendar = ({salon, masterId, bookings, isModalOpen, setModalOpen}) => {
-  console.log ('bookings', bookings);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const classes = useStyles();
   const calendarRef = useRef(null);
   const theme = useTheme();
@@ -206,9 +202,9 @@ const Calendar = ({salon, masterId, bookings, isModalOpen, setModalOpen}) => {
   });
 
   // Math.floor((new Date(end) - new Date(start))/60000) converts the milliseconds to duration in minutes
-  const [createBooking, { data: create_data }] = useMutation(CREATE_BOOKING);
-  const [updateBooking, { data: update_data }] = useMutation(UPDATE_BOOKING);
-  const [deleteBooking, { data: delete_data }] = useMutation(DELETE_BOOKING);
+  // const [createBooking, { data: create_data }] = useMutation(CREATE_BOOKING);
+  // const [updateBooking, { data: update_data }] = useMutation(UPDATE_BOOKING);
+  // const [deleteBooking, { data: delete_data }] = useMutation(DELETE_BOOKING);
 
   const events = _.map(bookings, function(item, index) {
     return {
@@ -225,8 +221,7 @@ const Calendar = ({salon, masterId, bookings, isModalOpen, setModalOpen}) => {
     }
   })
 
-  console.log ('events', events);
-  console.log("range", selectedRange)
+  //console.log ('events', events);
 
   //create array of all services offered by the salon
   const hairServices = salon.hairserviceSet
@@ -295,13 +290,11 @@ const Calendar = ({salon, masterId, bookings, isModalOpen, setModalOpen}) => {
       start: formatISO(arg.start).slice(0,16),
       duration: Math.floor((arg.end - arg.start)/60000)
     })
-    console.log("arg", arg)
     setModalOpen(true)
   };
 
   const handleEventSelect = async (arg) => {
     // dispatch(selectEvent(arg.event.id));
-    console.log('handleEventSelect', arg);
     await setSelectedEvent(events[arg.event.id]);
     setUpdateModalOpen(true);
   };
@@ -589,6 +582,7 @@ const CREATE_BOOKING = gql `
       bookingData: $bookingData
     ) {
       booking {
+        id
         master {
           id
           masterName
@@ -615,6 +609,7 @@ const UPDATE_BOOKING = gql `
       bookingData: $bookingData
     ) {
       booking {
+        id
         master {
           id
           masterName
@@ -639,6 +634,7 @@ const DELETE_BOOKING = gql `
     deleteBooking (bookingId: $bookingId)
      {
       booking {
+        id
         master {
           id
           masterName

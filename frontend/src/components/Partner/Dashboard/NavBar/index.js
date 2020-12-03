@@ -6,22 +6,18 @@ import { useTranslation } from 'react-i18next';
 
 import PropTypes from 'prop-types';
 import {
-  Avatar,
   Box,
-  Chip,
   Divider,
   Drawer,
   Hidden,
   Link,
   List,
   ListSubheader,
-  Typography,
   makeStyles
 } from '@material-ui/core';
 import ReceiptIcon from '@material-ui/icons/ReceiptOutlined';
 import PieChartIcon from '@material-ui/icons/PieChart';
 import BusinessCenterIcon from '@material-ui/icons/BusinessCenter';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import NavItem from './NavItem';
 
 function renderNavItems({
@@ -104,7 +100,7 @@ const useStyles = makeStyles(() => ({
 const NavBar = ({ onMobileClose, openMobile, user }) => {
   const classes = useStyles();
   const location = useLocation();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
 
   useEffect(() => {
@@ -115,16 +111,6 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
   }, [location.pathname]);
 
   const sections = [
-    {
-      subheader: `${t("Reports")}`,
-      items: [
-        {
-          title: `${t("Dashboard")}`,
-          icon: PieChartIcon,
-          href: `/partner/${user.id}/report`
-        }
-      ]
-    },
     {
       subheader: `${t("Listings")}`,
       items: [
@@ -197,6 +183,16 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
           icon: ReceiptIcon
         }
       ]  
+    },
+    {
+      subheader: `${t("Reports")}`,
+      items: [
+        {
+          title: `${t("Dashboard")}`,
+          icon: PieChartIcon,
+          href: `/partner/${user.id}/report`
+        }
+      ]
     }
   ];
   
@@ -240,7 +236,7 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
               variant="subtitle1"
               color="secondary"
               component={RouterLink}
-              to="/"
+              to="/contact"
             >
               {t("Contact us")}
             </Link>

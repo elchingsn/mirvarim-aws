@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useState} from "react";
+import React from "react";
 import {Link} from "react-router-dom";
 import classNames from "classnames";
 import { useTranslation } from 'react-i18next';
@@ -11,32 +11,19 @@ import Rating from '@material-ui/lab/Rating';
 import GridContainer from "./GridContainer.js";
 import GridItem from "./GridItem.js";
 import Card from "./Card.js";
-import CardAvatar from "./CardAvatar.js";
 import CardHeader from "./CardHeader.js";
-import CardBody from "./CardBody.js";
 import CardFooter from "./CardFooter.js";
-import Button from "./Button.js";
-import Muted from "./Muted.js";
-import Tooltip from "@material-ui/core/Tooltip";
 import Divider from '@material-ui/core/Divider';
-//icons 
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import blueGrey from '@material-ui/core/colors/blueGrey';
-import purple from '@material-ui/core/colors/purple';
-
-
 import styles from "../../assets/jss/filterListingsStyle.js";
-import { concat } from "apollo-link";
 
 const useStyles = makeStyles(styles);
 
 const FilterListings = ({listings}) =>{
-    const { t, i18n } = useTranslation();
-    console.log(listings)
+    const { t } = useTranslation();
+    //console.log(listings)
 
     const classes = useStyles();
     const API_BASE = `${process.env.REACT_APP_API_BASE}/media`    
-    const [isFavorite, setFavorite] = useState(false)
     return(
         <div>
         {listings.map(listing => {
@@ -45,14 +32,18 @@ const FilterListings = ({listings}) =>{
         const hairRemovalServices = listing.hairremovalserviceSet
         const makeupServices = listing.makeupserviceSet
         const massageServices = listing.massageserviceSet
-        const services = [...hairServices, ...nailsServices, ...hairRemovalServices, ...makeupServices, ...massageServices]
-        console.log(services)
+        const eyebrowServices = listing.eyebrowserviceSet
+        const cosmetologyServices = listing.cosmetologyserviceSet
+        const tattooServices = listing.tattooserviceSet
+        const aestheticsServices = listing.aestheticsserviceSet          
+        const services = [...hairServices, ...nailsServices, ...hairRemovalServices, ...makeupServices, ...massageServices,
+                          ...eyebrowServices, ...cosmetologyServices, ...tattooServices, ...aestheticsServices]   
         const ratingList = listing.reviewSet.length ? listing.reviewSet.map(node => node.rating) : []
         const countReviews = ratingList.length
         const avgRating = ratingList.length ? (ratingList.reduce((avgRating,x) => avgRating + x)/countReviews).toFixed(1) : 0
         return(
-        <Link to={`/salon/${listing.id}`} style={{ textDecoration: 'none' }}>
-        <Card plain className={classes.card} className={classNames(classes.tab, classes.mainRaised)}>
+        <Link key={listing.id} to={`/salon/${listing.id}`} style={{ textDecoration: 'none' }}>
+        <Card plain className={classNames(classes.tab, classes.mainRaised)}>
             <GridContainer>
                 <GridItem xs={12} sm={5} md={5}>
                 <CardHeader image plain>
@@ -102,7 +93,6 @@ const FilterListings = ({listings}) =>{
                         style ={{color:"gray", border:"none", backgroundColor:"inherit",cursor:"pointer"}}
                         onClick={(event)=> {
                           event.preventDefault()
-                          console.log(event)
                           setFavorite(!isFavorite)
                         }}>
                         {isFavorite ? 

@@ -1,38 +1,16 @@
-import React, { useState, useContext, useEffect } from "react";
-import PropTypes from 'prop-types';
-import { Link } from "react-router-dom";
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import React, { useState } from "react";
+import { useMutation } from '@apollo/react-hooks';
 import gql from "graphql-tag";
 import { makeStyles } from '@material-ui/core/styles';
 
 import Box from "@material-ui/core/Box";
-import withStyles from "@material-ui/core/styles/withStyles";
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
 import FormControl from "@material-ui/core/FormControl";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Slide from "@material-ui/core/Slide";
-import Gavel from "@material-ui/icons/Gavel";
-import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
-import FormHelperText from '@material-ui/core/FormHelperText';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Checkbox from '@material-ui/core/Checkbox';
 
 import { useTranslation } from 'react-i18next';
-import NumberFormat from 'react-number-format';
-import Error from "components/Shared/Error"; 
-import Loading from "components/Shared/Loading";
-import { useHistory } from 'react-router-dom';
 
 import InputMask from 'react-input-mask';
 import formatISO from 'date-fns/formatISO'
@@ -44,12 +22,10 @@ const EventForm = ({
   range,
   handleModalClose
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const classes = useStyles()
   const [createBooking, { data: create_data }] = useMutation(CREATE_BOOKING);
-  const [updateBooking, { data: update_data }] = useMutation(UPDATE_BOOKING);
-  const [deleteBooking, { data: delete_data }] = useMutation(DELETE_BOOKING);
 
   const [bookingData, setBookingData] = useState({
     masterId: masterId || salon.masterSet[0].id,
@@ -61,12 +37,10 @@ const EventForm = ({
     start: range.start
   })
 
-  console.log('bookingdata', bookingData)
   //const textFieldStyle = { minHeight: "5rem" };
 
   const handleServiceSelect = (value) => {
-    let selectedService = services.filter(service => service.title==value)[0]
-    console.log(selectedService)
+    let selectedService = services.filter(service => service.title===value)[0]
     setBookingData({
       ...bookingData, 
       serviceTitle: value,
@@ -115,7 +89,7 @@ const EventForm = ({
                 onChange={(event,value) => {
                           setBookingData({
                             ...bookingData, 
-                            masterId: salon.masterSet.filter(item => item.masterName == value)[0].id
+                            masterId: salon.masterSet.filter(item => item.masterName === value)[0].id
                           })                      
                 }}
                 renderInput={(params) => (
@@ -239,11 +213,11 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     marginTop: theme.spacing.unit
   },
-  button: {
-    //marginTop: theme.spacing(1),
-    //marginRight: theme.spacing(1),
-    margin: theme.spacing(1),
-  },
+  // button: {
+  //   marginTop: theme.spacing(1),
+  //   marginRight: theme.spacing(1),
+  //   margin: theme.spacing(5),
+  // },
   actionsContainer: {
     marginBottom: theme.spacing(2),
   },
@@ -261,9 +235,6 @@ const useStyles = makeStyles((theme) => ({
   dialog: {
     margin: "0 auto",
     maxWidth: 550
-  },
-  textField: {
-    margin: theme.spacing.unit
   },
   cancel: {
     color: "red"
@@ -300,10 +271,9 @@ const useStyles = makeStyles((theme) => ({
 
 export const CREATE_BOOKING = gql `
   mutation ($bookingData: BookingInput!) {
-    createBooking(
-      bookingData: $bookingData
-    ) {
+    createBooking(bookingData: $bookingData) {
       booking {
+        id
         master {
           id
           masterName
@@ -332,6 +302,7 @@ export const UPDATE_BOOKING = gql `
       bookingData: $bookingData
     ) {
       booking {
+        id
         master {
           id
           masterName
@@ -356,6 +327,7 @@ export const DELETE_BOOKING = gql `
     deleteBooking (bookingId: $bookingId)
      {
       booking {
+        id
         master {
           id
           masterName

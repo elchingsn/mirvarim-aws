@@ -1,4 +1,3 @@
-import navbarStyle from "./navbarStyle.js";
 import {
   container,
   mrAuto,
@@ -9,7 +8,6 @@ import {
 } from "./mirvarix-react.js";
 
 const headersSection = theme => ({
-  ...headerLinksStyle(theme),
   sectionBlank: {
     height: "70px",
     display: "block"

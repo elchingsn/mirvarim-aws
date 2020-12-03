@@ -1,43 +1,26 @@
 import React, { useState, useContext } from "react";
-import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
 import { Mutation } from '@apollo/react-components';
-import { Query } from "@apollo/react-components";
-import { useMutation } from '@apollo/react-hooks';
 import gql from "graphql-tag";
-import axios from "axios";
-import Cookies from 'js-cookie';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Box from "@material-ui/core/Box";
 import withStyles from "@material-ui/core/styles/withStyles";
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
 import FormControl from "@material-ui/core/FormControl";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
-import Gavel from "@material-ui/icons/Gavel";
-import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
-import FormHelperText from '@material-ui/core/FormHelperText';
-import NativeSelect from '@material-ui/core/NativeSelect';
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Checkbox from '@material-ui/core/Checkbox';
 
 import { UserContext } from "App.js"
 import { useTranslation } from 'react-i18next';
-import NumberFormat from 'react-number-format';
+//import NumberFormat from 'react-number-format';
 import Error from "../Shared/Error"; 
-import Loading from "../Shared/Loading";
+//import Loading from "../Shared/Loading";
 import { useHistory } from 'react-router-dom';
 import {ME_QUERY} from "App.js"
 import InputMask from 'react-input-mask';
@@ -52,7 +35,7 @@ function Transition(props) {
 const MasterForm = ({ data_salon, setOpen, userId }) => {
   const classes = formStyles();
   const history = useHistory();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -66,9 +49,7 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
   const handleSubmit = async (event, addMaster) => {
     event.preventDefault();
     setSubmitting(true);
-  
-  
-    console.log( "inputs", masterData);
+    
     addMaster({variables: { masterData: masterData }}).catch(err => {
       console.error(err);
       history.push('/login');
@@ -79,7 +60,6 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
     <Mutation
       mutation={ADD_MASTER_MUTATION}
       onCompleted={data => {
-      console.log({ data });
       //setSubmitting(false);
       setOpen(true);
       }}
@@ -167,11 +147,11 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
 
 const AddMaster = ({classes}) => {
   const currentUser = useContext(UserContext);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   if (!currentUser.salonSet[0]) {
     return <div> {t("No salon added. Please add a salon")}</div>
-  } else if ((currentUser.salonSet[0].masterSet.length > 0) && (currentUser.role == "A_2")) {
+  } else if ((currentUser.salonSet[0].masterSet.length > 0) && (currentUser.role === "A_2")) {
     return <div> {t("Freelancer master already added.")}</div>
   } else {
     return <AddMasterForm classes={classes} currentUser={currentUser} />
@@ -182,13 +162,13 @@ const AddMasterForm = ({classes, currentUser}) => {
 
   const userId = currentUser.id;
   const data_salon = currentUser.salonSet[0];
-  const salonId = data_salon.id;
+  //const salonId = data_salon.id;
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [open, setOpen] = useState(false);
 
-  const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
+  //const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
 
 
   // const handleUpdateCache = (cache, { data: { createTrack } }) => {

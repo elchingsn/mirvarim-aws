@@ -16,10 +16,18 @@ class ReviewAdmin(admin.ModelAdmin):
   
 admin.site.register(Review, ReviewAdmin)
 
-
-@admin.register(Vote)
 class VoteAdmin(admin.ModelAdmin):
-  pass
+  
+  class Meta:
+    model = Vote 
+
+  list_display = ('voted_by', 'review', 'is_reported',)
+  list_display_links = ('voted_by', 'review', 'is_reported',)
+  list_filter = ('is_reported',)
+  search_fields = ('voted_by','review','is_reported',)
+  list_per_page = 25
+  
+admin.site.register(Vote, VoteAdmin)
 
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):

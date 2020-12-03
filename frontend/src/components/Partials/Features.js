@@ -11,9 +11,6 @@ import Phonelink from '@material-ui/icons/Phonelink';
 import PhoneIphone from '@material-ui/icons/PhoneIphone';
 import TrendingUp from '@material-ui/icons/TrendingUp';
 import SupervisorAccount from '@material-ui/icons/SupervisorAccount';
-import VerifiedUser from "@material-ui/icons/VerifiedUser";
-import AccessTime from "@material-ui/icons/AccessTime";
-import AttachMoney from "@material-ui/icons/AttachMoney";
 // core components
 import Hidden from "@material-ui/core/Hidden";
 import GridContainer from "components/Partials/GridContainer.js";
@@ -26,7 +23,7 @@ import mockup1 from "assets/img/mockup.png"
 const useStyles = makeStyles(featuresStyle);
 
 export default function Features({ ...rest }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const classes = useStyles();
   return (
     <div className="cd-section" {...rest}>

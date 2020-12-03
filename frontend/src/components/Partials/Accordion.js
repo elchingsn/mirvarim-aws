@@ -14,11 +14,6 @@ const Accordion = ({classes, title, children}) => {
     setActive(!active)
   }
 
-  const titleStyle = {
-    fontWeight: 600,
-    fontSize: '14px',
-  }
-
   return (
     <div className={classes.section}>
       <button className={classes.title} onClick={toogleActive}>
@@ -65,11 +60,13 @@ const styles = theme => ({
     transition: "backgroundColor 0.6s ease"
   },
   icon: {
+    fontWeight:"bold",
     marginLeft: "auto",
     marginRight: "15px",
     transition: "transform 0.6s ease"
   },  
   rotate: {
+    fontWeight:"bold",
     marginLeft: "auto",
     marginRight: "15px",
     transition: "transform 0.6s ease",

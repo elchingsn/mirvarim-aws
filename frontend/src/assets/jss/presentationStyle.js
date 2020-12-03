@@ -41,10 +41,6 @@ const presentationStyle = {
     },
     paddingTop: "25vh"
   },
-  title: {
-    ...title,
-    color: whiteColor
-  },
   title1: {
     ...title,
     textAlign: "center",
@@ -80,9 +76,6 @@ const presentationStyle = {
     textAlign: "center"
   },
   mrAuto,
-  textCenter: {
-    textAlign: "center"
-  },
   card: {
     marginTop: "15px"
   },

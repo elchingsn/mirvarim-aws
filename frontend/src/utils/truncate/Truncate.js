@@ -286,7 +286,7 @@ export default class Truncate extends React.Component {
 
                 if (lastLineText.substr(lastLineText.length - 2) === '][') {
                     lastLineText = lastLineText.substring(0, lastLineText.length - 1);
-                };
+                }
 
                 lastLineText = restoreReplacedLinks(lastLineText);
 
@@ -401,4 +401,4 @@ export default class Truncate extends React.Component {
             left: 0
         }
     };
-};
+}

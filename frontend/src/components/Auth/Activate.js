@@ -3,17 +3,10 @@ import { Mutation } from '@apollo/react-components';
 import gql from "graphql-tag";
 import {Link} from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 
 import withStyles from "@material-ui/core/styles/withStyles";
 import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Slide from "@material-ui/core/Slide";
-
-import Error from "../Shared/Error";
-
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
 
 const Activate = ({ classes, match }) => {
 
@@ -23,17 +16,15 @@ const Activate = ({ classes, match }) => {
   });
 
   const token = window.location.pathname.split('/').slice(-1)[0];
-  console.log('token', token)
-  console.log('match', match)
 
   return (
     <div className={classes.root}>
         <Mutation
           mutation={VERIFY_MUTATION}
           variables={{ token }}
-          onCompleted={data => {
-            console.log({ data });
-          }}
+          // onCompleted={data => {
+          //   console.log({ data });
+          // }}
         >
           {(verifyAccount, { data, loading, error }) => {
             return <Verify verifyAccount={verifyAccount} />
@@ -45,14 +36,12 @@ const Activate = ({ classes, match }) => {
 
 const Verify = ({verifyAccount}) => {
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [vdata, setVdata] = useState({})
 
   React.useEffect(() => {
     verifyAccount().then((res) => setVdata(res.data.verifyAccount));
   }, []);
-
-  console.log(vdata);
 
   return (
     <div>
@@ -117,5 +106,14 @@ const styles = theme => ({
     color: "green"
   }
 });
+
+Activate.propTypes = {
+  classes: PropTypes.object,
+  match: PropTypes.object
+}
+
+Verify.propTypes = {
+  verifyAccount: PropTypes.func
+}
 
 export default withStyles(styles)(Activate);

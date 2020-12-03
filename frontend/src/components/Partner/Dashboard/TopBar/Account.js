@@ -2,7 +2,6 @@ import React, {
   useRef,
   useState
 } from 'react';
-import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import {
   Avatar,
@@ -11,7 +10,6 @@ import {
   Hidden,
   Menu,
   MenuItem,
-  Typography,
   makeStyles
 } from '@material-ui/core';
 import Signout from "components/Auth/Signout"

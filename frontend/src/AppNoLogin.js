@@ -13,6 +13,7 @@ import SalonDetail from "./pages/SalonDetail";
 import Partner from "./pages/Partner";
 import Privacy from "pages/Privacy"
 import Contact from "pages/Contact"
+import Pricing from "pages/Pricing"
 
 import Navbar from "./components/Partials/Navbar";
 import MainFooter from "components/Partials/MainFooter"
@@ -43,18 +44,17 @@ const App = () => (
         <Route path="/salon/:id" component={SalonDetail} />
         <Route exact path="/privacy" component={Privacy} />
         <Route exact path="/contact" component={Contact} />
+        <Route exact path="/pricing" component={Pricing} />
         {/* redirects not matched routes to home */}
         <Route render={() => <Redirect to="/" />} />
       </Switch>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
       <Hidden smDown implementation="css">
         <MainFooter/>
       </Hidden>
       <Hidden mdUp implementation="css">
+        <br/>
+        <br/>
+        <br/>        
         <FooterMenu/>
       </Hidden>
     </UserContext.Provider>

@@ -1,12 +1,10 @@
 import React, {
   Suspense,
   Fragment,
-  lazy,
-  useContext
+  lazy
 } from 'react';
 import {
   Switch,
-  Redirect,
   Route
 } from 'react-router-dom';
 import LoadingScreen from 'components/Partials/LoadingScreen';

@@ -1,16 +1,6 @@
 import React from "react";
-import { ApolloConsumer, Query } from "@apollo/react-components";
-import { useMutation, useQuery } from '@apollo/react-hooks';
-import gql from "graphql-tag";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
-import Button from '@material-ui/core/Button';
-import format from "date-fns/format";
-
-import GridContainer from "components/Partials/GridContainer.js";
-import GridItem from "components/Partials/GridItem.js";
 
 import styles from "assets/jss/profilePageStyle.js";
 const useStyles = makeStyles(styles);
@@ -19,7 +9,6 @@ const useStyles = makeStyles(styles);
 const Privacy = ({ match }) => {
   const classes = useStyles();
   const id = match.params.id;
-  console.log(id);
 
   React.useEffect(() => {
     window.scrollTo(0, 0);

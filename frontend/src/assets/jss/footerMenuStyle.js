@@ -3,18 +3,14 @@ import {
   title,
   description,
   section,
-  btnLink,
   mlAuto,
   mrAuto,
   twitterColor,
-  dribbbleColor,
   instagramColor,
   grayColor,
-  blackColor,
   whiteColor,
   hexToRgb
 } from "assets/jss/mirvarix-react.js";
-import zIndex from "@material-ui/core/styles/zIndex";
 
 const style = {
   container,
@@ -22,6 +18,8 @@ const style = {
   mrAuto,
   mlAuto,
   description,
+  twitterColor,
+  instagramColor,
   section: {
     ...section,
     padding: "70px 0px"
