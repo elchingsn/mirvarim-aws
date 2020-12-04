@@ -47,7 +47,7 @@ export default function Home() {
   React.useEffect(() => {
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
-  });
+  },[]);
 
 
   React.useEffect(() => {
@@ -246,7 +246,6 @@ const SALON_QUERY = gql`
           id
           rating
         }
-        isFeatured
         listDate
       }
 }

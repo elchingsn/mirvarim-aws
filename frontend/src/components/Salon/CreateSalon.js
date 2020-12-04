@@ -28,6 +28,7 @@ import InputMask from 'react-input-mask';
 import { UserContext } from "App";
 import Error from "../Shared/Error"; 
 import Loading from "../Shared/Loading";
+import {ME_QUERY} from "App.js"
 
 //import { ADD_MASTER_MUTATION } from "components/Master/AddMaster.js"
 
@@ -243,7 +244,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
               setOpen(true);
               }}
               // update={handleUpdateCache}
-              // refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
+              refetchQueries={() => [{ query: ME_QUERY, variables: {id:currentUser.id} }]}
             >
               {(createSalon, { loading, error }) => {
               if (error) return <Error error={error} />;
@@ -842,7 +843,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
             </DialogContent>
             <DialogActions>
               <Button
-                color="primary"
+                color="secondary"
                 variant="contained"
                 onClick={() => {
                   setOpen(false);

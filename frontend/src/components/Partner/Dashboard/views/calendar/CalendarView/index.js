@@ -145,7 +145,8 @@ const SelectedCalendar =({currentUser, bookings}) => {
             inputProps={{ 'aria-label': 'role' }}
           > 
             <option value="All">{t("All")}</option>
-            {[...new Set(bookings.map(booking => booking.master.masterName))].map((name,index) => (
+            {/* {[...new Set(bookings.map(booking => booking.master.masterName))].map((name,index) => ( */}
+            {[...new Set(salon.masterSet.map(master => master.masterName))].map((name,index) => (
               <option  key={index} value={name}>
                 {name} 
               </option>

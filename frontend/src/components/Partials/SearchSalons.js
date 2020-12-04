@@ -88,8 +88,9 @@ const SearchSalons = ({state, setSearchOpen}) =>{
           const cosmetologyService_set = data_salon.salons.map(el => (el.cosmetologyCategories.map(item => item.title))).flat(1);
           const tattooService_set = data_salon.salons.map(el => (el.tattooCategories.map(item => item.title))).flat(1);
           const aestheticsService_set = data_salon.salons.map(el => (el.aestheticsCategories.map(item => item.title))).flat(1);
-          const search_set = [].concat(salon_set,hairService_set,nailsService_set,hairRemovalService_set,makeupService_set,
+          const _search_set = [].concat(salon_set,hairService_set,nailsService_set,hairRemovalService_set,makeupService_set,
                               massageService_set,eyebrowService_set,cosmetologyService_set,tattooService_set,aestheticsService_set);
+          const search_set = [...new Set(_search_set)];     //unique elements             
           if (search) { options1 = search_set.filter(el => t(el).toLowerCase().includes(search.toLowerCase()))}
 
           // when search field is cleared no drop down option will be visible
@@ -115,7 +116,7 @@ const SearchSalons = ({state, setSearchOpen}) =>{
             options2 = data_area.area.map((option) => option.title).filter(el => t(el).toLowerCase().includes(location.toLowerCase()))
           }
           location ? setLocationOptions(options2) : setLocationOptions([]);
-          console.log(options2)
+          //console.log(options2)
       }
     }, [location]);
 

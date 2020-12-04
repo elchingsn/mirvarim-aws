@@ -250,6 +250,19 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
         display="flex"
       >
         <Button
+          //disabled={submitting}
+          variant="outlined"
+          onClick={() => 
+            deleteMutation({variables: { serviceId: parseInt(selectedService.id) }}).catch(err => {
+              console.error(err);
+              history.push('/login');
+            })
+          }
+          className={classes.cancel}
+        >
+          {t("Delete")}
+        </Button>
+        <Button
           disabled={submitting}
           variant="outlined"
           onClick={() => setDisabled(false)}
@@ -263,19 +276,14 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
         justifyContent="center"
         display="flex"
       >
-      <Button
-        //disabled={submitting}
+      {/* <Button
         variant="outlined"
-        onClick={() => 
-          deleteMutation({variables: { serviceId: parseInt(selectedService.id) }}).catch(err => {
-            console.error(err);
-            history.push('/login');
-          })
-        }
+        //onClick={() => history.push(`/partner/${data_salon.createdBy.id}/salon/view`)}
+        onClick={() => history.push(`/partner/${data_salon.createdBy.id}/salon/edit`)}
         className={classes.cancel}
       >
-        {t("Delete")}
-      </Button>
+        {t("Cancel")}
+      </Button> */}
       {/* <Box flexGrow={1} /> */}
       <Button
         variant="outlined"
@@ -291,7 +299,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
         {submitting ? (
           <CircularProgress className={classes.save} size={24} />
         ) : (
-          "Update"
+          "Save"
         )}
       </Button>
       </Box>)
@@ -544,9 +552,10 @@ const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen,
 }
 
 const UpdateService = ({classes}) => {
+  const { t } = useTranslation();
   const currentUser = useContext(UserContext);
   if (!currentUser.salonSet[0]) {
-    return <div> No salon added. Please add a salon</div>
+    return <div className={classes.paddingTLR}> {t("No salon added. Please add a salon")}</div>
   } else {
     return <UpdateServiceForm classes={classes} currentUser={currentUser} />
   }
@@ -986,6 +995,11 @@ const styles = theme => ({
     bottom: theme.spacing.unit * 2,
     right: theme.spacing.unit * 2,
     zIndex: "200"
+  },
+  paddingTLR: {
+    paddingTop: "10px",
+    paddingLeft: "20px",
+    paddingRight: "20px"
   }
 });
 

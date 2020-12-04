@@ -109,7 +109,7 @@ const Contact = ({classes}) => {
   React.useEffect(() => {
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
-  });
+  }, []);
 
   const [contactData, setContactData] = useState({
     subject: '',

@@ -790,7 +790,7 @@ const SalonDetail=({match}) => {
                                   </Box>
                                   <Box display="flex" justifyContent="center">
                                     {/* <Box> <div>{countReviews} {t("reviews")}</div> </Box> */}
-                                    <Box> <div>No review</div> </Box>
+                                    <Box> <div>{t("No review")}</div> </Box>
                                   </Box>
                                   </GridItem>
                                   ) : (

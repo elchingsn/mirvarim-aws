@@ -655,16 +655,21 @@ class UploadFile(graphene.Mutation):
         # open saved img and resize it before passing to createSalon
         img = Image.open(BytesIO(response.content))
         # check exif orientation and rotate ifnecessary
-        for orientation in ExifTags.TAGS.keys():
-          if ExifTags.TAGS[orientation] == 'Orientation':
-            break
-        exif = dict(img._getexif().items())
-        if exif[orientation] == 3:
-          img = img.rotate(180, expand=True)
-        elif exif[orientation] == 6:
-          img = img.rotate(270, expand=True)
-        elif exif[orientation] == 8:
-          img = img.rotate(90, expand=True)
+        try: 
+          for orientation in ExifTags.TAGS.keys():
+            if ExifTags.TAGS[orientation] == 'Orientation':
+              break
+          exif = dict(img._getexif().items())
+          if exif[orientation] == 3:
+            img = img.rotate(180, expand=True)
+          elif exif[orientation] == 6:
+            img = img.rotate(270, expand=True)
+          elif exif[orientation] == 8:
+            img = img.rotate(90, expand=True)
+        except (AttributeError, KeyError, IndexError):
+          # cases: image don't have getexif
+          pass
+
         # crop image in 16:9 (~1.7) aspect ratio  
         w,h=img.size 
         left = (w-h*1.7)/2

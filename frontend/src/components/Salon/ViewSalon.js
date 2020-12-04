@@ -104,8 +104,9 @@ const Service = ({title, duration, promotionPrice, price }) => {
 const ViewSalon=() => {
     const classes = useStyles()
     const currentUser = useContext(UserContext);
+    const { t } = useTranslation();
     if (!currentUser.salonSet[0]) {
-        return <div className={classes.paddingTLR}> No salon added. Please add a salon</div>
+        return <div className={classes.paddingTLR}> {t("No salon added. Please add a salon")}</div>
     } else {
       return <BrowseSalon currentUser={currentUser} />
     }

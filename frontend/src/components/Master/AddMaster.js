@@ -150,9 +150,9 @@ const AddMaster = ({classes}) => {
   const { t } = useTranslation();
 
   if (!currentUser.salonSet[0]) {
-    return <div> {t("No salon added. Please add a salon")}</div>
+    return <div className={classes.paddingTLR}> {t("No salon added. Please add a salon")}</div>
   } else if ((currentUser.salonSet[0].masterSet.length > 0) && (currentUser.role === "A_2")) {
-    return <div> {t("Freelancer master already added.")}</div>
+    return <div className={classes.paddingTLR}> {t("Freelancer master already added.")}</div>
   } else {
     return <AddMasterForm classes={classes} currentUser={currentUser} />
   }
@@ -193,7 +193,7 @@ const AddMasterForm = ({classes, currentUser}) => {
             </DialogTitle>
             <DialogActions>
               <Button
-                color="primary"
+                color="secondary"
                 variant="contained"
                 onClick={() => {
                   setOpen(false);
@@ -271,6 +271,11 @@ const styles = theme => ({
     bottom: theme.spacing.unit * 2,
     right: theme.spacing.unit * 2,
     zIndex: "200"
+  },
+  paddingTLR: {
+    paddingTop: "10px",
+    paddingLeft: "20px",
+    paddingRight: "20px"
   }
 });
 

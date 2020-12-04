@@ -71,7 +71,6 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
     //   });
     window.FB.AppEvents.logPageView();   
     }
-
     console.log("Loading fb api");
     // Load the SDK asynchronously
     (function(d, s, id){

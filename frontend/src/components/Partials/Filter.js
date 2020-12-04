@@ -29,7 +29,8 @@ import Drawer from "@material-ui/core/Drawer";
 import Cached from "@material-ui/icons/Cached";
 import Check from "@material-ui/icons/Check";
 //import FilterListIcon from '@material-ui/icons/FilterList';
-import Close from "@material-ui/icons/Close";
+//import Close from "@material-ui/icons/Close";
+import SearchIcon from '@material-ui/icons/Search';
 
 // core components
 import FilterListings from "components/Partials/FilterListings";
@@ -783,7 +784,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                   onClick={handleDrawerToggle}
                   // className={classes.closeButtonDrawer}
                 >
-                  <Close />
+                  <SearchIcon />
                 </IconButton>
                 <div className={classes.container}>
                   <h4 className={classes.cardTitle + " " + classes.textLeft}>
@@ -980,11 +981,12 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
               {({data, loading, error}) => {
                 if (loading) return <Loading />;
                 if (error) return <Error error={error} />;
-                setResultsnum(data.salonsFiltered.length)
-                if (data.salonsFiltered.length === 0) return <p> {t("No listing found")} </p>
+                const salonsFiltered = data.salonsFiltered.filter(el => el.isPublished === true)
+                setResultsnum(salonsFiltered.length)
+                if (salonsFiltered.length === 0) return <p> {t("No listing found")} </p>
                   // Get current salons
-                const currentSalons = data.salonsFiltered.slice(indexOfFirstSalon, indexOfLastSalon);
-                setCount(Math.ceil(data.salonsFiltered.length/salonsPerPage))
+                const currentSalons = salonsFiltered.slice(indexOfFirstSalon, indexOfLastSalon);
+                setCount(Math.ceil(salonsFiltered.length/salonsPerPage))
                 return (
                   <div>
                     <p> {t("Listings found:")} {resultsnum} </p>
@@ -1122,7 +1124,9 @@ query(
           price
           promotionPrice
           duration
-        }                           
+        }     
+        isPublished
+        isFeatured                      
     }
 }
 `;

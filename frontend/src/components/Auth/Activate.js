@@ -13,7 +13,7 @@ const Activate = ({ classes, match }) => {
   React.useEffect(() => {
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
-  });
+  }, []);
 
   const token = window.location.pathname.split('/').slice(-1)[0];
 

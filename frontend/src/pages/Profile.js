@@ -56,6 +56,9 @@ const Profile = ({ match }) => {
         if (loading) return <Loading />;
         if (error) return <Error error={error} />;
         const favoriteSalons = data.user.likeSet.map(el => el.salon);
+        const countReviews = data.user.reviewSet.length;
+        const countLikes = data.user.likeSet.length;
+        const countVotes = data.user.voteSet.length;
        return (
           <div className={classes.container}>
             {/* User Info Card */}
@@ -96,13 +99,13 @@ const Profile = ({ match }) => {
                         <h4 className={classes.title}>{t("Stats")}</h4>
                         <ul className={classes.listUnstyled}>
                           <li>
-                            <b>{data.user.likeSet.length}</b> {t("Favorites")}
+                            <b>{countLikes}</b> {t("favorite",{count:{countLikes}})}
                           </li>
                           <li>
-                            <b>{data.user.reviewSet.length}</b> {t("Reviews")}
+                            <b>{countReviews}</b> {t("review",{count:{countReviews}})}
                           </li>
                           <li>
-                            <b>0</b> {t("Votes")}
+                            <b>{countVotes}</b> {t("vote",{count:{countVotes}})}
                           </li>
                         </ul>
                       </GridItem>
@@ -228,6 +231,11 @@ export const PROFILE_QUERY = gql`
             rating
           }
         }
+      }
+      voteSet{
+        id
+        isUseful
+        isReported
       }
       bookingSet {
         id

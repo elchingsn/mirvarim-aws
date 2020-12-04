@@ -42,7 +42,7 @@ const UpdateSalon = ({classes}) => {
     //query the salon data updated by the current user
     const currentUser = useContext(UserContext);
     if (!currentUser.salonSet[0]) {
-      return <div> {t("No salon added. Please add a salon")}</div>
+      return <div className={classes.paddingTLR}> {t("No salon added. Please add a salon")}</div>
   } else {
     return <UpdateSalonForm classes={classes} currentUser={currentUser} />
   }
@@ -920,6 +920,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                         disabled={submitting}
                         variant="outlined"
                         className={classes.cancel}
+                        //onClick={() => history.push(`/partner/${userId}/salon/view`)}
                       >
                         {t("Cancel")}
                       </Button>
@@ -968,7 +969,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
           </DialogContent> */}
           <DialogActions>
             <Button
-              color="primary"
+              color="secondary"
               variant="contained"
               onClick={() => {
                 setOpen(false);
@@ -1170,6 +1171,11 @@ const styles = theme => ({
     bottom: theme.spacing.unit * 2,
     right: theme.spacing.unit * 2,
     zIndex: "200"
+  },
+  paddingTLR: {
+    paddingTop: "10px",
+    paddingLeft: "20px",
+    paddingRight: "20px"
   }
 });
 

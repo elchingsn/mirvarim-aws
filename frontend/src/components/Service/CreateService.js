@@ -69,7 +69,6 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
 
   const [promo, setPromo] = React.useState(false);
   const [submitting, setSubmitting] = useState(false);
-  //console.log('salon_data', data_salon);
 
   const [serviceData, setServiceData] = useState({
     salonId: data_salon.id,
@@ -238,7 +237,8 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
       <Button
         disabled={submitting}
         variant="outlined"
-        onClick={() => setServiceData({ ...serviceData,title:"",masterIds:[],description:"",price:"" })}
+        //onClick={() => setServiceData({ ...serviceData,title:"",masterIds:[],description:"",price:"" })}
+        onClick={() => history.push(`/partner/${data_salon.createdBy.id}/salon/view`)}
         className={classes.cancel}
       >
         {t("Cancel")}
@@ -452,7 +452,9 @@ const CreateService = ({classes}) => {
   const { t } = useTranslation();
 
   if (!currentUser.salonSet[0]) {
-    return <div> {t("No salon added. Please add a salon")}</div>
+    return <div className={classes.paddingTLR}> {t("No salon added. Please add a salon")}</div>
+  } else if (currentUser.salonSet[0].masterSet.length === 0) {
+    return <div className={classes.paddingTLR}> {t("No master added. Please add a master")}</div>
   } else {
     return <CreateServiceForm classes={classes} currentUser={currentUser} />
   }
@@ -759,6 +761,11 @@ const styles = theme => ({
     bottom: theme.spacing.unit * 2,
     right: theme.spacing.unit * 2,
     zIndex: "200"
+  },
+  paddingTLR: {
+    paddingTop: "10px",
+    paddingLeft: "20px",
+    paddingRight: "20px"
   }
 });
 

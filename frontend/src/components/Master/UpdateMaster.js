@@ -40,9 +40,9 @@ const UpdateMaster = ({classes}) => {
   const { t } = useTranslation();
   const currentUser = useContext(UserContext);
   if (!currentUser.salonSet[0]) {
-      return <div> {t("No salon added. Please add a salon")} </div>
+    return <div className={classes.paddingTLR}> {t("No salon added. Please add a salon")}</div>
   } else if (!currentUser.salonSet[0].masterSet[0]) {
-    return <div> {t("No master added. Please add a master")} </div>
+    return <div className={classes.paddingTLR}> {t("No master added. Please add a master")}</div>
   } else {
     return <SelectMaster classes={classes} currentUser={currentUser} />
   }
@@ -74,9 +74,11 @@ const SelectMaster = ({classes, currentUser}) => {
                     />
                   )}
                 />
-              </FormControl>     
+              </FormControl>  
+              {selectedMaster.id &&   
               <UpdateMasterForm classes={classes} currentUser={currentUser} selectedMaster={selectedMaster} setOpen={setOpen} />  
-            </Paper>
+              }
+             </Paper>
             <Dialog
                 open={open}
                 disableBackdropClick={true}
@@ -87,7 +89,7 @@ const SelectMaster = ({classes, currentUser}) => {
                   </DialogTitle>
                   <DialogActions>
                     <Button
-                      color="primary"
+                      color="secondary"
                       variant="contained"
                       onClick={() => {
                         setOpen(false);
@@ -268,6 +270,7 @@ const styles = theme => ({
   },
   paper: {
     marginTop: theme.spacing.unit * 8,
+    width:"80%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -307,6 +310,11 @@ const styles = theme => ({
     bottom: theme.spacing.unit * 2,
     right: theme.spacing.unit * 2,
     zIndex: "200"
+  },
+  paddingTLR: {
+    paddingTop: "10px",
+    paddingLeft: "20px",
+    paddingRight: "20px"
   }
 });
 
