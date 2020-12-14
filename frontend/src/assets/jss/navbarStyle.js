@@ -14,10 +14,12 @@ const navbarStyle = theme => ({
       WebkitBoxAlign: "center",
       MsFlexAlign: "center",
       alignItems: "center",
+      justifyContent: "flex-start",
       WebkitBoxOrient: "horizontal",
       WebkitBoxDirection: "normal",
       MsFlexDirection: "row",
-      flexDirection: "row"
+      flexDirection: "row",
+      paddingRight: "20px",
     },
     [theme.breakpoints.down("sm")]: {
       display: "block",
@@ -28,6 +30,7 @@ const navbarStyle = theme => ({
     },
     marginTop: "0px",
     display: "flex",
+    justifyContent: "flex-start",
     paddingLeft: "0",
     marginBottom: "0",
     listStyle: "none",
@@ -199,9 +202,9 @@ const navbarStyle = theme => ({
     [theme.breakpoints.up("md")]: {
       display: "flex !important",
       MsFlexPreferredSize: "auto",
-      flexBasis: "auto",
-      justifyContent: "flex-end",
-      alignItems: "center"
+      //flexBasis: "auto",
+      // justifyContent: "flex-end",
+      // alignItems: "center"
     },
     WebkitBoxFlex: "1",
     MsFlexPositive: "1",
@@ -211,7 +214,6 @@ const navbarStyle = theme => ({
     alignItems: "center"
   },
   mlAuto,
-
   grow: {
     //flexGrow: 1,
     position: "relative",
@@ -226,7 +228,7 @@ const navbarStyle = theme => ({
     paddingTop: "6px",
     position: "relative",
     textTransform: 'none',
-    fontSize: "0.875rem",
+    fontSize: "0.75rem",
     [theme.breakpoints.down("sm")]:{
       color: darkSlateBlue //new effective
     }

@@ -20,7 +20,7 @@ const Signout = ({ classes }) => {
   return (
     <ApolloConsumer>
       {client => (
-        <Button onClick={() => handleSignout(client)}>
+        <Button size="small" onClick={() => handleSignout(client)}>
           <Typography
             variant="body"
             className={classes.buttonText}

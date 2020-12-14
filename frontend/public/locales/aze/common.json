@@ -171,6 +171,8 @@
   "Message":"Mətn",
   "Add message":"Mətni əlavə edin",
   "Add email":"İmeyl ünvanınızı əlavə edin",
+  "Your message was sent. Thank you for contacting us.":"Müraciətiniz göndərildi. Bizə yazdığınız üçün təşəkkür edirik.",
+  "Sorry, something went wrong.":"Üzr istəriyik, müraciət göndərilmədi.",
 
   "Review":"Rəy",
   "Provide feedback":"Rəyinizi bildirin",
@@ -464,10 +466,10 @@
 
   "Makeup": "Makeup",
   "Special Occasion Makeup":"Gecə makiyajı",
-  "Wedding/Bridal Makeup":"Toy/Gəlin üçün makeup",
-  "Daily Makeup":"Gündəlik makeup",
-  "Thematic Makeup":"Tematik makeup",
-  "Permanent Lip Make-up":"Permanent dodaqlar",
+  "Wedding/Bridal Makeup":"Toy/Gəlin üçün makiyaj",
+  "Daily Makeup":"Gündəlik makiyaj",
+  "Thematic Makeup":"Tematik makiyaj",
+  "Permanent Lip Makeup":"Permanent dodaqlar",
   "Permanent Eyeliner":"Permanent layner",
   "Lip Blushing":"Mikrobleydinq",
 

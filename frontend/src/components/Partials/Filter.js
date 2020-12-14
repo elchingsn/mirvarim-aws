@@ -784,7 +784,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                   onClick={handleDrawerToggle}
                   // className={classes.closeButtonDrawer}
                 >
-                  <SearchIcon />
+                  <SearchIcon/>
                 </IconButton>
                 <div className={classes.container}>
                   <h4 className={classes.cardTitle + " " + classes.textLeft}>
@@ -976,19 +976,33 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
           <GridItem xs={12} sm={12} md={8} lg={9}>
             {/* <GridContainer> */}
             <Query query={FILTERED_SALONS_QUERY} 
-              variables={{booking, onlysalons, outcall, area, hair, nails, makeup, massage, eyebrow, cosmetology, tattoo, aesthetics}} 
+              variables={{booking, onlysalons, outcall, area, hair, nails, hairRemoval, makeup, massage, eyebrow, cosmetology, tattoo, aesthetics}} 
               fetchPolicy='network-only'>
               {({data, loading, error}) => {
                 if (loading) return <Loading />;
                 if (error) return <Error error={error} />;
                 const salonsFiltered = data.salonsFiltered.filter(el => el.isPublished === true)
-                setResultsnum(salonsFiltered.length)
-                if (salonsFiltered.length === 0) return <p> {t("No listing found")} </p>
+                if ((salonsFiltered.length === 0) || (!catValue && checkedCat.length>0)) return <p> {t("No listing found")} </p>
                   // Get current salons
+                setResultsnum(salonsFiltered.length)
                 const currentSalons = salonsFiltered.slice(indexOfFirstSalon, indexOfLastSalon);
                 setCount(Math.ceil(salonsFiltered.length/salonsPerPage))
+                //console.log(initCheckedCat.length)
                 return (
                   <div>
+                    {/* {initAreaValue ? 
+                      (!initCheckedCat.length === 0 ?
+                        <p>{t("You searched for")} {t(initCheckedCat[0])} {t("in the neighborhood of")} {t(initAreaValue)}</p>
+                      : 
+                        <p>{t("You searched for all services")} {t("in the neighborhood of")} {t(initAreaValue)}</p>
+                      )
+                    :
+                      (!(initCheckedCat.length === 0) ?
+                        <p>{t("You searched for")} {t(initCheckedCat[0])}</p>
+                      : 
+                        <p></p>
+                      )                    
+                    } */}
                     <p> {t("Listings found:")} {resultsnum} </p>
                    <FilterListings listings = {currentSalons}/>
                   </div>
@@ -1028,7 +1042,8 @@ query(
       $outcall: Boolean,
       $area:[String],
       $hair:[String],
-      $nails:[String]
+      $nails:[String],
+      $hairRemoval:[String],
       $makeup:[String],
       $massage:[String],
       $eyebrow:[String],
@@ -1041,7 +1056,8 @@ query(
                    outcall: $outcall,
                    area: $area,
                    hair: $hair,
-                   nails: $nails
+                   nails: $nails,
+                   hairRemoval: $hairRemoval,
                    makeup: $makeup,
                    massage: $massage,
                    eyebrow: $eyebrow,

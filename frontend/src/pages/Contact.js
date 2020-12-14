@@ -117,6 +117,11 @@ const Contact = ({classes}) => {
     email: ''
   })  
 
+  const [snack, setSnack] = useState({
+    snackOpen: false,
+    snackMessage: ""
+  })
+
   const handleSubmit = async (event, sendFeedback) => {
     event.preventDefault();
   
@@ -146,75 +151,89 @@ const Contact = ({classes}) => {
       </div> */}
       <div className={classes.container}>
       <Paper className={classes.paper}>
-          <h2>{t("Send us a message")}</h2> 
-          <GridContainer>
-              <GridItem md={12} sm={12}>
-                <p>
-                  {t("You can contact us with anything related to our services. We will get in touch with you as soon as possible.")}
-                  <br />
-                  <br />
-                </p>
-                <Mutation
-                  mutation={SEND_FEEDBACK}
-                  // onCompleted={data => {
-                  // console.log({ data });
-                  // }}
+          <Mutation
+            mutation={SEND_FEEDBACK}
+            onCompleted={data => {
+              //console.log({ data });
+              if (data.sendFeedback.success) {
+                setSnack ({
+                  ...snack,
+                  snackOpen: true,
+                  snackMessage: t("Your message was sent. Thank you for contacting us.")
+                })
+              } else {
+                setSnack ({
+                  ...snack,
+                  snackOpen: true,
+                  snackMessage: t("Sorry, something went wrong.")
+                })
+              }
+            }}
+          >
+            {(sendFeedback, { loading, error }) => {
+            if (error) return <Error error={error} />;
+              return snack.snackOpen ?
+              (<div> 
+                <h6> {snack.snackMessage} </h6>                 
+              </div>) :
+              (<div>
+                <h2>{t("Send us a message")}</h2> 
+                <GridContainer>
+                    <GridItem md={12} sm={12}>
+                      <p>
+                        {t("You can contact us with anything related to our services. We will get in touch with you as soon as possible.")}
+                        <br />
+                        <br />
+                      </p>
+                <form onSubmit={event => handleSubmit(event, sendFeedback)}>
+                  <FormControl fullWidth className={classes.field}>
+                    <TextField
+                    label={t("Subject")}
+                    placeholder={t("Add subject")}
+                    onChange={(event) => setContactData({ ...contactData, subject:event.target.value })}
+                    value={contactData.subject}
+                    maxLength={25}
+                    variant="outlined"
+                    />
+                  </FormControl>
+                  <FormControl fullWidth className={classes.field}>
+                    <TextField
+                    label={t("Message")}
+                    placeholder={t("Add message")}
+                    multiline
+                    rows="7"
+                    onChange={(event) => setContactData({ ...contactData, message:event.target.value })}
+                    value={contactData.message}
+                    variant="outlined"
+                    />
+                  </FormControl>
+                  <FormControl fullWidth className={classes.field}>
+                    <TextField
+                    label={t("Email")}
+                    placeholder={t("Add email")}
+                    onChange={(event) => setContactData({ ...contactData, email:event.target.value })}
+                    value={contactData.email}
+                    variant="outlined"
+                    />
+                  </FormControl>
+                <Box
+                  mt={1}
+                  justifyContent="center"
+                  display="flex"
                 >
-                  {(sendFeedback, { loading, error }) => {
-                  if (error) return <Error error={error} />;
-                    return(
-                      <form onSubmit={event => handleSubmit(event, sendFeedback)}>
-                        <FormControl fullWidth className={classes.field}>
-                          <TextField
-                          label={t("Subject")}
-                          placeholder={t("Add subject")}
-                          onChange={(event) => setContactData({ ...contactData, subject:event.target.value })}
-                          value={contactData.subject}
-                          maxLength={25}
-                          variant="outlined"
-                          />
-                        </FormControl>
-                        <FormControl fullWidth className={classes.field}>
-                          <TextField
-                          label={t("Message")}
-                          placeholder={t("Add message")}
-                          multiline
-                          rows="7"
-                          onChange={(event) => setContactData({ ...contactData, message:event.target.value })}
-                          value={contactData.message}
-                          variant="outlined"
-                          />
-                        </FormControl>
-                        <FormControl fullWidth className={classes.field}>
-                          <TextField
-                          label={t("Email")}
-                          placeholder={t("Add email")}
-                          onChange={(event) => setContactData({ ...contactData, email:event.target.value })}
-                          value={contactData.email}
-                          variant="outlined"
-                          />
-                        </FormControl>
-                      <Box
-                        mt={1}
-                        justifyContent="center"
-                        display="flex"
-                      >
-                        <Button
-                          variant="outlined"
-                          disabled={
-                            !contactData.message.trim() ||
-                            !contactData.email.trim()
-                          }
-                          type="submit"
-                          className={classes.save}
-                        >
-                          {t("Send")}
-                        </Button>
-                      </Box>
-                    </form>
-                  );
-                }}
-              </Mutation>
+                  <Button
+                    variant="outlined"
+                    disabled={
+                      !contactData.message.trim() ||
+                      !contactData.email.trim()
+                    }
+                    type="submit"
+                    className={classes.save}
+                  >
+                    {t("Send")}
+                  </Button>
+                </Box>
+              </form>
               </GridItem>
               {/* <GridItem md={4} sm={4} className={classes.mlAuto}>
                 <PinDrop/>
@@ -222,6 +241,9 @@ const Contact = ({classes}) => {
                 <p>Port Baku</p>
               </GridItem> */}
             </GridContainer>
+            </div>);
+          }}
+        </Mutation>
       </Paper>
       </div>
     </div>

@@ -222,8 +222,8 @@ const customDropdownStyle = theme => ({
   },
   button: {
     color: whiteColor,
-    padding: "10px",
-    fontSize: "0.875rem",
+    padding: "5px",
+    fontSize: "0.825rem",
     "&:hover,&:focus":{
       color: whiteColor
     },

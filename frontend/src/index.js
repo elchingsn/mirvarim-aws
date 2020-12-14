@@ -56,7 +56,7 @@ const getNewToken = async () => {
       variables: {token: freshToken}
     }
   );
-  console.log(res.data.data.refreshToken.token);
+  //console.log(res.data.data.refreshToken.token);
   localStorage.setItem("accessToken", res.data.data.refreshToken.token);
   return res.data.data.refreshToken.token;
 }
@@ -65,7 +65,7 @@ const getNewToken = async () => {
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
   const token = localStorage.getItem('accessToken');
-  console.log("authLink");
+  //console.log("authLink");
   // getNewToken();
   // return the headers to the context so httpLink can read them
   return {
@@ -81,14 +81,13 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
     for (let err of graphQLErrors) {
       // switch (err.extensions.code) {
       //   case 'UNAUTHENTICATED':
-      switch (err.message) {
-        case "Signature has expired":
-          // error code is set to UNAUTHENTICATED
-          // when AuthenticationError thrown in resolver
+      if (err.message.includes("Signature has expired")) {
+      // switch (err.message) {
+      //   case "Signature has expired":
 
           // modify the operation context with a new token
           const oldHeaders = operation.getContext().headers;
-          console.log("insie error");
+          //console.log("insie error");
           
           operation.setContext({
             headers: {
@@ -100,6 +99,11 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
           });
           // retry the request, returning the new observable
           return forward(operation);
+      } else {
+        //console.log(`[GraphQL error]: Message: ${err.message}, Location: ${err.locations}, Path: ${err.path}`);
+        localStorage.removeItem("accessToken")
+        window.location.reload()
+        //return <Redirect to="/login" />
       }
     }
   }

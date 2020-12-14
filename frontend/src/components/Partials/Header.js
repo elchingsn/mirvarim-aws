@@ -15,7 +15,7 @@ import Drawer from "@material-ui/core/Drawer";
 import Menu from "@material-ui/icons/Menu";
 import Close from "@material-ui/icons/Close";
 // core components
-import styles from "../../assets/jss/headerStyle.js";
+import styles from "assets/jss/headerStyle.js";
 import mirvarim_logo from "assets/img/mirvarim1.png"
 
 
@@ -67,9 +67,9 @@ export default function Header(props) {
   return (
     <AppBar className={appBarClasses}>
       <Toolbar className={classes.container}> 
-        {/* <Button className={classes.title}> */}
-          <Link to="/"><img src={mirvarim_logo} alt="logo" style={{width: 140, height: 50, marginTop: "0px"}}/></Link>
-        {/* </Button> */}
+        <Hidden mdUp implementation="css" className={classes.hidden}>
+          <Link to="/"><img src={mirvarim_logo} alt="logo" style={{width: 123, height: 39, marginTop: "0px"}}/></Link>
+        </Hidden>
         <Hidden smDown implementation="css" className={classes.hidden}>
           {/* <div className={classes.collapse1}>{links.props.children[1]}</div>
           <div className={classes.collapse}>{links.props.children[0]}</div> */}

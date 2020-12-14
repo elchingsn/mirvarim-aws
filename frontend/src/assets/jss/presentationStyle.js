@@ -96,6 +96,7 @@ const presentationStyle = {
     zIndex: 1,
     position: 'absolute',
     listStyle: 'none',
+    fontSize: '0.9rem',
     backgroundColor: whiteColor,
     overflow: 'auto',
     maxHeight: 250,
@@ -126,6 +127,9 @@ const presentationStyle = {
     display: "flex",
     justifyContent: "center",
     width:"100%"
+  },
+  resize: {
+    fontSize: "0.9rem"
   }
 };
 

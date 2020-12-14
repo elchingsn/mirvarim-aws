@@ -228,7 +228,7 @@ const headerStyle = theme => ({
       display: "flex !important",
       MsFlexPreferredSize: "auto",
       flexBasis: "100%",
-      float:"right",
+      //float:"right",
       height:"auto"
     },
     WebkitBoxFlex: "1",

@@ -427,6 +427,8 @@ const SalonDetail=({match}) => {
                         <GridItem xs={10} sm={10} className={classes.paddingL}>
                           <h2 className={classes.title}>{salon.name}</h2>
                           <h5>{salon.address}</h5>
+                          <h5>{salon.email}</h5>
+                          <h5>{salon.phone}</h5>
                       </GridItem>
                       <FavoriteButton xs="2" sm="2" md="2"/>
                           <GridItem md={6} sm={6} xs={6} className={classes.paddingL}>
@@ -844,7 +846,7 @@ const SalonDetail=({match}) => {
                                 </Box>
                                 { Number.isNaN(parseFloat(avgRating)) ? 
                                 (<Box display="flex" justifyContent="center">
-                                  <Box> <div> No review </div> </Box>
+                                  <Box> <div>{t("No review")}</div> </Box>
                                  </Box>) :
                                  (<Box display="flex" justifyContent="center">
                                  <Box> 
@@ -936,6 +938,8 @@ query selected_salon ($id:Int!) {
         name
         address
         description
+        email
+        phone
         city{
           id
           title

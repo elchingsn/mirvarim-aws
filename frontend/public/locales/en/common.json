@@ -145,6 +145,9 @@
   "Aesthetics Services":"Aesthetics Services", 
   "No listing found":"No listing found",
   "Listings found:":"Listings found:", 
+  "You searched for":"You searched for",
+  "in the neighborhood of":"in the neighborhood of",
+  "You searched for all services":"You searched for all services",
 
   "Profile":"Profile",
   "Welcome":"Welcome",
@@ -171,6 +174,8 @@
   "Message":"Message",
   "Add message":"Add message",
   "Add email":"Add email",
+  "Your message was sent. Thank you for contacting us.":"Your message was sent. Thank you for contacting us.",
+  "Sorry, something went wrong.":"Sorry, something went wrong.",
 
   "Review":"Review",
   "Provide feedback":"Provide feedback",
@@ -465,7 +470,7 @@
   "Makeup": "Makeup",
   "Special Occasion Makeup":"Special Occasion Makeup",
   "Wedding/Bridal Makeup":"Wedding/Bridal Makeup",
-  "Daily Make-up":"Daily Makeup",
+  "Daily Makeup":"Daily Makeup",
   "Thematic Makeup":"Thematic Makeup",
   "Permanent Lip Makeup":"Permanent Lip Makeup",
   "Permanent Eyeliner":"Permanent Eyeliner",

@@ -16,15 +16,14 @@ const Partner = ({ match })=>{
         document.body.scrollTop = 0;
     },[]);
     
+    //console.log(currentUser)
     if (currentUser.role === "A_1") {
       return <div style={{padding: "5px 5px"}}>{t("Please login as a salon or freelancer to add salon/service")}</div>
-    }
-    
-    return (
-      <DashboardLayout>
-        <ViewSalon/>
-      </DashboardLayout>
-    );
+    } else return (
+                  <DashboardLayout>
+                    <ViewSalon/>
+                  </DashboardLayout>
+                  );
 }
 
 export default Partner;

@@ -16,14 +16,16 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    debug: true,
+    debug: false,
  
     lng: localStorage.getItem("i18nextLng") || 'aze',
     fallbackLng: {'default': ['aze']},
     whitelist: ['aze','en','ru'],
+    ns: ['common', 'alternate'],
+    defaultNS: 'common',
 
     // allow keys to be phrases having `:`, `.`
-    nsSeparator: false,
+    nsSeparator: '::',
     keySeparator: false,
  
     interpolation: {

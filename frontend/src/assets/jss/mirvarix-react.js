@@ -159,6 +159,21 @@ const container = {
     maxWidth: "1140px"
   }
 };
+// const container = {
+//   ...containerFluid,
+//   "@media (min-width: 600px)": {
+//     maxWidth: "600px"
+//   },
+//   "@media (min-width: 960px)": {
+//     maxWidth: "960px"
+//   },
+//   "@media (min-width: 1280px)": {
+//     maxWidth: "1280px"
+//   },
+//   "@media (min-width: 1920px)": {
+//     maxWidth: "1920px"
+//   }
+// };
 
 const card = {
   display: "inline-block",

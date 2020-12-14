@@ -146,11 +146,12 @@ export default function Home() {
                 <Button
                   color="white"
                   //justIcon
+                  size="sm"
                   simpler
                   round
                   onClick={handleSearchOpen}
                 >
-                  <i className="fas fa-search" > {t("Search salon or service")}</i>
+                  <i className="fas fa-search" ></i><b>{t("Search salon or service")}</b>
                 </Button>
                 </Hidden>
                 </div>

@@ -191,6 +191,13 @@ $grid-breakpoints: (
   lg: 992px,
   xl: 1200px
 ) !default;
+// $grid-breakpoints: (
+//   xs: 0,
+//   sm: 600px,
+//   md: 960px,
+//   lg: 1280px,
+//   xl: 1920px
+// ) !default;
 
 @include _assert-ascending($grid-breakpoints, "$grid-breakpoints");
 @include _assert-starts-at-zero($grid-breakpoints);
@@ -829,7 +836,7 @@ $alert-color-level: 6 !default;
 
 // Progress bars
 
-$progress-height: 1rem !default;
+$progress-height: 0.5rem !default;
 $progress-font-size: ($font-size-base * 0.75) !default;
 $progress-bg: $gray-200 !default;
 $progress-border-radius: $border-radius !default;

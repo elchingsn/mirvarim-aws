@@ -21,6 +21,7 @@ const RegularButton = React.forwardRef((props, ref) => {
     disabled,
     simple,
     simpler, //new
+    sm,
     size,
     block,
     link,

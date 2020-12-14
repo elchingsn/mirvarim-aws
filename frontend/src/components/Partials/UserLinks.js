@@ -22,6 +22,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Hidden from "@material-ui/core/Hidden";
 
 import { Link } from "react-router-dom";
 import Signout from "../Auth/Signout";
@@ -29,6 +30,7 @@ import Signout from "../Auth/Signout";
 import aze_flag from "assets/img/aze.png"
 import ru_flag from "assets/img/ru.png"
 import en_flag from "assets/img/eng.png"
+import mirvarim_logo from "assets/img/mirvarim1.png"
 
 import styles from "../../assets/jss/navbarStyle.js";
 
@@ -108,8 +110,11 @@ export default function UserLinks(props) {
   return (
       <div className={classes.collapse}>      
         {/* Auth User Info */}
+        <Hidden smDown>
+          <Link to="/"><img src={mirvarim_logo} alt="logo" style={{width: 123, height: 39, marginTop: "0px"}}/></Link>
+        </Hidden>
         {currentUser
-        ? (<div>    
+        ? (<div style={{marginLeft: "auto"}}>    
           <List className={classes.list + " " + classes.mlAuto}>
           <ListItem className={classes.listItem}>
               <FormControl variant="outlined" className={classes.formControl}>
@@ -148,13 +153,15 @@ export default function UserLinks(props) {
                 </Button>
                 </Link>
                 </ListItem>) 
-              :(<ListItem className={classes.listItem}>
-                <Button className={classes.username} size="small" variant="outlined"
-                  onClick={handleDashboardOpen}>
-                  {t("List your salon")}
-                </Button>
-                </ListItem>
-              )}
+              :null
+              // (<ListItem className={classes.listItem}>
+              //   <Button className={classes.username} size="small" variant="outlined"
+              //     onClick={handleDashboardOpen}>
+              //     {t("List your salon")}
+              //   </Button>
+              //   </ListItem>
+              // )
+              }
             {/* <Link to={`/profile/${currentUser.id}`} className={classes.grow}>
               <Typography variant="headline" className={classes.username} noWrap>
               {currentUser.username} 
@@ -174,7 +181,7 @@ export default function UserLinks(props) {
           </List>
             </div>  
           )
-        : (<div>
+        : (<div style={{marginLeft: "auto"}}>
           <List className={classes.list + " " + classes.mlAuto}>
           <ListItem className={classes.listItem}>
               <FormControl variant="outlined" className={classes.formControl}>

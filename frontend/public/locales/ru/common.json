@@ -87,7 +87,7 @@
   "Find out latest trends and services": "Последние тренды beauty-индустрии",
   "Connect": "Присоединяйтесь",
   "Engage community and rate salons": "Рейтинги салонов и отзывы клиетов",
-  "Book": "Онлайн-запись",
+  "Book": "Запись",
   "Book beauty and wellness services": "Запись на процедуры красоты в режиме онлайн",
   "Discover how we can help you grow your business": "Продвижение вашего бизнеса",
   "Mirvarim is a beauty management platform that helps your beauty salon or spa connect with new and existing customers. Mirvarim also provides state-of-the-art salon management software, designed to simplify managing your daily operations.":
@@ -100,7 +100,7 @@
   "Получайте аналитическую информацию об эффективности работы Вашего салона",
   "Appointments anytime, anywere": "Функция онлайн-записи 24 часа/7 дней в неделю.",
   "Clients can check your availability and book their visits 24/7, from anywhere. 60% of appointments are booked outside of working hours, and with Mirvarim, you don’t have to miss out.":
-  "Ваши будущие клиенты смогут согласовывать время визита, ориентируясь на ваше расписание, доступное онлайн. 60% тех, кто записываюся через сайт, делают это в нерабочее время, поэтому не упустите все возможности данного ресурса.",
+  "Ваши будущие клиенты смогут согласовывать время визита, ориентируясь на ваше расписание, доступное онлайн. 60% тех, кто записываются через сайт, делают это в нерабочее время, поэтому не упустите все возможности данного ресурса.",
   "Stay connected": "Оставайтесь с нами",
   "Keep key client details at your fingertips: customizable client profiles store information like booking history, no-shows and appointment reminders in one easy location.":
   "Mirvarim позволяет сохранять всю информацию о ваших посетителях: его актуальные контакты, тип оказанной услуги и т.д. Используя наши алгоритмы, вы можете грамотно работать с этой информацией.",  
@@ -171,6 +171,8 @@
   "Message":"Сообщение",
   "Add message":"Добавьте сообщение",
   "Add email":"Cобавьте электронную почту",
+  "Your message was sent. Thank you for contacting us.":"Ваше сообщение отправлено. Спасибо, что связались с нами.",
+  "Sorry, something went wrong.":"Извините, что-то пошло не так.",
 
   "Review":"Review",
   "Provide feedback":"Оставьте отзыв",
@@ -433,13 +435,13 @@
   "Permanent Curls":"Завивка",
   "Hair Botox":"Ботокс для волос",
   "Hair Lamination":"Ламинирование волос",
-  "Hair Spa":"Спа уход",
+  "Hair Spa":"Спа уход для волос",
   "Braids/Dreads":"Плетение косичек/дредов",
   "Bridal Hairstyle":"Свадебная прическа",
   "Men Haircut":"Мужская стрижка",
   "Beard/Mustache Trim":"Оформление бороды/усов",
   "Children Haircut":"Детская стрижка",
-  "Hair Treatment/Trichology":"Лечение волос/ Трихология",
+  "Hair Treatment/Trichology":"Лечение волос/Трихология",
 
   "Nails": "Ногти",
   "Manicure":"Маникюр",
@@ -449,8 +451,8 @@
   "Nail Design":"Дизайн ногтей",
   "Nail Strengthening":"Укрепление ногтей", 
   "Gel Polish Removal":"Снятие гель лака",
-  "Spa Treatment for Hands":"Spa уход для рук",
-  "Spa Treatment for Feet":"Spa уход для ног",
+  "Spa Treatment for Hands":"Спа уход для рук",
+  "Spa Treatment for Feet":"Спа уход для ног",
   "Men Manicure":"Мужской маникюр",
   "Men Pedicure":"Мужской педикюр",
 
@@ -464,10 +466,10 @@
 
   "Makeup": "Makeup",
   "Special Occasion Makeup":"Вечерний макияж",
-  "Wedding/Bridal Make-up":"Свадебный макияж",
-  "Daily Make-up":"Повседневный макияж",
+  "Wedding/Bridal Makeup":"Свадебный макияж",
+  "Daily Makeup":"Повседневный макияж",
   "Thematic Makeup":"Тематический макияж",
-  "Permanent Lip Make-up":"Перманентный макияж губ",
+  "Permanent Lip Makeup":"Перманентный макияж губ",
   "Permanent Eyeliner":"Перманентная стрелка век",
   "Lip Blushing":"Микроблейдинг губ",
 
@@ -542,8 +544,16 @@
   "Hip Sculpting":"Пластика бёдер",
   "Labiaplasty":"Лабиопластика",
 
-  "development version":"development version"
-
-
+  "development version":"development version",
+  "Women's Haircut": "Jenskaya strijka",
+  "Hair Extensions": "Hair Extensions",
+  "Swedish Massage": "Swedish Massage",
+  "Back Massage": "Back Massage",
+  "Thai Massage": "Thai Massage",
+  "Foot Massage": "Foot Massage",
+  "Aroma Massage": "Aroma Massage",
+  "Wedding Makeup":"Wedding Makeup",
+  "Eye Makeup":"Eye Makeup",
+  "Elmler st.":"Elmler in cyrillic"
 
 }

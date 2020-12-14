@@ -24,15 +24,18 @@ const ReviewList = ({ reviews, currentUser, classes }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const history = useHistory();
+  const [submitting, setSubmitting] = useState(false)
 
-  const handleCreateVote = (createVote,reviewId,isUseful,isReported) =>{
+  const handleCreateVote = async (createVote,reviewId,isUseful,isReported) => {
+    await setSubmitting(true)
     createVote({variables: {reviewId:reviewId, isUseful:isUseful, isReported:isReported}}).catch(err => {
       console.error(err);
       history.push('/login')
     });
   }
 
-  const handleDeleteVote = (deleteVote, voteId) =>{
+  const handleDeleteVote = async (deleteVote, voteId) => {
+    await setSubmitting(true)
     deleteVote({variables: { voteId }}).catch(err => { 
       console.error(err);
       history.push('/login')
@@ -48,6 +51,9 @@ const ReviewList = ({ reviews, currentUser, classes }) => {
             ( 
               <Mutation
                 mutation={CREATE_VOTE}
+                onCompleted={data => {
+                  setSubmitting(false)
+                }}
                 refetchQueries={() => [{ query: REVIEW_QUERY, variables: {id:review.salon.id} }]}
               >
                 {(createVote, { loading, error }) => {
@@ -60,14 +66,16 @@ const ReviewList = ({ reviews, currentUser, classes }) => {
                       <Box ml={1}>
                         <ThumbUpIcon                     
                           fontSize="small" 
-                          onClick={() => handleCreateVote(createVote,review.id,true,false)} 
+                          onClick={!submitting? () => {
+                            handleCreateVote(createVote,review.id,true,false)
+                          }:null} 
                           className={classes.button1}
                         />
                       </Box>
                       <Box ml={1} flexGrow={1}>
                         <ThumbDownIcon 
                           fontSize="small" 
-                          onClick={() => handleCreateVote(createVote,review.id,false,false)} 
+                          onClick={!submitting? () => handleCreateVote(createVote,review.id,false,false):null} 
                           className={classes.button1}
                         />
                       </Box>
@@ -93,6 +101,9 @@ const ReviewList = ({ reviews, currentUser, classes }) => {
             (
             <Mutation
               mutation={DELETE_VOTE}
+              onCompleted={data => {
+                setSubmitting(false)
+              }}
               refetchQueries={() => [{ query: REVIEW_QUERY, variables: {id:review.salon.id} }]}
             >
               {(deleteVote, { loading, error }) => {

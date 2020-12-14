@@ -15,7 +15,7 @@ export default withRoot(( {setLoginOpen} ) => {
     if(window.location.pathname.includes('login')){
       history.push('/');
     } else if(window.location.pathname.includes('partner')) {
-      history.push(`/partner/${currentUser.id}/salon/view`);
+      history.push(`/partner/${currentUser.id}`);
     }
   } 
     

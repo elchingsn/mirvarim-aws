@@ -14,7 +14,7 @@ const Navbar = (props) => {
 
     const { currentUser, dropdownHoverColor } = props;
 
-    if(props.location.pathname.match(/partner/)){
+    if((props.location.pathname.match(/partner/)) && (props.location.pathname !== "/partner")){
       return (null);
     }
 
@@ -56,7 +56,7 @@ const Navbar = (props) => {
     }
 
     if((props.location.pathname.match(/activate/))||(props.location.pathname.match(/password-reset/))
-        ||(props.location.pathname.match(/login/))) {
+        ||(props.location.pathname.match(/login/)) || (props.location.pathname === "/partner")) {
       return (
         <div>
           <Header
@@ -72,6 +72,10 @@ const Navbar = (props) => {
           />
         </div>
       );
+    }
+
+    if(props.location.pathname.match(/partner/)){
+      return (null);
     }
 
     if(props.location.pathname === "/") {

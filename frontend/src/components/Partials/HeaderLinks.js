@@ -81,7 +81,8 @@ export default function HeaderLinks(props) {
   // }
 
   return (
-      <div className={classes.collapse}>
+      // <div className={classes.collapse}>
+      <div>
         <List className={classes.list + " " + classes.mlAuto}>
 
             <ListItem className={classes.listItem}>
