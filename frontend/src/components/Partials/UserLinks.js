@@ -23,6 +23,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Hidden from "@material-ui/core/Hidden";
+import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 
 import { Link } from "react-router-dom";
 import Signout from "../Auth/Signout";
@@ -147,7 +148,8 @@ export default function UserLinks(props) {
                 </Button>
                 </Link> */}
                 <Link to={`/partner/${currentUser.id}`}>
-                <Button className={classes.username} size="small" variant="outlined"
+                <Button className={classes.username} size="small" 
+                  //variant="outlined"
                   onClick={(e)=> e.preventDefault}>
                   {t("List your salon")}
                 </Button>
@@ -171,6 +173,7 @@ export default function UserLinks(props) {
             <Link to={`/profile/${currentUser.id}`} className={classes.grow}>
               <Button className={classes.username} size="small" 
                 onClick={(e)=> e.preventDefault}>
+                <PermIdentityIcon className={classes.usernameIcon}/>
                 {currentUser.username} 
               </Button>
             </Link>
@@ -206,7 +209,8 @@ export default function UserLinks(props) {
             </ListItem> 
 
             <ListItem className={classes.listItem}>
-            <Button className={classes.username} size="small" variant="outlined"
+            <Button className={classes.username} size="small" 
+              //variant="outlined"
               onClick={handleDashboardOpen}>
               {t("List your salon")}
             </Button>

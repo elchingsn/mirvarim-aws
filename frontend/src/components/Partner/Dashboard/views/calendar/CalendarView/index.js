@@ -71,17 +71,25 @@ import Loading from "components/Shared/Loading";
 
 const CalendarView = () => {
   const history = useHistory();
+  const { t } = useTranslation();
   const currentUser = useContext(UserContext);
 
   const { data, loading, error } = useQuery(BOOKING_QUERY, {
-    variables: {salonId: currentUser.salonSet[0].id},
+    variables: {salonId: currentUser.salonSet[0]? currentUser.salonSet[0].id : null},
     pollInterval: 3000,
   })
   if (loading) return <Loading />;
   if (error) { history.push('/login') }
   //console.log('all bookings',data)
 
-  return <SelectedCalendar currentUser={currentUser} bookings={data.bookings}/>
+  if (!currentUser.salonSet[0]) {
+    return <div style={{padding: "20px"}}> {t("No salon added. Please add a salon")}</div>
+  } else if (!currentUser.salonSet[0].masterSet[0]) {
+    return <div style={{padding: "20px"}}> {t("No master added. Please add a master")}</div>
+  } else {
+    return <SelectedCalendar currentUser={currentUser} bookings={data.bookings}/>
+  }
+
 }
 
 const SelectedCalendar =({currentUser, bookings}) => {
@@ -544,6 +552,11 @@ const useStyles = makeStyles((theme) => ({
     '& .fc .fc-event-time': {
       ...theme.typography.body3
     }
+  },
+  paddingTLR: {
+    paddingTop: "10px",
+    paddingLeft: "20px",
+    paddingRight: "20px"
   }
 }));
 

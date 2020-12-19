@@ -13,7 +13,8 @@ import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
-import Button from "@material-ui/core/Button";
+//import Button from "@material-ui/core/Button";
+import Button from "components/Partials/Button"
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -58,10 +59,10 @@ const Register = ({ classes, setNewUser }) => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <Avatar className={classes.avatar}>
+        {/* <Avatar className={classes.avatar}>
           <VpnKeyIcon />
-        </Avatar>
-        <Typography variant="headline">{t("Register")}</Typography>
+        </Avatar>*/}
+        <Typography variant="headline">{t("Register")}</Typography> 
 
         <Mutation
           mutation={REGISTER_MUTATION}
@@ -87,9 +88,10 @@ const Register = ({ classes, setNewUser }) => {
                 onSubmit={event => handleSubmit(event, register)}
                 className={classes.form}
               >
-                <FormControl margin="normal" required fullWidth>
+                <FormControl margin="dense" required fullWidth>
                   <NativeSelect
                     value={role}
+                    style={{ fontSize: "0.9rem" }}
                     onChange={event => {
                       setRole(event.target.value);
                     }}
@@ -103,16 +105,16 @@ const Register = ({ classes, setNewUser }) => {
                   </NativeSelect>
                   <FormHelperText>{t("Register as User or Salon")}</FormHelperText>
                 </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="username">{t("Username")}</InputLabel>
+                <FormControl margin="dense" required fullWidth>
+                  <InputLabel style={{ fontSize: "0.9rem" }} htmlFor="username">{t("Username")}</InputLabel>
                   <Input
                     id="username"
                     onChange={event => setUsername(event.target.value)}
                   />
                   <h6 className={classes.error}>{err["username"]&&err["username"][0].message}</h6>                  
                 </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="email">{t("Email")}</InputLabel>
+                <FormControl margin="dense" required fullWidth>
+                  <InputLabel style={{ fontSize: "0.9rem" }} htmlFor="email">{t("Email")}</InputLabel>
                   <Input
                     id="email"
                     type="email"
@@ -120,8 +122,8 @@ const Register = ({ classes, setNewUser }) => {
                   />
                   <h6 className={classes.error}>{err["email"]&&err["email"][0].message}</h6>
                 </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="password1">{t("Password")}</InputLabel>
+                <FormControl margin="dense" required fullWidth>
+                  <InputLabel style={{ fontSize: "0.9rem" }} htmlFor="password1">{t("Password")}</InputLabel>
                   <Input
                     id="password1"
                     type={showPassword ? 'text' : 'password'}
@@ -140,8 +142,8 @@ const Register = ({ classes, setNewUser }) => {
                   />
                   <h6 className={classes.error}>{err["password1"]&&err["password1"][0].message}</h6>
                 </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="password2">{t("Confirm Password")}</InputLabel>
+                <FormControl margin="dense" required fullWidth>
+                  <InputLabel style={{ fontSize: "0.9rem" }} htmlFor="password2">{t("Confirm Password")}</InputLabel>
                   <Input
                     id="password2"
                     type={showPassword ? 'text' : 'password'}
@@ -165,7 +167,7 @@ const Register = ({ classes, setNewUser }) => {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  color="secondary"
+                  color="primary"
                   disabled={
                     loading ||
                     !username.trim() ||
@@ -179,7 +181,7 @@ const Register = ({ classes, setNewUser }) => {
                 </Button>
                 <Button
                   onClick={() => setNewUser(false)}
-                  color="primary"
+                  color="secondary"
                   variant="outlined"
                   fullWidth
                 >
@@ -279,11 +281,11 @@ const styles = theme => ({
     }
   },
   paper: {
-    marginTop: theme.spacing.unit * 8,
+    marginTop: theme.spacing.unit*2,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: theme.spacing.unit * 2
+    padding: theme.spacing.unit*2
   },
   title: {
     marginTop: theme.spacing.unit * 2,
@@ -295,7 +297,7 @@ const styles = theme => ({
   },
   form: {
     width: "100%",
-    marginTop: theme.spacing.unit
+    marginTop: "10px"
   },
   submit: {
     marginTop: theme.spacing.unit * 2,

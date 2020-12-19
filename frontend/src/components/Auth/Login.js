@@ -12,8 +12,10 @@ import Avatar from "@material-ui/core/Avatar";
 import FormControl from "@material-ui/core/FormControl";
 import Paper from "@material-ui/core/Paper";
 import Input from "@material-ui/core/Input";
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from "@material-ui/core/InputLabel";
-import Button from "@material-ui/core/Button";
+//import Button from "@material-ui/core/Button";
+import Button from "components/Partials/Button"
 import Lock from "@material-ui/icons/Lock";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -152,9 +154,9 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
         >
           {t("Continue with Facebook")}
         </Button>
-        <Avatar className={classes.avatar}>
+        {/* <Avatar className={classes.avatar}>
           <Lock />
-        </Avatar>
+        </Avatar> */}
         <Typography variant="title">{t("Login as Existing User")}</Typography>
 
         <Mutation mutation={LOGIN_MUTATION} variables={{ username, password }}>
@@ -165,7 +167,7 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
                 className={classes.form}
               >
                 <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="username">{t("Username")}</InputLabel>
+                  <InputLabel style={{ fontSize: "0.9rem" }} htmlFor="username">{t("Username")}</InputLabel>
                   <Input
                     id="username"
                     value={username}
@@ -174,7 +176,7 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
                 </FormControl>
 
                 <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="password">{t("Password")}</InputLabel>
+                  <InputLabel style={{ fontSize: "0.9rem" }} htmlFor="password">{t("Password")}</InputLabel>
                   <Input
                     id="password"
                     type="password"

@@ -95,7 +95,7 @@ const cardStyle = {
     "& ul": {
       listStyle: "none",
       padding: 0,
-      maxWidth: "240px",
+      maxWidth: "320px",
       margin: "10px auto"
     },
     "& ul li": {

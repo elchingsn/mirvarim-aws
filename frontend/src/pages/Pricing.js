@@ -63,6 +63,9 @@ const Pricing = () => {
                     <li>
                       {t("Marketing tools")}
                     </li>
+                    <li>
+                      {t("Online booking 24/7")}
+                    </li>
                     {/* <li>
                       {t("1 staff member")}
                     </li> */}
@@ -75,7 +78,7 @@ const Pricing = () => {
                 </CardFooter> */}
               </Card>
             </GridItem>
-            <GridItem xs={12} sm={12} md={6} className={classes.mrAuto}>
+            <GridItem xs={12} sm={12} md={6} className={classes.mrAut}>
               <Card pricing color="primary">
                 <CardBody pricing>
                   <h6
@@ -83,7 +86,7 @@ const Pricing = () => {
                       classes.cardCategory + " " + classes.marginBottom30
                     }
                   >
-                    Standard
+                    {t("Standard")}
                   </h6>
                   <h1 className={classes.cardTitleWhite}>
                     <small>AZN</small> 20 <small>/{t("month")}</small>
@@ -92,12 +95,18 @@ const Pricing = () => {
                     <li>
                       {t("Everything in basic package")}
                     </li>
-                    <li>
+                    {/* <li>
                       {t("Online booking 24/7")}
                     </li>
-                    {/* <li>
+                    <li>
                       {t("up to 3 staff members")} 
                     </li> */}
+                    <li>
+                      {t("Additional tools to fill your calendar")}
+                    </li>
+                    <li>
+                      {t("Customer notification and reminder SMS")}
+                    </li>
                     <li>
                       {t("Targeted marketing")}
                     </li>

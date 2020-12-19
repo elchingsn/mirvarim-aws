@@ -100,20 +100,20 @@ const SectionFooter = (props) => {
               </div> */}
               <div className={classes.rightLinks}>
                 <ul>
-                  <li>
+                  {/* <li>
                     <Button
                       href="https://twitter.com"
-                      target="_blank"
+                      target="_blank" 
                       color="twitter"
                       justIcon
                       simple
                     >
                       <i className="fab fa-twitter" />
                     </Button>
-                  </li>
+                  </li> */}
                   <li>
                     <Button
-                      href="https://facebook.com"
+                      href="https://www.facebook.com/Mirvarim-101453745201412/"
                       target="_blank"
                       color="facebook"
                       justIcon
@@ -124,7 +124,7 @@ const SectionFooter = (props) => {
                   </li>
                   <li>
                     <Button
-                      href="https://instagram.com/_little_eva"
+                      href="https://instagram.com/mirvarim_official"
                       target="_blank"
                       color="instagram"
                       justIcon

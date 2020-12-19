@@ -233,6 +233,17 @@ const navbarStyle = theme => ({
       color: darkSlateBlue //new effective
     }
   },
+  usernameIcon: {
+    color: "white",
+    //verticalAlign: "center",
+    //paddingTop: "-10px",
+    //position: "relative",
+    textTransform: 'none',
+    fontSize: "1.2rem",
+    [theme.breakpoints.down("sm")]:{
+      color: darkSlateBlue //new effective
+    }
+  },
   select: {
     border: '1px solid',
     background: 'transparent',
