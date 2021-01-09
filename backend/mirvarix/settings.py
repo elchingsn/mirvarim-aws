@@ -109,9 +109,10 @@ MIDDLEWARE = [
 
 # allow webpack development server to make cross-request
 CORS_ORIGIN_WHITELIST = (
+    'https://www.mirvarim.com',
+    'https://mirvarim.com',
     'http://localhost:3000',
     'http://localhost:3001',
-    'http://localhost:3002',
     'http://127.0.0.1:3000',
     'http://127.0.0.1:3001',
     'http://0.0.0.0:3000'
@@ -164,7 +165,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
     'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
-    'JWT_EXPIRATION_DELTA': timedelta(minutes=180),
+    'JWT_EXPIRATION_DELTA': timedelta(hours=12),
     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=14),
 
     "JWT_ALLOW_ANY_CLASSES": [

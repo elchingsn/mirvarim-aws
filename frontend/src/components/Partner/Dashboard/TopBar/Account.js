@@ -43,7 +43,7 @@ const Account = ( { user }) => {
   const handleLogout = () => {
     try {
       handleClose();
-      history.push('/');
+      history.push('/partner');
     } catch (err) {
       console.error(err);
     }

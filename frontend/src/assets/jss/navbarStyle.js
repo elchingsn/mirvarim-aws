@@ -225,7 +225,7 @@ const navbarStyle = theme => ({
   username: {
     color: "white",
     verticalAlign: "center",
-    paddingTop: "6px",
+    paddingTop: "5px",
     position: "relative",
     textTransform: 'none',
     fontSize: "0.75rem",

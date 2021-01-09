@@ -175,7 +175,7 @@ class SendFeedback(graphene.Mutation):
     @staticmethod
     def mutate(root,info,contact_data):
         send_mail(
-          'from {}: from {}'.format(contact_data.email, contact_data.subject),
+          'from {}: subject - {}'.format(contact_data.email, contact_data.subject),
           contact_data.message,
           contact_data.email,
           ['mirvarim.partner@gmail.com'],

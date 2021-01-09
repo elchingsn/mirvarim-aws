@@ -17,6 +17,12 @@ import { useTranslation } from 'react-i18next';
 
 import { ME_QUERY } from "App"
 
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+// pick a date util library
+import DateFnsUtils from '@date-io/date-fns';
+import ruLocale from "date-fns/locale/ru";
+import enLocale from "date-fns/locale/en-GB";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -56,6 +62,14 @@ const DashboardLayout = ({ children }) => {
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
   const { t } = useTranslation();
 
+  const [locale, setLocale] = useState(localStorage.getItem("i18nextLng"))
+
+  const localeMap = {
+    aze: ruLocale,
+    en: enLocale,
+    ru: ruLocale,
+  };
+
   return (
     <Query query={ME_QUERY} fetchPolicy="cache-and-network">
       {({data, loading, error}) => {
@@ -68,6 +82,7 @@ const DashboardLayout = ({ children }) => {
         if (currentUser.role === "A_1") {
           return <div style={{padding: "5px 5px"}}>{t("Please login as a salon or freelancer to add salon/service")}</div>
         } else return (
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={localeMap[locale]}>
                       <div className={classes.root}>
                         <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} user={currentUser} />
                         <NavBar
@@ -83,6 +98,7 @@ const DashboardLayout = ({ children }) => {
                           </div>
                         </div>
                       </div>
+                    </MuiPickersUtilsProvider> 
                     );
       }}
     </Query>

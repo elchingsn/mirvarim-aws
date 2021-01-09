@@ -15,12 +15,6 @@ import { useTranslation } from 'react-i18next';
 import InputMask from 'react-input-mask';
 import formatISO from 'date-fns/formatISO'
 
-import DatePicker from "react-datepicker";
-import "assets/jss/datepicker/react-datepicker.css";
-import { registerLocale, setDefaultLocale } from  "react-datepicker";
-import ruLocale from "date-fns/locale/ru";
-import enLocale from "date-fns/locale/en-GB";
-
 import { UPDATE_BOOKING, DELETE_BOOKING } from "components/Partner/Dashboard/views/calendar/CalendarView/CreateEventForm.js"
 
 const EventForm = ({
@@ -29,17 +23,6 @@ const EventForm = ({
   handleUpdateModalClose,
   event
 }) => {
-
-  const [locale, setLocale] = useState(localStorage.getItem("i18nextLng"))
-
-  const localeMap = {
-    aze: ruLocale,
-    en: enLocale,
-    ru: ruLocale,
-  };
-
-  registerLocale('locale', localeMap[locale])
-
   const { t } = useTranslation();
   const classes = useStyles()
   const [updateBooking, { data: update_data }] = useMutation(UPDATE_BOOKING);
@@ -51,11 +34,13 @@ const EventForm = ({
     serviceTitle: event.extendedProps.service,
     servicePrice: event.extendedProps.price,
     duration: Math.floor((new Date(event.end) - new Date(event.start))/60000),
-    start: new Date(event.start),
+    start: formatISO(new Date(event.start)),
     isConfirmed: event.extendedProps.isConfirmed
   })
 
-  //console.log('bookingdata', bookingData)
+  console.log({...bookingData, isConfirmed:true})
+ 
+  console.log('bookingdata', bookingData)
   //const textFieldStyle = { minHeight: "5rem" };
 
   const handleServiceSelect = (value) => {
@@ -96,7 +81,7 @@ const EventForm = ({
   };
 
   const add_minutes = (dt, minutes) =>{
-    return new Date(dt.getTime() + minutes*60000)
+    return new Date(new Date(dt).getTime() + minutes*60000)
   }
   
   return(
@@ -143,61 +128,34 @@ const EventForm = ({
               />
             </FormControl>
             <FormControl fullWidth className={classes.field}>
-              <label>{t("Start time")}</label>
-              <DatePicker
-                selected={bookingData.start}
-                showTimeSelect
-                timeIntervals={15}
-                timeFormat="HH:mm"
-                dateFormat="MMMM d, yyyy, HH:mm"
-                // minTime={new Date(bookingData.start.setHours(parseInt(salon.openingHour.slice(0,2))))}
-                // maxTime={new Date(new Date().setHours(22))}
-                withPortal
-                fullWidth
-                locale="locale"
-                onChange={(val) => setBookingData({...bookingData, start: val})}
-                //popperClassName="some-custom-class"
-                popperPlacement="top-end"
-                popperModifiers={{
-                  offset: {
-                    enabled: true,
-                    offset: "5px, 10px"
-                  },
-                  preventOverflow: {
-                    enabled: true,
-                    escapeWithReference: false,
-                    boundariesElement: "viewport"
-                  }
+              <TextField
+                id="datetime-local"
+                label={t("Start time")}
+                type="datetime-local"
+                value={bookingData.start.slice(0,16)}
+                onChange={(e) => setBookingData({...bookingData, start: e.target.value})}
+                InputLabelProps={{
+                  shrink: true,
                 }}
               />
             </FormControl>
             <FormControl fullWidth className={classes.field}>
-              <label>{t("End time")}</label>
-              <DatePicker
-                selected={add_minutes(bookingData.start,bookingData.duration)}  
-                showTimeSelect      
-                timeIntervals={15}
-                timeFormat="HH:mm"
-                dateFormat="MMMM d, yyyy, HH:mm"
-                withPortal
-                fullWidth
-                locale="locale"
-                onChange={(val) => setBookingData({
+              <TextField
+                id="datetime-local"
+                label={t("End time")}
+                type="datetime-local"
+                value={
+                  bookingData.start.length>0 ?
+                  formatISO(add_minutes(bookingData.start,bookingData.duration)).slice(0,16) : ''
+                }
+                onChange={(e) => setBookingData({
                   ...bookingData, 
-                  duration: Math.floor((val - bookingData.start)/60000) })
-                }                
-                //popperClassName="some-custom-class"
-                popperPlacement="top-end"
-                popperModifiers={{
-                  offset: {
-                    enabled: true,
-                    offset: "5px, 10px"
-                  },
-                  preventOverflow: {
-                    enabled: true,
-                    escapeWithReference: false,
-                    boundariesElement: "viewport"
-                  }
+                  duration: Math.floor((new Date(e.target.value) - new Date(bookingData.start))/60000) })
+                }
+                inputProps={{ min: `${bookingData.start.slice(0,16)}` }}
+                InputProps={{ classes: classes }}
+                InputLabelProps={{
+                  shrink: true,
                 }}
               />
             </FormControl>
@@ -214,7 +172,7 @@ const EventForm = ({
                 {t("Cancel")}
               </Button>
               <Button 
-                disabled={ bookingData.start.length === 0 }
+                disabled={ bookingData.start.length === 0 || bookingData.duration<=0 }
                 type="submit" 
                 className={classes.button}>
                 {t("Confirm")}
@@ -301,6 +259,14 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
     width: 200,
   },
+  input: {
+    "&:valid": {
+      backgroundColor: "inherit"
+    },
+    "&:invalid": {
+      backgroundColor: "red"
+    }
+  }
 }));
 
 export default EventForm;

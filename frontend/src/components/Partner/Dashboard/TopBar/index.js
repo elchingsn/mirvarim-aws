@@ -14,6 +14,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import { THEMES } from 'constants.js';
 import Account from './Account';
+import Notifications from './Notifications';
 //import Settings from './Settings';
 import mirvarim_logo from "assets/img/mirvarim1.png"
 
@@ -66,6 +67,7 @@ const TopBar = ({
           ml={2}
           flexGrow={1}
         />
+        <Notifications user={user}/>
         {/* <Settings /> */}
         <Box ml={2}>
           <Account user={user}/>

@@ -33,18 +33,18 @@ const EventForm = ({
   handleModalClose
 }) => {
 
-  console.log("salon",salon)
-  console.log("range",range)
+  // console.log("salon",salon)
+  // console.log("range",range)
 
-  const [locale, setLocale] = useState(localStorage.getItem("i18nextLng"))
+  // const [locale, setLocale] = useState(localStorage.getItem("i18nextLng"))
 
-  const localeMap = {
-    aze: ruLocale,
-    en: enLocale,
-    ru: ruLocale,
-  };
+  // const localeMap = {
+  //   aze: ruLocale,
+  //   en: enLocale,
+  //   ru: ruLocale,
+  // };
 
-  registerLocale('locale', localeMap[locale])
+  // registerLocale('locale', localeMap[locale])
 
   const { t } = useTranslation();
 
@@ -58,7 +58,7 @@ const EventForm = ({
     serviceTitle: '',
     servicePrice: 30,
     duration: range.duration,
-    start: range.start ? new Date(range.start) : new Date(), // new Date need for material-ui/pickers as range.start is in ISO format
+    start: range.start ? formatISO(new Date(range.start)) : formatISO(new Date()), // new Date need for material-ui/pickers as range.start is in ISO format
     isConfirmed: true
   })
 
@@ -96,8 +96,7 @@ const EventForm = ({
   };
 
   const add_minutes = (dt, minutes) =>{
-    // return new Date(new Date(dt).getTime() + minutes*60000)
-    return new Date(dt.getTime() + minutes*60000) //needed for react datetime pickers
+    return new Date(new Date(dt).getTime() + minutes*60000)
   }
   
   return(
@@ -163,88 +162,38 @@ const EventForm = ({
               />
             </FormControl>
             <FormControl fullWidth className={classes.field}>
-                <label>{t("Start time")}</label>
-                <DatePicker
-                  selected={bookingData.start}
-                  showTimeSelect
-                  timeIntervals={15}
-                  timeFormat="HH:mm"
-                  dateFormat="MMMM d, yyyy, HH:mm"
-                  // minTime={new Date(bookingData.start.setHours(parseInt(salon.open.slice(0,2))))}
-                  // maxTime={new Date(new Date().setHours(22))}
-                  withPortal
-                  fullWidth
-                  locale="locale"
-                  onChange={(val) => setBookingData({...bookingData, start: val})}
-                  //popperClassName="some-custom-class"
-                  popperPlacement="top-end"
-                  popperModifiers={{
-                    offset: {
-                      enabled: true,
-                      offset: "5px, 10px"
-                    },
-                    preventOverflow: {
-                      enabled: true,
-                      escapeWithReference: false,
-                      boundariesElement: "viewport"
-                    }
+                <TextField
+                  id="datetime-local"
+                  label={t("Start time")}
+                  type="datetime-local"
+                  value={bookingData.start.slice(0,16)}
+                  onChange={(e) => setBookingData({...bookingData, start: e.target.value})}
+                  InputLabelProps={{
+                    shrink: true,
                   }}
                 />
-              {/* <KeyboardDateTimePicker
-                //id="datetime-local"
-                ampm={false}
-                label={t("Start time")}
-                value={bookingData.start} 
-                onChange={(val) => console.log(val)}
-                //onChange={(val) => setBookingData({...bookingData, start: val})}
-                //disablePast
-                format="dd/MM/yyyy HH:mm"
-                minutesStep={5}
-              />  */}
             </FormControl>
             <FormControl fullWidth className={classes.field}>
-              <label>{t("End time")}</label>
-              <DatePicker
-                selected={add_minutes(bookingData.start,bookingData.duration)}  
-                showTimeSelect      
-                timeIntervals={15}
-                timeFormat="HH:mm"
-                dateFormat="MMMM d, yyyy, HH:mm"
-                withPortal
-                fullWidth
-                locale="locale"
-                onChange={(val) => setBookingData({
+              <TextField
+                id="datetime-local"
+                label={t("End time")}
+                type="datetime-local"
+                value={
+                  bookingData.start.length>0 ?
+                  formatISO(add_minutes(bookingData.start,bookingData.duration)).slice(0,16) : ''
+                }
+                onChange={(e) => setBookingData({
                   ...bookingData, 
-                  duration: Math.floor((val - bookingData.start)/60000) })
-                }                //popperClassName="some-custom-class"
-                popperPlacement="top-end"
-                popperModifiers={{
-                  offset: {
-                    enabled: true,
-                    offset: "5px, 10px"
-                  },
-                  preventOverflow: {
-                    enabled: true,
-                    escapeWithReference: false,
-                    boundariesElement: "viewport"
-                  }
+                  duration: Math.floor((new Date(e.target.value) - new Date(bookingData.start))/60000) })
+                }
+                inputProps={{ min: `${bookingData.start.slice(0,16)}` }}
+                InputProps={{ classes: classes }}
+                InputLabelProps={{
+                  shrink: true,
                 }}
               />
-              {/* <KeyboardDateTimePicker
-                //id="datetime-local"
-                ampm={false}
-                label={t("End time")}
-                value={add_minutes(bookingData.start,bookingData.duration)}  
-                onChange={(val) => setBookingData({
-                  ...bookingData, 
-                  duration: Math.floor((val - bookingData.start)/60000) })
-                }
-                //disablePast
-                format="dd/MM/yyyy HH:mm"
-                minutesStep={5}
-              />  */}
             </FormControl>
-          <Box
+            <Box
               mt={0}
               justifyContent="center"
               display="flex"
@@ -253,7 +202,7 @@ const EventForm = ({
               {t("Cancel")}
             </Button>
             <Button 
-              disabled={ bookingData.start.length === 0 }
+              disabled={ bookingData.start.length === 0 || bookingData.duration<=0 }
               type="submit" 
               className={classes.button}>
               {t("Confirm")}
@@ -345,6 +294,14 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
     width: 200,
   },
+  input: {
+    "&:valid": {
+      backgroundColor: "inherit"
+    },
+    "&:invalid": {
+      backgroundColor: "red"
+    }
+  }
 }));
 
 

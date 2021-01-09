@@ -238,6 +238,11 @@ const headerStyle = theme => ({
     MsFlexAlign: "center",
     alignItems: "center",
     justifyContent:"center"
+  },
+  flag: {
+    marginLeft: "auto",
+    float: "right",
+    marginTop: "5px"
   }
 });
 

@@ -58,6 +58,19 @@ const Toolbar = ({
     }
   ];
 
+  const viewOptionsMobile = [
+    {
+      label: `${t("Day")}`,
+      value: 'timeGridDay',
+      icon: ViewDayIcon
+    },
+    {
+      label: `${t("Agenda")}`,
+      value: 'listWeek',
+      icon: ViewAgendaIcon
+    }
+  ];
+
   const classes = useStyles();
   //{format(new Date(date),'dd')} - {format(new Date(new Date(date).getTime() + 7*1440*60000),'dd MMMM yyyy')}
 
@@ -79,18 +92,39 @@ const Toolbar = ({
       </Grid>
         <Grid item>
           <Typography
-            variant="h5"
+            variant="h6"
             color="textPrimary"
           >
             {(view === 'listWeek') ?
               `${format(new Date(date),'dd')} - ${format(new Date(new Date(date).getTime() + 7*1440*60000),'dd MMMM yyyy')}` :
-              format(new Date(date),'MMMM yyyy')
+              ((view === 'timeGridDay') ? format(new Date(date),'dd MMMM yyyy') : format(new Date(date),'MMMM yyyy'))
             } 
           </Typography>
         </Grid>
         <Hidden smDown>
         <Grid item>
           {viewOptions.map((viewOption) => {
+            const Icon = viewOption.icon;
+
+            return (
+              <Tooltip
+                key={viewOption.value}
+                title={viewOption.label}
+              >
+                <IconButton
+                  color={viewOption.value === view ? 'secondary' : 'default'}
+                  onClick={() => onViewChange(viewOption.value)}
+                >
+                  <Icon />
+                </IconButton>
+              </Tooltip>
+            );
+          })}
+        </Grid>
+      </Hidden>
+      <Hidden mdUp>
+        <Grid item>
+          {viewOptionsMobile.map((viewOption) => {
             const Icon = viewOption.icon;
 
             return (

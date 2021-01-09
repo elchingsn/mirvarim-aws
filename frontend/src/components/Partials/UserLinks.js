@@ -38,6 +38,11 @@ import styles from "../../assets/jss/navbarStyle.js";
 const useStyles = makeStyles(styles);
 
 export default function UserLinks(props) {
+
+  var isMobile = navigator.userAgent.match(
+    /(iPad)|(iPhone)|(iPod)|(android)|(webOS)|(BlackBerry)|(IEMobile)|(Opera Mini)|(Lumia)/i
+  );
+
   const easeInOutQuad = (t, b, c, d) => {
     t /= d / 2;
     if (t < 1) return (c / 2) * t * t + b;
@@ -47,9 +52,6 @@ export default function UserLinks(props) {
 
   const smoothScroll = (e, target) => {
     if (window.location.pathname === "/sections") {
-      var isMobile = navigator.userAgent.match(
-        /(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i
-      );
       if (isMobile) {
         // if we are on mobile device the scroll into view will be managed by the browser
       } else {
@@ -59,6 +61,7 @@ export default function UserLinks(props) {
       }
     }
   };
+
   const scrollGo = (element, to, duration) => {
     var start = element.scrollTop,
       change = to - start,
@@ -127,13 +130,13 @@ export default function UserLinks(props) {
                   label="flag"
                 >
                   <MenuItem value="aze">
-                    <img alt="az" src={aze_flag} style={{width: 30, height: 30}}/>
+                    <img alt="az" src={aze_flag} style={{width: 25, height: 25}}/>
                   </MenuItem>
                   <MenuItem value="ru">
-                    <img alt="ru" src={ru_flag} style={{width: 30, height: 30}}/>
+                    <img alt="ru" src={ru_flag} style={{width: 25, height: 25}}/>
                   </MenuItem>
                   <MenuItem value="en">
-                    <img alt="en" src={en_flag} style={{width: 30, height: 30}}/>
+                    <img alt="en" src={en_flag} style={{width: 25, height: 25}}/>
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -151,37 +154,26 @@ export default function UserLinks(props) {
                 <Button className={classes.username} size="small" 
                   //variant="outlined"
                   onClick={(e)=> e.preventDefault}>
-                  {t("List your salon")}
+                  {t("Salon management")}
                 </Button>
                 </Link>
                 </ListItem>) 
-              :null
-              // (<ListItem className={classes.listItem}>
-              //   <Button className={classes.username} size="small" variant="outlined"
-              //     onClick={handleDashboardOpen}>
-              //     {t("List your salon")}
-              //   </Button>
-              //   </ListItem>
-              // )
-              }
-            {/* <Link to={`/profile/${currentUser.id}`} className={classes.grow}>
-              <Typography variant="headline" className={classes.username} noWrap>
-              {currentUser.username} 
-              </Typography> 
-            </Link> */}
-            <ListItem className={classes.listItem}>
-            <Link to={`/profile/${currentUser.id}`} className={classes.grow}>
-              <Button className={classes.username} size="small" 
-                onClick={(e)=> e.preventDefault}>
-                <PermIdentityIcon className={classes.usernameIcon}/>
-                {currentUser.username} 
-              </Button>
-            </Link>
-            </ListItem>
-            <ListItem className={classes.listItem}>
-            <Signout /> 
-          </ListItem>
-          </List>
+              :null}
+              {!isMobile ?
+                (<ListItem className={classes.listItem}>
+                <Link to={`/profile/${currentUser.id}`} className={classes.grow}>
+                  <Button className={classes.username} size="small" 
+                    onClick={(e)=> e.preventDefault}>
+                    <PermIdentityIcon className={classes.usernameIcon}/>
+                    {currentUser.username} 
+                  </Button>
+                </Link>
+                </ListItem>)
+                : null}
+                <ListItem className={classes.listItem}>
+                  <Signout /> 
+                </ListItem>
+              </List>
             </div>  
           )
         : (<div style={{marginLeft: "auto"}}>
@@ -196,13 +188,13 @@ export default function UserLinks(props) {
                   label="flag"
                 >
                   <MenuItem value="aze">
-                    <img alt="az" src={aze_flag} style={{width: 30, height: 30}}/>
+                    <img alt="az" src={aze_flag} style={{width: 25, height: 25}}/>
                   </MenuItem>
                   <MenuItem value="ru">
-                    <img alt="ru" src={ru_flag} style={{width: 30, height: 30}}/>
+                    <img alt="ru" src={ru_flag} style={{width: 25, height: 25}}/>
                   </MenuItem>
                   <MenuItem value="en">
-                    <img alt="en" src={en_flag} style={{width: 30, height: 30}}/>
+                    <img alt="en" src={en_flag} style={{width: 25, height: 25}}/>
                   </MenuItem>
                 </Select>
               </FormControl>

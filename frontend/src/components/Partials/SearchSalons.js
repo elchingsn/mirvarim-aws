@@ -120,9 +120,11 @@ const SearchSalons = ({state, setSearchOpen, t, i18n}) =>{
           if (search) { 
             if(search_set.some(el => t(el).toLowerCase().includes(search.toLowerCase()))) {
               options1 = search_set.filter(el => t(el).toLowerCase().includes(search.toLowerCase())).concat(salon_set.filter(el => el.toLowerCase().includes(search.toLowerCase())))
-            } else {
+            } else if(search_set.some(el => t(`alternate::${el}`).toLowerCase().includes(search.toLowerCase()))){
               options1 = search_set.filter(el => t(`alternate::${el}`).toLowerCase().includes(search.toLowerCase())).concat(salon_set.filter(el => el.toLowerCase().includes(search.toLowerCase())))
-            }    
+            } else {
+              options1 = search_set.filter(el => el.toLowerCase().includes(search.toLowerCase())).concat(salon_set.filter(el => el.toLowerCase().includes(search.toLowerCase())))
+            }
           }
           // when search field is cleared no drop down option will be visible
           options1_filtered = options1.filter(el => !salon_set.includes(el));
@@ -156,6 +158,11 @@ const SearchSalons = ({state, setSearchOpen, t, i18n}) =>{
             setCatValue("Aesthetics")
           } else {setCatValue("")}
         }
+        // console.log('search',search)
+        // console.log("options1",options1)
+        // console.log("options1_filtered",options1_filtered)
+        // console.log('catValue',catValue)
+        // console.log('checkedCat',checkedCat)
     }, [search])
 
     useEffect(() => {   
@@ -177,8 +184,7 @@ const SearchSalons = ({state, setSearchOpen, t, i18n}) =>{
 
     // console.log('search',search)
     // console.log('location',location)
-    // console.log('catValue',catValue)
-    // console.log('checkedCat',checkedCat)
+
 
     // const handleChange = (event, client) => {
     //     event.preventDefault();

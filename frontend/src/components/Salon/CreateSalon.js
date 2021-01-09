@@ -41,6 +41,13 @@ function Transition(props) {
 const CreateSalon = ({classes}) => {
     const { t } = useTranslation();
     const currentUser = useContext(UserContext);
+    if (currentUser.masterSet[0] && currentUser.masterSet[0].isStaff && currentUser.masterSet[0].staffStatus === "confirmed") {
+      return (
+        <div className={classes.container}>
+          <div className={classes.field}> {t("This account is the confirmed staff member of ")}{currentUser.masterSet[0].salon.name} </div>
+        </div>
+      ) 
+    } else 
     if (currentUser.salonSet[0]) {
         return (
           <div className={classes.container}>
@@ -223,7 +230,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       photo4: uploadedUrl[4], photo5: uploadedUrl[5], photo6: uploadedUrl[6] 
                   }}}).catch(err => {
                     console.error(err);
-                    history.push('/login'); 
+                    history.push('/partner'); 
                   });
       // if (currentUser.role == "A_2") {
       //   addMaster({variables: { masterData: {} }}).catch(err => {
@@ -512,7 +519,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
                                 renderInput={(params) => (
                                   <TextField {...params} 
                                   variant="outlined" 
-                                  label={t("Massage/spa categoriesSpa categories")} 
+                                  label={t("Massage/spa categories")} 
                                   placeholder={t("More massage")} />
                                 )}
                               />;

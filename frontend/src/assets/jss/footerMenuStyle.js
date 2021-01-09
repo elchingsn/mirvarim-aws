@@ -62,7 +62,9 @@ const style = {
       lineHeight: "90px !important"
     }
   },
-  border: {},
+  border: {
+    padding: "0px 0px"
+  },
   socialLine: {
     padding: ".9375rem 0px",
     "& $border": {

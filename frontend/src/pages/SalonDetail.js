@@ -383,6 +383,8 @@ const SalonDetail=({match}) => {
             const services = [...hairServices, ...nailsServices, ...hairRemovalServices, ...makeupServices, ...massageServices,
                               ...eyebrowServices, ...cosmetologyServices, ...tattooServices, ...aestheticsServices]   
 
+            const cosmetology_diff = salon.cosmetologyCategories.map(el => el.title).filter(x => !cosmetologyServices.map(el => el.title).includes(x))
+
             const _raw_images = [salon.photoMain, salon.photo1, salon.photo2, salon.photo3,
                 salon.photo4, salon.photo5, salon.photo6];
             const _images = _raw_images.filter((el) => el!="");
@@ -677,8 +679,18 @@ const SalonDetail=({match}) => {
                           ))}
                         </Accordion>
                       )}  
-                      {cosmetologyServices[0] && (
+                      {salon.cosmetologyCategories[0] && (
                         <Accordion title={t("Cosmetology Services")}>
+                          {cosmetology_diff.map(service => (
+                            <div key={service}>
+                              <CardFooter style={{paddingTop:"5px",paddingBottom:"10px",paddingLeft:"0px"}}>
+                                <div className={classes.priceContainer}>
+                                  {t(`${service}`)}
+                                </div>
+                              </CardFooter>
+                              <Divider />
+                            </div> 
+                          ))}
                           {cosmetologyServices.map(service => (
                             <div key={service.id}>
                             <Service 
@@ -960,6 +972,42 @@ query selected_salon ($id:Int!) {
         createdBy {
           id 
           role
+        }
+        hairCategories {
+          id
+          title
+        }
+        nailsCategories {
+          id
+          title
+        }
+        hairRemovalCategories {
+          id
+          title
+        }
+        makeupCategories {
+          id
+          title
+        }
+        massageCategories {
+          id
+          title
+        }
+        eyebrowCategories {
+          id
+          title
+        }
+        cosmetologyCategories {
+          id
+          title
+        }
+        tattooCategories {
+          id
+          title
+        }
+        aestheticsCategories {
+          id
+          title
         }
         hairserviceSet {
           id

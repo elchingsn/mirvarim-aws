@@ -55,6 +55,7 @@ const App = () => (
         <br/>
         <br/>
         <br/>        
+        <br/>
         <FooterMenu/>
       </Hidden>
     </UserContext.Provider>

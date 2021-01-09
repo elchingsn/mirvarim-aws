@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { withRouter } from 'react-router-dom';
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // nodejs library to set properties for components
@@ -18,10 +19,26 @@ import Close from "@material-ui/icons/Close";
 import styles from "assets/jss/headerStyle.js";
 import mirvarim_logo from "assets/img/mirvarim1.png"
 
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import aze_flag from "assets/img/aze.png"
+import ru_flag from "assets/img/ru.png"
+import en_flag from "assets/img/eng.png"
+import { useTranslation } from 'react-i18next';
+
 
 const useStyles = makeStyles(styles);
 
-export default function Header(props) {
+const Header = (props) => {
+  const { t, i18n } = useTranslation();
+  const [flag, setFlag] = React.useState(localStorage.getItem("i18nextLng"));
+  const changeLang = (code) => {
+    i18n.changeLanguage(code);
+    setFlag(code);
+  }
+
+
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const classes = useStyles();
   React.useEffect(() => {
@@ -36,6 +53,7 @@ export default function Header(props) {
   });
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+    setFlag(localStorage.getItem("i18nextLng"))
   };
   const headerColorChange = () => {
     const { color, changeColorOnScroll } = props;
@@ -69,6 +87,26 @@ export default function Header(props) {
       <Toolbar className={classes.container}> 
         <Hidden mdUp implementation="css" className={classes.hidden}>
           <Link to="/"><img src={mirvarim_logo} alt="logo" style={{width: 123, height: 39, marginTop: "0px"}}/></Link>
+          {props.location.pathname === "/" &&
+            (<FormControl className={classes.flag} >
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                value={flag}
+                onChange={(event) => changeLang(event.target.value)}
+                label="flag"
+              >
+                <MenuItem value="aze">
+                  <img alt="az" src={aze_flag} style={{width: 25, height: 25}}/>
+                </MenuItem>
+                <MenuItem value="ru">
+                  <img alt="ru" src={ru_flag} style={{width: 25, height: 25}}/>
+                </MenuItem>
+                <MenuItem value="en">
+                  <img alt="en" src={en_flag} style={{width: 25, height: 25}}/>
+                </MenuItem>
+              </Select>
+            </FormControl>)}
         </Hidden>
         <Hidden smDown implementation="css" className={classes.hidden}>
           {/* <div className={classes.collapse1}>{links.props.children[1]}</div>
@@ -111,6 +149,8 @@ export default function Header(props) {
     </AppBar>
   );
 }
+
+export default withRouter(Header); 
 
 Header.defaultProp = {
   color: "white"

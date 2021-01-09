@@ -676,7 +676,7 @@ class CosmetologyServiceInput(graphene.InputObjectType):
     promotion_price = graphene.Int()
 
 class CreateCosmetologyService(graphene.Mutation):
-    service = graphene.Field(CosmetologyServiceType)
+    cosmetologyService = graphene.Field(CosmetologyServiceType)
 
     class Arguments:
         serviceData = CosmetologyServiceInput(required=True)
@@ -951,8 +951,8 @@ class ServiceMutation(graphene.ObjectType):
     delete_nails_service = DeleteNailsService.Field()
 
     create_hair_removal_service = CreateHairRemovalService.Field() 
-    update_hairRemoval_service = UpdateHairRemovalService.Field() 
-    delete_hairRemoval_service = DeleteHairRemovalService.Field()
+    update_hair_removal_service = UpdateHairRemovalService.Field() 
+    delete_hair_removal_service = DeleteHairRemovalService.Field()
 
     create_makeup_service = CreateMakeupService.Field()    
     update_makeup_service = UpdateMakeupService.Field() 

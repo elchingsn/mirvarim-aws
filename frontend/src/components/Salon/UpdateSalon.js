@@ -221,7 +221,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                     photo4: uploadedUrl[4], photo5: uploadedUrl[5], photo6: uploadedUrl[6] 
                 }, salonId}}).catch(err => {
                   console.error(err);
-                  history.push('/login');
+                  history.push('/partner');
                 });
   };
 
@@ -907,7 +907,7 @@ const UpdateSalonForm = ({classes, currentUser}) => {
                       onClick={() => setDisabled(false)}
                       className={classes.save}
                     >
-                      {t("Update")}
+                      {t("Start updating")}
                     </Button>
                   </Box>)
                 : (<Box

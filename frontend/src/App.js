@@ -71,6 +71,7 @@ const App = () => (
               <br/>
               <br/>
               <br/>  
+              <br/>
               <FooterMenu currentUser={currentUser}/>
             </Hidden>
           </UserContext.Provider>
@@ -94,21 +95,239 @@ export const ME_QUERY = gql`
         servicePrice
         start
       } 
+      masterSet {
+        id
+        masterName
+        masterEmail
+        masterPhone
+        homeVisit
+        isStaff
+        staffStatus
+        salon {
+          id
+          name
+          address
+          email
+          phone
+          openingHour
+          closingHour
+          isPublished
+          isFeatured
+          appointment
+          payment
+          createdBy{
+            id
+            username
+          }
+          masterSet {
+            id
+            masterName
+            masterEmail
+            masterPhone
+            isStaff
+            staffStatus
+            bookingSet {
+              id
+              customerName
+              customerEmail
+              serviceTitle
+              start
+              end
+            }  
+          }
+          city {
+            id
+            title
+          }
+          area {
+            id
+            title
+          }
+          description
+          rating
+          priceRange
+          photoMain
+          photo1
+          photo2
+          photo3
+          photo4
+          hairCategories {
+            id
+            title
+          }
+          nailsCategories {
+            id
+            title
+          }
+          hairRemovalCategories {
+            id
+            title
+          }
+          makeupCategories {
+            id
+            title
+          }
+          massageCategories {
+            id
+            title
+          }
+          eyebrowCategories {
+            id
+            title
+          }
+          cosmetologyCategories {
+            id
+            title
+          }
+          tattooCategories {
+            id
+            title
+          }
+          aestheticsCategories {
+            id
+            title
+          }
+          hairserviceSet {
+            id
+            title
+            description
+            master {
+              id
+              masterName
+            }
+            price
+            promotionPrice
+            duration
+          }
+          nailsserviceSet {
+            id
+            title
+            description
+            master {
+              id
+              masterName
+            }
+            price
+            promotionPrice
+            duration
+          }
+          hairremovalserviceSet {
+            id
+            title
+            description
+            master {
+              id
+              masterName
+            }
+            price
+            promotionPrice
+            duration
+          }
+          makeupserviceSet {
+            id
+            title
+            description
+            master {
+              id
+              masterName
+            }
+            price
+            promotionPrice
+            duration
+          }
+          massageserviceSet {
+            id
+            title
+            description
+            master {
+              id
+              masterName
+            }
+            price
+            promotionPrice
+            duration
+          }
+          eyebrowserviceSet {
+            id
+            title
+            description
+            master {
+              id
+              masterName
+            }
+            price
+            promotionPrice
+            duration
+          }     
+          cosmetologyserviceSet {
+            id
+            title
+            description
+            master {
+              id
+              masterName
+            }
+            price
+            promotionPrice
+            duration
+          }
+          tattooserviceSet {
+            id
+            title
+            description
+            master {
+              id
+              masterName
+            }
+            price
+            promotionPrice
+            duration
+          }
+          aestheticsserviceSet {
+            id
+            title
+            description
+            master {
+              id
+              masterName
+            }
+            price
+            promotionPrice
+            duration
+          }                            
+        }  
+        bookingSet {
+          id
+          customerName
+          customerEmail
+          serviceTitle
+          start
+          end
+        }  
+      }
       salonSet{
         id
         name
         address
         email
         phone
+        openingHour
+        closingHour
         isPublished
         isFeatured
         appointment
         payment
+        createdBy{
+          id
+          username
+        }
         masterSet {
           id
           masterName
           masterEmail
           masterPhone
+          isStaff
+          staffStatus
           bookingSet {
             id
             customerName
@@ -282,6 +501,7 @@ export const ME_QUERY = gql`
     }
   }
 `;
+
 
 // export const SALON_QUERY = `
 //   {

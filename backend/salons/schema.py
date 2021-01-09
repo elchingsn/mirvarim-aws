@@ -143,7 +143,7 @@ class Query(graphene.ObjectType):
                                         (~Q(freelancer=onlysalons)|Q(freelancer=False)) &
                                         (Q(outcall=outcall)|Q(outcall=True)) &
                                         Q(area__title__in=area) &
-                                        Q(hair_categories__title__in=hair) |
+                                        (Q(hair_categories__title__in=hair) |
                                         Q(nails_categories__title__in=nails)|
                                         Q(hair_removal_categories__title__in=hairRemoval)|
                                         Q(makeup_categories__title__in=makeup)|
@@ -151,7 +151,7 @@ class Query(graphene.ObjectType):
                                         Q(eyebrow_categories__title__in=eyebrow)|
                                         Q(cosmetology_categories__title__in=cosmetology)|
                                         Q(tattoo_categories__title__in=tattoo)|
-                                        Q(aesthetics_categories__title__in=aesthetics)).distinct()
+                                        Q(aesthetics_categories__title__in=aesthetics))).distinct()
         
         if not area and (hair or nails or hairRemoval or makeup or massage or eyebrow or cosmetology or tattoo or aesthetics):
             return Salon.objects.filter((Q(appointment=booking)|Q(appointment=True)) &
@@ -458,6 +458,8 @@ class MasterInput(graphene.InputObjectType):
     name = graphene.String()
     email = graphene.String()
     phone = graphene.String()
+    isStaff = graphene.Boolean()
+    status = graphene.String()
 
 class AddMaster(graphene.Mutation):
     master = graphene.Field(MasterType)
@@ -473,13 +475,32 @@ class AddMaster(graphene.Mutation):
             raise GraphQLError('Log in to add a master.')      
              
         salon_obj = Salon.objects.get(id=int(master_data.salon_id))
-            
+
+        # if master_data.isStaff:
+        #   send_mail(
+        #             'Mirvarim: access confirmation request from {}'.format(salon_obj.name),
+        #             contact_data.message,
+        #             contact_data.email,
+        #             ['mirvarim.partner@gmail.com'],
+        #             fail_silently=False,
+        #           )
+
         master = Master.objects.create(
                                       salon = salon_obj,
                                       master_name = master_data.name.title(),
                                       master_email = master_data.email,
                                       master_phone = master_data.phone,
+                                      is_staff = master_data.isStaff
                                       )
+        if master_data.isStaff:
+          if get_user_model().objects.filter(email=master_data.email).exists():
+            master.staff = get_user_model().objects.get(email=master_data.email)
+            master.staff_status = 'pending'
+          else: 
+            master.staff_status = 'no match'
+        
+        master.save()
+
         return AddMaster(master=master)
 
 class UpdateMaster(graphene.Mutation):
@@ -495,13 +516,50 @@ class UpdateMaster(graphene.Mutation):
         master=Master.objects.get(id=master_id)
 
         if user.is_anonymous:
-            raise GraphQLError('Log in to update booking.')
+            raise GraphQLError('Log in to update master.')
         master.master_name = master_data.name.title()
         master.master_email = master_data.email
         master.master_phone = master_data.phone
-     
+        master.staff_status = master_data.status  
+
+        if master.staff and master_data.status == 'rejected':
+          master.staff = None
+          master.is_staff = False
+        
+        if master.is_staff and (not master_data.isStaff):
+          master.staff_status = '' 
+          master.staff = None
+          master.is_staff = False
+
+        if (not master.is_staff) and master_data.isStaff:
+          if get_user_model().objects.filter(email=master_data.email).exists():
+            master.is_staff = True
+            master.staff = get_user_model().objects.get(email=master_data.email)
+            master.staff_status = 'pending'
+          else: 
+            master.is_staff = False
+            master.staff_status = 'no match'
+   
         master.save()
         return UpdateMaster(master=master)
+
+# class ConfirmMaster(graphene.Mutation):
+#     success = graphene.Boolean()
+
+#     class Arguments:
+#       contact_data = ContactInput(required=True)
+    
+#     @staticmethod
+#     def mutate(root,info,contact_data):
+#         send_mail(
+#           'from {}: from {}'.format(contact_data.email, contact_data.subject),
+#           contact_data.message,
+#           contact_data.email,
+#           ['mirvarim.partner@gmail.com'],
+#           fail_silently=False,
+#         )
+
+#         return ConfirmMaster(success=True)
 
 class DeleteMaster(graphene.Mutation):
     master = graphene.Field(MasterType)
@@ -512,7 +570,7 @@ class DeleteMaster(graphene.Mutation):
     @staticmethod
     def mutate(root,info,master_id):
         user = info.context.user
-        master=Master.objects.get(id=master_id)
+        master = Master.objects.get(id=master_id)
 
         if user.is_anonymous:
             raise GraphQLError('Log in to delete master.')
@@ -531,6 +589,7 @@ class BookingInput(graphene.InputObjectType):
     service_price = graphene.Int()
     start = graphene.DateTime()
     duration = graphene.Int()
+    isConfirmed = graphene.Boolean()
 
 class CreateBooking(graphene.Mutation):
     booking = graphene.Field(BookingType)
@@ -566,6 +625,9 @@ class CreateBooking(graphene.Mutation):
                                       start = booking_data.start,
                                       end = booking_data.start + datetime.timedelta(minutes=booking_data.duration)
                                       )
+        if booking_data.isConfirmed:
+          booking.is_confirmed = True
+        booking.save()
         return CreateBooking(booking=booking)
 
 class UpdateBooking(graphene.Mutation):
@@ -588,6 +650,9 @@ class UpdateBooking(graphene.Mutation):
         booking.start = booking_data.start     
         booking.end = booking_data.start + datetime.timedelta(minutes=booking_data.duration)
         
+        if booking_data.isConfirmed:
+          booking.is_confirmed = True
+          
         booking.save()
         return UpdateBooking(booking=booking)
 
@@ -607,8 +672,6 @@ class DeleteBooking(graphene.Mutation):
                 
         booking.delete()
         return DeleteBooking(booking=booking)
-
-
 
 class UploadFile(graphene.Mutation):
     class Arguments:

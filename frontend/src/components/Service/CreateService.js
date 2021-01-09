@@ -105,7 +105,7 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
     // });
     serviceMutation({variables: { serviceData: serviceData }}).catch(err => {
       console.error(err);
-      history.push('/login');
+      history.push('/partner');
     });
   };
 
@@ -484,6 +484,11 @@ const CreateServiceForm = ({classes, currentUser}) => {
 
   const [catValue, setCatValue] = useState("");
   const [open, setOpen] = useState(false);
+
+  var isMobile = navigator.userAgent.match(
+    /(iPad)|(iPhone)|(iPod)|(android)|(webOS)|(BlackBerry)|(IEMobile)|(Opera Mini)|(Lumia)/i
+  );
+
   //const [hairCategories, setHairCategories] = useState([]);
 
   //const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
@@ -530,13 +535,14 @@ const CreateServiceForm = ({classes, currentUser}) => {
           open={open}
           disableBackdropClick={true}
           TransitionComponent={Transition}
+          fullScreen={!!isMobile}
           >
             <DialogTitle>
               {t("Service successfully created!")}
             </DialogTitle>
             <DialogActions>
               <Button
-                color="primary"
+                color="secondary"
                 variant="contained"
                 onClick={() => {
                   setOpen(false);
@@ -724,7 +730,7 @@ const styles = theme => ({
   },
   paper: {
     marginTop: theme.spacing.unit * 8,
-    width: "80%",
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -780,7 +786,7 @@ const formStyles = makeStyles(theme => ({
   },
   paper: {
     marginTop: theme.spacing.unit * 8,
-    width: "80%",
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

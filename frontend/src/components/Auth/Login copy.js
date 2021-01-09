@@ -25,7 +25,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 
 import Error from "../Shared/Error";
-import { connect } from "react-redux";
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -39,10 +38,6 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
   const history = useHistory();
-
-  var isMobile = navigator.userAgent.match(
-    /(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i
-  );
 
   // handle login form submission
   const handleSubmit = async (event, tokenAuth, client) => {
@@ -67,7 +62,7 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
   useEffect(() => {
     window.fbAsyncInit = function() {
       window.FB.init({
-        appId      : '1315402405484342',
+        appId      : '582221655699024',
         cookie     : true,                     // Enable cookies to allow the server to access the session.
         xfbml      : true,                     // Parse social plugins on this webpage.
         version    : 'v7.0'           // Use this Graph API version for this call.
@@ -89,23 +84,7 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 
-    // if(window.FB && window.location.hash.includes('access_token')){
-    //   console.log('initial check');
-    //   window.FB.getLoginStatus(function(response) {   // See the onlogin handler
-    //     statusChangeCallback(response);
-    //   });
-    // }
   }, []);
-
-  if (window.FB && window.location.hash.includes('access_token')) {
-    var hash = window.location.hash.substring(1);
-    var accessString = hash.indexOf("&");
-    const accessToken = hash.substring(13, accessString);
-    window.FB.api('/me?fields=id,name,email,permissions', {  access_token : accessToken },function(response){
-      handleFBRegistration (response.name.split(' ')[0], response.email, response.name.split(' ')[0].concat(response.id),response.id);
-    });
-  }
-  
 
   const [tokenAuth] = useMutation(LOGIN_MUTATION);
   const [register] = useMutation(REGISTER_MUTATION,
@@ -121,7 +100,6 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
 
   function handleFBLogin() {
     window.FB.getLoginStatus(function(response) {   // See the onlogin handler
-      //console.log(response)
       statusChangeCallback(response);
     });
   } 
@@ -147,16 +125,23 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
       // localStorage.setItem('facebook', "connected");
       handleFBRegistration (response.name.split(' ')[0], response.email, response.name.split(' ')[0].concat(response.id),response.id);
       });                
-    } else if(isMobile) {
-      window.location.href="https://www.facebook.com/v7.0/dialog/oauth?client_id=1315402405484342&redirect_uri=http://localhost:3000/login&response_type=token&scope=public_profile,email"
     } else {
       window.FB.login(function(response) {
-        // handle the response  
+        // handle the response
         //console.log(response);
         statusChangeCallback(response);
       }, {scope: 'public_profile, email'});
     }
   }
+
+ 
+      // window.FB.api('/me?fields=id,name,email,permissions', function(response) {
+      //   const fb_name = response.name.split(' ',1);
+      //   const res = tokenAuth({variables: {username: fb_name, password: fb_name }});
+      //   if (res.data.tokenAuth.success) { console.log('res', res)}
+      // });
+    
+  
 
   return (
     <div className={classes.root}>

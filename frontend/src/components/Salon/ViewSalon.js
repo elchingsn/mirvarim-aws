@@ -139,6 +139,13 @@ const BrowseSalon = ({currentUser}) => {
   const reviewRef = useRef(null);
   const masterRef = useRef(null);
 
+  const masterStatusMap = {
+    "pending": "confirmation request sent",
+    "confirmed": "master has confirmed the request", 
+    "rejected": "master has rejected the request",
+    "": "no master account created"
+  }
+
   const { data: review_data, fetchMore } = useQuery(
     REVIEW_QUERY,
     {
@@ -355,6 +362,10 @@ const BrowseSalon = ({currentUser}) => {
                           <div style={{paddingLeft:"15px"}}>
                             &nbsp;
                             <i className="fas fa-mobile-alt">&nbsp;{master.masterPhone}</i>
+                          </div>
+                          <div style={{paddingLeft:"15px", color: "purple"}}>
+                            &nbsp;
+                            {masterStatusMap[master.staffStatus]}
                           </div>
                           <Divider />
                         </> 
@@ -675,6 +686,8 @@ query selected_salon ($id:Int!) {
           masterName
           masterEmail
           masterPhone
+          isStaff
+          staffStatus
         }
         hairserviceSet {
           id

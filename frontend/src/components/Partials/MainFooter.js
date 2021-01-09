@@ -113,7 +113,7 @@ const SectionFooter = (props) => {
                   </li> */}
                   <li>
                     <Button
-                      href="https://www.facebook.com/Mirvarim-101453745201412/"
+                      href="https://www.facebook.com/Mirvarim_official-104478401561606"
                       target="_blank"
                       color="facebook"
                       justIcon

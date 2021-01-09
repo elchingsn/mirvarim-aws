@@ -15,6 +15,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Checkbox from '@material-ui/core/Checkbox';
 
 import { UserContext } from "App.js"
 import { useTranslation } from 'react-i18next';
@@ -44,7 +45,10 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
     name: '',
     email: '',
     phone: '',
+    isStaff: false
   })
+
+  //console.log(masterData);
 
   const handleSubmit = async (event, addMaster) => {
     event.preventDefault();
@@ -52,7 +56,7 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
     
     addMaster({variables: { masterData: masterData }}).catch(err => {
       console.error(err);
-      history.push('/login');
+      history.push('/partner');
     });
   };
 
@@ -60,7 +64,7 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
     <Mutation
       mutation={ADD_MASTER_MUTATION}
       onCompleted={data => {
-      //setSubmitting(false);
+      setSubmitting(false);
       setOpen(true);
       }}
       // update={handleUpdateCache}
@@ -72,11 +76,13 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
         <form onSubmit={event => handleSubmit(event, addMaster)}>
           <FormControl fullWidth className={classes.field}>
             <TextField
-            label={t("Name")}
+            label={t("Name*")}
             placeholder={t("Add name")}
             onChange={(event) => setMasterData({ ...masterData, name:event.target.value })}
             value={masterData.name}
-            variant="outlined"
+            variant="outlined"  
+            //helperText={!masterData.name.trim()? t("required field") : ""}   
+            error={!masterData.name.trim()}       
             />
           </FormControl>
           <FormControl fullWidth className={classes.field}>
@@ -107,6 +113,15 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
               onChange={(event) => setMasterData({ ...masterData, phone:event.target.value })}
             />
          </FormControl>
+         <h5> {t("Do you want to give an access to the master? Please, make sure user account with this email exists")} </h5>
+        <Checkbox
+            checked={masterData.isStaff}
+            color="primary"
+            onChange={() => {
+              setMasterData({ ...masterData, isStaff: !masterData.isStaff })
+            }}
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+        />
         <Box
           mt={1}
           justifyContent="center"
@@ -168,6 +183,10 @@ const AddMasterForm = ({classes, currentUser}) => {
 
   const [open, setOpen] = useState(false);
 
+  var isMobile = navigator.userAgent.match(
+    /(iPad)|(iPhone)|(iPod)|(android)|(webOS)|(BlackBerry)|(IEMobile)|(Opera Mini)|(Lumia)/i
+  );
+
   //const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
 
 
@@ -187,6 +206,7 @@ const AddMasterForm = ({classes, currentUser}) => {
           open={open}
           disableBackdropClick={true}
           TransitionComponent={Transition}
+          fullScreen={!!isMobile}
           >
             <DialogTitle>
               {t("Master successfully added!")}
@@ -234,7 +254,7 @@ const styles = theme => ({
   },
   paper: {
     marginTop: theme.spacing.unit * 8,
-    width: "80%",
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

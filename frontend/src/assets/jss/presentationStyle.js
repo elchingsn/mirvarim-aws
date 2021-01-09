@@ -130,6 +130,28 @@ const presentationStyle = {
   },
   resize: {
     fontSize: "0.9rem"
+  },
+  banner: {
+    width: "100%",
+    marginRight: "auto",
+    marginLeft: "auto",
+    zIndex: "2",
+    background: whiteColor,
+    "@media (min-width: 576px)": {
+      maxWidth: "540px"
+    },
+    "@media (min-width: 768px)": {
+      maxWidth: "720px"
+    },
+    "@media (min-width: 992px)": {
+      maxWidth: "960px"
+    },
+    "@media (min-width: 1200px)": {
+      maxWidth: "1140px"
+    },
+    "@media (min-width: 1600px)": {
+      maxWidth: "1240px"
+    }
   }
 };
 

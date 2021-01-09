@@ -89,7 +89,7 @@ const Pricing = () => {
                     {t("Standard")}
                   </h6>
                   <h1 className={classes.cardTitleWhite}>
-                    <small>AZN</small> 20 <small>/{t("month")}</small>
+                    <small>AZN</small> 5 <small>/{t("month")}</small>
                   </h1>
                   <ul>
                     <li>
@@ -105,7 +105,7 @@ const Pricing = () => {
                       {t("Additional tools to fill your calendar")}
                     </li>
                     <li>
-                      {t("Customer notification and reminder SMS")}
+                      {t("Booking notification and reminders")}
                     </li>
                     <li>
                       {t("Targeted marketing")}

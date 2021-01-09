@@ -22,7 +22,8 @@ const Salon=({location}) => {
 
     React.useEffect(() =>{
 
-      return () => {console.log(location.state)}
+      //return () => {console.log(location.state)}
+      return () => {console.log("state")}
 
     })
     
@@ -34,6 +35,7 @@ const Salon=({location}) => {
 
     if (location.state) {
       initValues = location.state;
+      //console.log(initValues)
       initCatValue = initValues["catValue"];
       if (initValues["checkedCat"]) {initCheckedCat.push(initValues["checkedCat"])}
       initServiceValue = initValues["search"];
@@ -47,7 +49,6 @@ const Salon=({location}) => {
     //  if (initValues.length == 1) {
     //   initCatValue = initValues[0]
     //  }
-
     return (
     <div>
         {/* <Parallax 

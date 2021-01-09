@@ -6,6 +6,7 @@ import { Trans } from 'react-i18next'
 // import Navbar from "../components/Partials/Navbar";
 import SearchSalons from "components/Partials/SearchSalons";
 import Listings from "components/Partials/Listings";
+import Trends from "components/Partials/Trends";
 
 import { Query } from "@apollo/react-components";
 import gql from "graphql-tag";
@@ -29,15 +30,16 @@ import GridItem from "components/Partials/GridItem.js";
 import Button from "components/Partials/Button.js";
 import Card from "components/Partials/Card.js";
 import CardBody from "components/Partials/CardBody.js";
-import Features from "components/Partials/Features.js"
+import Features from "components/Partials/Features.js";
 // sections for this page
-
+import poster from "assets/img/poster.jpg";
 
 import presentationStyle from "assets/jss/presentationStyle.js";
 
 const useStyles = makeStyles(presentationStyle);
 
 export default function Home() {
+
   const { t } = useTranslation();
 
   const [searchResults, setSearchResults] = useState([]);
@@ -161,6 +163,9 @@ export default function Home() {
 
         {/* <div className={classNames(classes.main, classes.mainRaised)}> */}
         <div className={classes.main}>
+        <div className={classes.banner}>
+          <img style={{width:"100%"}} src={poster} alt="..."/>
+        </div>
           {/* <Hidden smDown implementation="css">
               <div className={classes.container}>
                   <GridItem
@@ -177,38 +182,28 @@ export default function Home() {
                   </GridItem> 
             </div>
           </Hidden> */}
-            <Query query={SALON_QUERY}>
-                {({ data, loading, error }) => {
-                  if (loading) return <div>Loading</div>;
-                  if (error) return <div>Error</div>;
-                  const publishedSalons = data.salons.filter(el => el.isPublished === true)
-                  const featuredSalons = publishedSalons.filter(el => el.isFeatured === true)
+          <Query query={SALON_QUERY}>
+              {({ data, loading, error }) => {
+                if (loading) return <div>Loading</div>;
+                if (error) return <div>Error</div>;
+                const publishedSalons = data.salons.filter(el => el.isPublished === true)
+                const featuredSalons = publishedSalons.filter(el => el.isFeatured === true)
+                const latestSalons = publishedSalons.slice().sort((a,b) => new Date(b.listDate)-new Date(a.listDate)).slice(0,4)
+               
+                return (
+                  <div>
+                  <h3 className={classes.title1}>{t("Featured Salons")}</h3> 
+                  <Listings listings={featuredSalons}/>
+                  <h3 className={classes.title1}>{t("Latest Salons")}</h3> 
+                  <Listings listings={latestSalons}/>
+                  {/* <h3 className={classes.title1}>{t("Beauty Trends")}</h3> 
+                  <Trends/> */}
+                  </div>
+                )
+              }}
+          </Query>
 
-                  return (
-                    <div>
-                    <h3 className={classes.title1}>{t("Featured Salons")}</h3> 
-                    <Listings listings={featuredSalons}/>
-                    </div>
-                  )
-                }}
-            </Query>
-            <Query query={SALON_QUERY}>
-                {({ data, loading, error }) => {
-                  if (loading) return <div>Loading</div>;
-                  if (error) return <div>Error</div>;
-                  const publishedSalons = data.salons.filter(el => el.isPublished === true)
-                  const latestSalons = publishedSalons.slice().sort((a,b) => new Date(b.listDate)-new Date(a.listDate)).slice(0,4)
-                  //console.log(data.salons.slice().sort((a,b) => new Date(b.listDate)-new Date(a.listDate)))
-                  return (
-                    <div>
-                    <h3 className={classes.title1}>{t("Latest Salons")}</h3> 
-                    <Listings listings={latestSalons}/>
-                    </div>
-                  )
-                }}
-            </Query>
-
-      <Features />
+          <Features />
 
       <div className={classes.container}>
       {/* <h2 className={classes.title}>About us</h2> */}     

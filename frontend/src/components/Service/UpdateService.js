@@ -110,7 +110,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
   
     updateMutation({variables: { serviceData: serviceData, serviceId: parseInt(selectedService.id) }}).catch(err => {
       console.error(err);
-      history.push('/login');
+      history.push('/partner');
     });
   };
 
@@ -255,7 +255,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
           onClick={() => 
             deleteMutation({variables: { serviceId: parseInt(selectedService.id) }}).catch(err => {
               console.error(err);
-              history.push('/login');
+              history.push('/partner');
             })
           }
           className={classes.cancel}
@@ -599,6 +599,10 @@ const UpdateServiceForm = ({classes, currentUser}) => {
   const [selectedService, setSelectedService] = useState({});
   const [open, setOpen] = useState(false);
 
+  var isMobile = navigator.userAgent.match(
+    /(iPad)|(iPhone)|(iPod)|(android)|(webOS)|(BlackBerry)|(IEMobile)|(Opera Mini)|(Lumia)/i
+  );
+
   // const handleUpdateCache = (cache, { data: { createTrack } }) => {
   //   const data = cache.readQuery({ query: GET_TRACKS_QUERY });
   //   const tracks = data.tracks.concat(createTrack.track);
@@ -665,13 +669,14 @@ const UpdateServiceForm = ({classes, currentUser}) => {
         open={open}
         disableBackdropClick={true}
         TransitionComponent={Transition}
+        fullScreen={!!isMobile}
         >
           <DialogTitle>
             {t("Service successfully updated!")}
           </DialogTitle>
           <DialogActions>
             <Button
-              color="primary"
+              color="secondary"
               variant="contained"
               onClick={() => {
                 setOpen(false);
@@ -704,7 +709,6 @@ const DELETE_HAIR_SERVICE_MUTATION = gql`
   mutation($serviceId:Int!) {
     deleteHairService(serviceId: $serviceId) {
       hairService {
-        id
         category {
           id 
           title
@@ -733,7 +737,6 @@ const DELETE_NAILS_SERVICE_MUTATION = gql`
   mutation($serviceId:Int!) {
     deleteNailsService(serviceId: $serviceId) {
       nailsService {
-        id
         category {
           id 
           title
@@ -762,7 +765,6 @@ const DELETE_HAIR_REMOVAL_SERVICE_MUTATION = gql`
   mutation($serviceId:Int!) {
     deleteHairRemovalService(serviceId: $serviceId) {
       hairRemovalService {
-        id
         category {
           id 
           title
@@ -791,7 +793,6 @@ const DELETE_MAKEUP_SERVICE_MUTATION = gql`
   mutation($serviceId:Int!) {
     deleteMakeupService(serviceId: $serviceId) {
       makeupService {
-        id
         category {
           id 
           title
@@ -820,7 +821,6 @@ const DELETE_MASSAGE_SERVICE_MUTATION = gql`
   mutation($serviceId:Int!) {
     deleteMassageService(serviceId: $serviceId) {
       massageService {
-        id
         category {
           id 
           title
@@ -849,7 +849,6 @@ const DELETE_EYEBROW_SERVICE_MUTATION = gql`
   mutation($serviceId:Int!) {
     deleteEyebrowService(serviceId: $serviceId) {
       eyebrowService {
-        id
         category {
           id 
           title
@@ -878,7 +877,6 @@ const DELETE_COSMETOLOGY_SERVICE_MUTATION = gql`
   mutation($serviceId:Int!) {
     deleteCosmetologyService(serviceId: $serviceId) {
       cosmetologyService {
-        id
         category {
           id 
           title
@@ -907,7 +905,6 @@ const DELETE_TATTOO_SERVICE_MUTATION = gql`
   mutation($serviceId:Int!) {
     deleteTattooService(serviceId: $serviceId) {
       tattooService {
-        id
         category {
           id 
           title
@@ -936,7 +933,6 @@ const DELETE_AESTHETICS_SERVICE_MUTATION = gql`
   mutation($serviceId:Int!) {
     deleteAestheticsService(serviceId: $serviceId) {
       aestheticsService {
-        id
         category {
           id 
           title
@@ -958,7 +954,7 @@ const styles = theme => ({
   },
   paper: {
     marginTop: theme.spacing.unit * 8,
-    width: "80%",
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -1014,7 +1010,7 @@ const formStyles = makeStyles(theme => ({
   },
   paper: {
     marginTop: theme.spacing.unit * 8,
-    width: "80%",
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

@@ -143,7 +143,7 @@ const styles = {
     padding: "10px",
     position: "fixed",
     left: "0",
-    bottom: "60px",
+    bottom: "130px",
     height: "auto",
     width: "100%",
     zIndex: "3",
@@ -153,6 +153,10 @@ const styles = {
   button: {
     padding: "15px",
   },
+  sup: {
+    verticalAlign: "super",
+    fontSize: "smaller"
+  }
 };
 
 export default styles;

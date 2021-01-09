@@ -118,7 +118,7 @@ const Register = ({ classes, setNewUser }) => {
                   <Input
                     id="email"
                     type="email"
-                    onChange={event => setEmail(event.target.value)}
+                    onChange={event => setEmail(event.target.value.toLowerCase())}
                   />
                   <h6 className={classes.error}>{err["email"]&&err["email"][0].message}</h6>
                 </FormControl>
@@ -177,7 +177,7 @@ const Register = ({ classes, setNewUser }) => {
                   }
                   className={classes.submit}
                 >
-                  {loading ? "Registering..." : "Register"}
+                  {loading ? "Registering..." : t("Register")}
                 </Button>
                 <Button
                   onClick={() => setNewUser(false)}

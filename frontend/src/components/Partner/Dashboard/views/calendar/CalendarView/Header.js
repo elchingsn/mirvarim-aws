@@ -40,7 +40,7 @@ const Header = ({
       {...rest}
     >
       <Grid item>
-        <Breadcrumbs
+        {/* <Breadcrumbs
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
         >
@@ -58,7 +58,7 @@ const Header = ({
           >
             {t("Calendar")}
           </Typography>
-        </Breadcrumbs>
+        </Breadcrumbs> */}
         {/* <Typography
           variant="h4"
           color="textPrimary"

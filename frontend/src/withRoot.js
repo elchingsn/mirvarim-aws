@@ -5,6 +5,13 @@ import orange from "@material-ui/core/colors/orange";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { darkSlateBlue } from "assets/jss/mirvarix-react"
 
+import { azAZ,ruRU,enUS } from '@material-ui/core/locale';
+
+const localeMap = {
+  aze: azAZ,
+  en: enUS,
+  ru: ruRU
+};
 
 // A theme with custom primary and secondary color.
 // It's optional.
@@ -25,7 +32,7 @@ const theme = createMuiTheme({
   typography: {
     useNextVariants: true
   }
-});
+}, localeMap[localStorage.getItem("i18nextLng")]);
 
 function withRoot(Component) {
   function WithRoot(props) {

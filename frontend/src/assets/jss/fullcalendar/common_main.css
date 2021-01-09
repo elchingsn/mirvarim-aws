@@ -583,8 +583,8 @@ A HORIZONTAL event
 
 }
 .fc-h-event .fc-event-main {
-    color: #fff;
-    color: var(--fc-event-text-color, #fff);
+    color: #000;
+    color: var(--fc-event-text-color, #000);
   }
 .fc-h-event .fc-event-main-frame {
     display: flex; /* for make fc-event-title-container expand */

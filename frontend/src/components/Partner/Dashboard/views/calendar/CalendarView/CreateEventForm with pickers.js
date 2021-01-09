@@ -17,13 +17,6 @@ import formatISO from 'date-fns/formatISO'
 import { DateTimePicker } from '@material-ui/pickers' 
 import { KeyboardDateTimePicker } from '@material-ui/pickers'
 
-import DatePicker from "react-datepicker";
-import "assets/jss/datepicker/react-datepicker.css";
-import { registerLocale, setDefaultLocale } from  "react-datepicker";
-import ruLocale from "date-fns/locale/ru";
-import enLocale from "date-fns/locale/en-GB";
-
-
 
 const EventForm = ({
   salon,
@@ -32,20 +25,6 @@ const EventForm = ({
   range,
   handleModalClose
 }) => {
-
-  console.log("salon",salon)
-  console.log("range",range)
-
-  const [locale, setLocale] = useState(localStorage.getItem("i18nextLng"))
-
-  const localeMap = {
-    aze: ruLocale,
-    en: enLocale,
-    ru: ruLocale,
-  };
-
-  registerLocale('locale', localeMap[locale])
-
   const { t } = useTranslation();
 
   const classes = useStyles()
@@ -58,8 +37,7 @@ const EventForm = ({
     serviceTitle: '',
     servicePrice: 30,
     duration: range.duration,
-    start: range.start ? new Date(range.start) : new Date(), // new Date need for material-ui/pickers as range.start is in ISO format
-    isConfirmed: true
+    start: range.start ? new Date(range.start) : new Date()// new Date need for material-ui/pickers as range.start is in ISO format
   })
 
   //const textFieldStyle = { minHeight: "5rem" };
@@ -97,7 +75,7 @@ const EventForm = ({
 
   const add_minutes = (dt, minutes) =>{
     // return new Date(new Date(dt).getTime() + minutes*60000)
-    return new Date(dt.getTime() + minutes*60000) //needed for react datetime pickers
+    return new Date(dt.getTime() + minutes*60000) //needed for material-ui/pickers
   }
   
   return(
@@ -143,7 +121,7 @@ const EventForm = ({
             </FormControl>
             <FormControl fullWidth className={classes.field}>
               <TextField
-                label={t("Name*")}
+                label={t("Name")}
                 size="small"
                 placeholder={t("Customer name")}
                 onChange={(event) => setBookingData({ ...bookingData, customerName:event.target.value })}
@@ -152,88 +130,51 @@ const EventForm = ({
               />
             </FormControl>
             <FormControl fullWidth className={classes.field}>
-              <label>{t("Mobile number")}</label>
               <InputMask 
                 mask="+\9\9\4 (99) 999 99 99"
                 //maskChar=""
-                style={{height:"39px", fontSize:"15px"}}
+                style={{height:"45px", fontSize:"16px"}}
                 alwaysShowMask
                 value={bookingData.customerMobile}
                 onChange={(event) => setBookingData({ ...bookingData, customerMobile: event.target.value })}            
               />
             </FormControl>
             <FormControl fullWidth className={classes.field}>
-                <label>{t("Start time")}</label>
-                <DatePicker
-                  selected={bookingData.start}
-                  showTimeSelect
-                  timeIntervals={15}
-                  timeFormat="HH:mm"
-                  dateFormat="MMMM d, yyyy, HH:mm"
-                  // minTime={new Date(bookingData.start.setHours(parseInt(salon.open.slice(0,2))))}
-                  // maxTime={new Date(new Date().setHours(22))}
-                  withPortal
-                  fullWidth
-                  locale="locale"
-                  onChange={(val) => setBookingData({...bookingData, start: val})}
-                  //popperClassName="some-custom-class"
-                  popperPlacement="top-end"
-                  popperModifiers={{
-                    offset: {
-                      enabled: true,
-                      offset: "5px, 10px"
-                    },
-                    preventOverflow: {
-                      enabled: true,
-                      escapeWithReference: false,
-                      boundariesElement: "viewport"
-                    }
-                  }}
-                />
-              {/* <KeyboardDateTimePicker
+              {/* <TextField
+                id="datetime-local"
+                ampm={false}
+                label={t("Start time")}
+                type="datetime-local"
+                value={bookingData.start}
+                onChange={(e) => setBookingData({...bookingData, start: e.target.value})}
+                inputProps={{
+                  step: 900 // 5 min
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />  */}
+              <KeyboardDateTimePicker
                 //id="datetime-local"
                 ampm={false}
                 label={t("Start time")}
                 value={bookingData.start} 
-                onChange={(val) => console.log(val)}
-                //onChange={(val) => setBookingData({...bookingData, start: val})}
+                onChange={(val) => setBookingData({...bookingData, start: val})}
                 //disablePast
                 format="dd/MM/yyyy HH:mm"
                 minutesStep={5}
-              />  */}
+              
+              /> 
             </FormControl>
             <FormControl fullWidth className={classes.field}>
-              <label>{t("End time")}</label>
-              <DatePicker
-                selected={add_minutes(bookingData.start,bookingData.duration)}  
-                showTimeSelect      
-                timeIntervals={15}
-                timeFormat="HH:mm"
-                dateFormat="MMMM d, yyyy, HH:mm"
-                withPortal
-                fullWidth
-                locale="locale"
-                onChange={(val) => setBookingData({
-                  ...bookingData, 
-                  duration: Math.floor((val - bookingData.start)/60000) })
-                }                //popperClassName="some-custom-class"
-                popperPlacement="top-end"
-                popperModifiers={{
-                  offset: {
-                    enabled: true,
-                    offset: "5px, 10px"
-                  },
-                  preventOverflow: {
-                    enabled: true,
-                    escapeWithReference: false,
-                    boundariesElement: "viewport"
-                  }
-                }}
-              />
-              {/* <KeyboardDateTimePicker
+              <KeyboardDateTimePicker
                 //id="datetime-local"
                 ampm={false}
                 label={t("End time")}
+                // value={
+                //   bookingData.start.length>0 ?
+                //   add_minutes(bookingData.start,bookingData.duration) : ''
+                // }  
                 value={add_minutes(bookingData.start,bookingData.duration)}  
                 onChange={(val) => setBookingData({
                   ...bookingData, 
@@ -242,7 +183,23 @@ const EventForm = ({
                 //disablePast
                 format="dd/MM/yyyy HH:mm"
                 minutesStep={5}
-              />  */}
+              /> 
+              {/* <TextField
+                id="datetime-local"
+                label={t("End time")}
+                type="datetime-local"
+                value={
+                  bookingData.start.length>0 ?
+                  formatISO(add_minutes(bookingData.start,bookingData.duration)).slice(0,16) : ''
+                }                
+                onChange={(e) => setBookingData({
+                  ...bookingData, 
+                  duration: Math.floor((new Date(e.target.value) - new Date(bookingData.start))/60000) })
+                }
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              /> */}
             </FormControl>
           <Box
               mt={0}
@@ -369,7 +326,6 @@ export const CREATE_BOOKING = gql `
         }
         serviceTitle
         start
-        isConfirmed
       }
     }
   }

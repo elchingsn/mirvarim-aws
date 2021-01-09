@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useContext} from "react";
 import { Link } from "react-router-dom";
 import { Mutation } from '@apollo/react-components';
+import { useMutation } from '@apollo/react-hooks';
 //import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
 import gql from "graphql-tag";
@@ -22,12 +23,16 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import Checkbox from '@material-ui/core/Checkbox';
+
 import { UserContext } from "App.js"
 import {ME_QUERY} from "App.js"
 
 import Error from "../Shared/Error"; 
 //import Loading from "../Shared/Loading";
 import InputMask from 'react-input-mask';
+
 
 //import styles from "../assets/jss/salonDetailStyle.js";
 
@@ -52,63 +57,87 @@ const SelectMaster = ({classes, currentUser}) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedMaster, setSelectedMaster] = useState({});
+  const history = useHistory();
+
+  var isMobile = navigator.userAgent.match(
+    /(iPad)|(iPhone)|(iPod)|(android)|(webOS)|(BlackBerry)|(IEMobile)|(Opera Mini)|(Lumia)/i
+  );
+
+  //for update master hook was not used. Ideally both update and delete should use hook.
+  const [deleteMaster, { data: delete_data }] = useMutation(DELETE_MASTER_MUTATION, {
+    onCompleted({ deleteMaster }) {
+      history.push(`/partner/${currentUser.id}/salon/view`);
+    },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:currentUser.id} }],
+    awaitRefetchQueries: true,
+  });
+
   return (
     <div className={classes.container}>
       <Paper className={classes.paper}>
-          <h3> {t("Select master")} </h3>
-              <FormControl fullWidth className={classes.field}>
-                <Autocomplete
-                  id="size-small-clearOnEsc"
-                  disableClearable
-                  size="small"
-                  options={currentUser.salonSet[0].masterSet.map(item => item.masterName).flat(1)}
-                  onChange={(event,value) => {
-                            setSelectedMaster(currentUser.salonSet[0].masterSet.filter(item => item.masterName === value)[0]);
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} 
-                    //inputProps={{style: {textTransform: 'capitalize'}}} 
-                    variant="outlined" 
-                    label={t("Select master")} 
-                    placeholder={t("Select master")}
-                    />
-                  )}
+        {!selectedMaster.id &&
+          (<FormControl fullWidth className={classes.field}>
+            <h3> {t("Select master")} </h3>
+            <Autocomplete
+              id="size-small-clearOnEsc"
+              disableClearable
+              size="small"
+              options={currentUser.salonSet[0].masterSet.map(item => item.masterName).flat(1)}
+              onChange={(event,value) => {
+                        setSelectedMaster(currentUser.salonSet[0].masterSet.filter(item => item.masterName === value)[0]);
+              }}
+              renderInput={(params) => (
+                <TextField {...params} 
+                //inputProps={{style: {textTransform: 'capitalize'}}} 
+                variant="outlined" 
+                label={t("Select master")} 
+                placeholder={t("Select master")}
                 />
-              </FormControl>  
-              {selectedMaster.id &&   
-              <UpdateMasterForm classes={classes} currentUser={currentUser} selectedMaster={selectedMaster} setOpen={setOpen} />  
-              }
-             </Paper>
-            <Dialog
-                open={open}
-                disableBackdropClick={true}
-                TransitionComponent={Transition}
+              )}
+            />
+          </FormControl> )}
+          {selectedMaster.id &&   
+          <UpdateMasterForm 
+            classes={classes} 
+            currentUser={currentUser} 
+            selectedMaster={selectedMaster} 
+            setOpen={setOpen} 
+            deleteMutation={deleteMaster}
+          />  
+          }
+          </Paper>
+        <Dialog
+            open={open}
+            disableBackdropClick={true}
+            TransitionComponent={Transition}
+            fullScreen={!!isMobile}
+            >
+              <DialogTitle>
+                {t("Master successfully updated!")}
+              </DialogTitle>
+              <DialogActions>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  onClick={() => {
+                    setOpen(false);
+                  }}
                 >
-                  <DialogTitle>
-                    {t("Master successfully updated!")}
-                  </DialogTitle>
-                  <DialogActions>
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      onClick={() => {
-                        setOpen(false);
-                      }}
-                    >
-                      <Link to={`/partner/${currentUser.id}/salon/view`}>
-                        {t("Back to salon page")}
-                      </Link>
-                    </Button>
-                  </DialogActions>
-              </Dialog>
-          </div>
+                  <Link to={`/partner/${currentUser.id}/salon/view`}>
+                    {t("Back to salon page")}
+                  </Link>
+                </Button>
+              </DialogActions>
+          </Dialog>
+      </div>
     );
 }
 
-const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen }) => {
+const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen, deleteMutation }) => {
   const userId = currentUser.id;
   //const salonId = currentUser.salonSet[0].id;
   const history = useHistory();
+  const { t } = useTranslation();
 
   const [masterData, setMasterData] = useState({})
   
@@ -117,13 +146,24 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen }) => {
         ...masterData,
         name: selectedMaster.masterName,
         email: selectedMaster.masterEmail,
-        phone: selectedMaster.masterPhone
+        phone: selectedMaster.masterPhone,
+        isStaff: selectedMaster.isStaff,
+        status: selectedMaster.staffStatus
       })
-    
   }, [selectedMaster]);
 
-  const [disabled, setDisabled] = useState(true)
+  console.log(masterData)
+
+  //const [disabled, setDisabled] = useState(true)
   const [submitting, setSubmitting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const masterStatusMap = {
+    "pending": "confirmation request sent",
+    "confirmed": "master has confirmed the request", 
+    "rejected": "master has rejected the request",
+    "": "no master account created"
+  }
 
   // const handleUpdateCache = (cache, { data: { updateTrack } }) => {
   //   const data = cache.readQuery({ query: GET_TRACKS_QUERY });
@@ -138,13 +178,13 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen }) => {
     updateMaster({variables: {
                  masterData: masterData, masterId: selectedMaster.id}}).catch(err => {
                   console.error(err);
-                  history.push('/login');
+                  history.push('/partner');
                 });
   };
 
   return(
     <div className={classes.container}>
-      <Paper className={classes.paper}>
+      <Paper className={classes.pape}>
         <Mutation
           mutation={UPDATE_MASTER_MUTATION}
           onCompleted={data => {
@@ -157,16 +197,17 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen }) => {
           >
           {(updateMaster, { loading, error }) => {
           if (error) return <Error error={error} />;
+          console.log(masterData.isStaff)
             return(
-              <form onSubmit={event => handleSubmit(event, updateMaster)} >
+              <form onSubmit={event => handleSubmit(event, updateMaster)} style={{marginBottom: "0"}}>
                 <FormControl fullWidth className={classes.field}>
                   <TextField
-                  label="Name"
-                  placeholder="Add name"
+                  label="Name*"
+                  placeholder={t("Add name")}
                   onChange={(event) => setMasterData({ ...masterData, name:event.target.value })}
                   value={masterData.name}
                   variant="outlined"
-                  disabled={disabled}
+                  disabled={submitting}
                   InputLabelProps={{ shrink: true }} 
                   />
                 </FormControl>
@@ -177,7 +218,7 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen }) => {
                   onChange={(event) => setMasterData({ ...masterData, email:event.target.value })}
                   value={masterData.email}
                   variant="outlined"
-                  disabled={disabled}
+                  disabled={submitting}
                   InputLabelProps={{ shrink: true }} 
                   />
                 </FormControl>   
@@ -189,22 +230,48 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen }) => {
                     alwaysShowMask
                     value={masterData.phone}
                     onChange={(event) => setMasterData({ ...masterData, phone:event.target.value })}
-                    disabled={disabled}
+                    disabled={submitting}
                   />
               </FormControl>
-              {disabled ? 
+              <h5> {t("Do you want to give an access to the master? Please, make sure user account with this email exists")} </h5>
+              <Checkbox
+                  checked={masterData.isStaff === undefined ? selectedMaster.isStaff : masterData.isStaff }
+                  color="primary"
+                  onChange={() => {
+                    setMasterData({ ...masterData, isStaff: !masterData.isStaff })
+                  }}
+                  inputProps={{ 'aria-label': 'primary checkbox' }}
+              />
+              <div style={{color: "purple"}}>
+                &nbsp;
+                {masterStatusMap[masterData.status]}
+              </div>
+              {/* {disabled ? 
                   (<Box
                     mt={1}
                     justifyContent="center"
                     display="flex"
                   >
                     <Button
+                      //disabled={submitting}
+                      variant="outlined"
+                      onClick={() => 
+                        deleteMutation({variables: { masterId: parseInt(selectedMaster.id) }}).catch(err => {
+                          console.error(err);
+                          history.push('/login');
+                        })
+                      }
+                      className={classes.cancel}
+                    >
+                      {t("Delete")}
+                    </Button>
+                    <Button
                       disabled={submitting}
                       variant="outlined"
                       onClick={() => setDisabled(false)}
                       className={classes.save}
                     >
-                      Update
+                      {t("Update")}
                     </Button>
                   </Box>)
                 : (<Box
@@ -218,7 +285,7 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen }) => {
                         variant="outlined"
                         className={classes.cancel}
                       >
-                        Cancel
+                        {t("Cancel")}
                       </Button>
                     </Link>
                     <Button
@@ -237,12 +304,85 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen }) => {
                       )}
                     </Button>
                   </Box>)                  
-                }         
+                }          */}
+                <Box
+                    mt={1}
+                    justifyContent="center"
+                    display="flex"
+                  >
+                  <Button 
+                    disabled={submitting}
+                    variant="outlined"
+                    onClick={() => setConfirmOpen(true)}
+                    className={classes.cancel}
+                  >
+                    <DeleteOutlineIcon/>
+                  </Button>
+                  <Box flexGrow={1} />
+                  <Link to={`/partner/${userId}/salon/view`}>
+                    <Button
+                      disabled={submitting}
+                      variant="outlined"
+                      className={classes.cancel}
+                    >
+                      {t("Cancel")}
+                    </Button>
+                  </Link>
+                  <Button 
+                      variant="outlined"
+                      disabled={masterData.name ?
+                        (submitting ||
+                        !masterData.name.trim()) 
+                        : true
+                      }
+                      type="submit"
+                      className={classes.save}
+                    >
+                      {submitting ? (
+                        <CircularProgress className={classes.save} size={24} />
+                      ) : (
+                        `${t("Update")}`
+                      )}
+                  </Button>
+                </Box>
               </form>
             );
           }}
           </Mutation>
         </Paper>
+        <Dialog
+          open={confirmOpen}
+          disableBackdropClick={true}
+          TransitionComponent={Transition}
+          //fullScreen={!!isMobile}
+          >
+            <DialogTitle>
+              {t("Are you sure you want to delete the master?")}
+            </DialogTitle>
+            <DialogActions>
+              <Button
+                //color="secondary"
+                variant="contained"
+                onClick={() => {
+                  setConfirmOpen(false);
+                }}
+              >
+                No
+              </Button>
+              <Button
+                //color="secondary"
+                variant="contained"
+                onClick={() => 
+                  deleteMutation({variables: { masterId: parseInt(selectedMaster.id) }}).catch(err => {
+                    console.error(err);
+                    history.push('/partner');
+                  })
+                }
+              >
+                Yes
+              </Button>
+            </DialogActions>
+        </Dialog>
       </div>
 )}
 
@@ -259,6 +399,17 @@ const UPDATE_MASTER_MUTATION = gql`
   }
 `;
 
+const DELETE_MASTER_MUTATION = gql`
+mutation($masterId:Int!) {
+  deleteMaster(masterId: $masterId) {
+    master {
+      masterName
+      masterEmail
+    }
+  }
+}
+`;
+
 const styles = theme => ({
   container: {
     display: "flex",
@@ -270,7 +421,7 @@ const styles = theme => ({
   },
   paper: {
     marginTop: theme.spacing.unit * 8,
-    width:"80%",
+    width:"100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

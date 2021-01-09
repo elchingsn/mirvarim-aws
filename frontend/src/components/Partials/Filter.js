@@ -88,6 +88,8 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
   // const { data:hair_data } = useQuery(HAIR_QUERY);
   // const { data:nails_data } = useQuery(NAILS_QUERY);
 
+  const [filterNum, setFilterNum] = useState(0);
+
   useEffect(() => {
     if(initCatValue) {setCatDisplay(false)}
     if(initAreaValue) {setArea(initAreaValue.split())}
@@ -123,13 +125,20 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
-  };
+    if (catValue && checkedCat.length) {
+      setFilterNum([].concat(area,hair,nails,hairRemoval,makeup,massage,eyebrow,cosmetology,tattoo,aesthetics).length+[].concat(onlysalons,booking,outcall).filter(Boolean).length);
+    } else if(catValue && !checkedCat.length) {
+      setFilterNum(area.length+[].concat(onlysalons,booking,outcall).filter(Boolean).length+1);
+    } else {
+      setFilterNum(area.length+[].concat(onlysalons,booking,outcall).filter(Boolean).length);
+    }
+    };
 
   const handleCatChange = event => {
     setCatValue(event.target.value);
     setTimeout(() => setCatDisplay(false), 1000);
     setCurrentPage(1);
-  };
+  };  
 
   const handlePageChange = (event,value) => {
     setCurrentPage(value)
@@ -808,6 +817,7 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                           setOutcall(false);
                           setBooking(false);
                           setArea([]);
+                          setAreaSelected(0);
                           setHair([]);
                           setNails([]);
                           setHairRemoval([]);
@@ -982,9 +992,10 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
                 if (loading) return <Loading />;
                 if (error) return <Error error={error} />;
                 const salonsFiltered = data.salonsFiltered.filter(el => el.isPublished === true)
-                if ((salonsFiltered.length === 0) || (!catValue && checkedCat.length>0)) return <p> {t("No listing found")} </p>
-                  // Get current salons
+                //if ((salonsFiltered.length === 0) || (!catValue && checkedCat.length>0)) return <p> {t("No listing found")} </p>
                 setResultsnum(salonsFiltered.length)
+                if (salonsFiltered.length === 0) return <p> {t("No listing found")} </p>
+                // Get current salons
                 const currentSalons = salonsFiltered.slice(indexOfFirstSalon, indexOfLastSalon);
                 setCount(Math.ceil(salonsFiltered.length/salonsPerPage))
                 //console.log(initCheckedCat.length)
@@ -1021,11 +1032,14 @@ export default function Filter({initCatValue, initCheckedCat, initServiceValue, 
           <div className={classes.stickyFilter}>
             <Button
               color="primary"
+              round
               aria-label="open filter"
               onClick={handleDrawerToggle}
               className={classes.button}
             >
-              <i className="fas fa-sliders-h"></i>
+              <i className="fas fa-sliders-h"> 
+                {filterNum > 0 ? (<sup className={classes.sup}>&nbsp;{filterNum}</sup>) : null}
+              </i>
               {/* <FilterListIcon /> */}
             </Button>
           </div>

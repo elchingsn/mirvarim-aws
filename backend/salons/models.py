@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -103,6 +104,8 @@ class Salon(models.Model):
     price_range = models.PositiveIntegerField(choices=PRICE_CHOICES, blank=True)
     rating = models.PositiveIntegerField(blank=True, default=0)
     masters = models.IntegerField(default=1)
+    opening_hour = models.TimeField(auto_now=False, default=datetime.strptime('08:00', '%H:%M').time(),blank=True)
+    closing_hour = models.TimeField(auto_now=False, default=datetime.strptime('22:00', '%H:%M').time(),blank=True)
     hair_categories = models.ManyToManyField(Hair, blank=True) 
     nails_categories = models.ManyToManyField(Nails, blank=True)
     hair_removal_categories = models.ManyToManyField(HairRemoval, blank=True)
@@ -151,10 +154,14 @@ class Master(models.Model):
   master_email = models.EmailField(max_length=200, blank=True)
   master_phone = models.CharField(max_length=25, blank=True)
   home_visit = models.BooleanField(default=False)
+  is_staff = models.BooleanField(default=False)
+  staff_status = models.CharField(max_length=100, blank=True)
+  staff = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, blank=True, null=True)
+  avatar = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
   # photo = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
   # hair_services = models.ManyToManyField(HairService, blank=True) 
   def __str__(self):
-    return self.master_name
+    return self.master_name 
 
 class Booking(models.Model):
   master = models.ForeignKey(Master, on_delete=models.CASCADE)
@@ -170,7 +177,7 @@ class Booking(models.Model):
   service_price = models.PositiveIntegerField(null=True, blank=True)
   start = models.DateTimeField()
   end = models.DateTimeField()
- 
+  is_confirmed = models.BooleanField(default=False)
 
 
 
