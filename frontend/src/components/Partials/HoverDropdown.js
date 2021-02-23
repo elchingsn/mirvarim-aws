@@ -60,7 +60,7 @@ const HoverDropdown = (props) => {
     useEffect(() => {setTimeout(()=>{
         // console.log(`menu:${menuon}`);
         // console.log(`button:${buttonon}`); 
-        if (!buttonon && menuon) {setAnchorEl(null)};
+        if (!buttonon && menuon) {setAnchorEl(null)}
         },1)},[buttonon]);
  
     const open = Boolean(anchorEl);
@@ -160,7 +160,7 @@ const HoverDropdown = (props) => {
                           onMouseLeave = {handleMenuClose}
                       >
                         {dropdownList.map(category => (
-                          <Link to={{
+                          <Link key={category.id} to={{
                             pathname: "/salon",
                             state: {
                               catValue: buttonText,
@@ -169,10 +169,10 @@ const HoverDropdown = (props) => {
                             // state: [buttonText, category.title]
                           }}>
                           <MenuItem 
-                          key={category.id}
-                          className={dropdownItem}
-                          style={{ overflow: "visible", padding: 3 }} 
-                          onClick={() => onMenuItemClick(category)}
+                            key={category.id}
+                            className={dropdownItem}
+                            style={{ overflow: "visible", padding: 3 }} 
+                            onClick={() => onMenuItemClick(category)}
                           >
                             {t(`${category.title}`)}
                           </MenuItem>    

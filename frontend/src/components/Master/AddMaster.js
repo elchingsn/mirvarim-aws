@@ -16,6 +16,11 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Checkbox from '@material-ui/core/Checkbox';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Typography from '@material-ui/core/Typography';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import { UserContext } from "App.js"
 import { useTranslation } from 'react-i18next';
@@ -33,7 +38,7 @@ function Transition(props) {
 }
 
 
-const MasterForm = ({ data_salon, setOpen, userId }) => {
+const MasterForm = ({ data_salon, userId }) => {
   const classes = formStyles();
   const history = useHistory();
   const { t } = useTranslation();
@@ -48,6 +53,22 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
     isStaff: false
   })
 
+  const [snack, setSnack] = useState({
+    snackOpen: false,
+    snackType: "",
+    snackMessage: ""
+  })
+
+  const handleSnackClose = () => {
+    setSubmitting(false);
+    setMasterData({ ...masterData, name: "", email: "", phone: "", isStaff: false })
+    setSnack ({ ...snack,snackOpen: false })
+  }
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+
   //console.log(masterData);
 
   const handleSubmit = async (event, addMaster) => {
@@ -61,11 +82,16 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
   };
 
   return(
+    <div>
     <Mutation
       mutation={ADD_MASTER_MUTATION}
       onCompleted={data => {
-      setSubmitting(false);
-      setOpen(true);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Master successfully added!")
+      })
       }}
       // update={handleUpdateCache}
       refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
@@ -76,7 +102,7 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
         <form onSubmit={event => handleSubmit(event, addMaster)}>
           <FormControl fullWidth className={classes.field}>
             <TextField
-            label={t("Name*")}
+            label={t("Name")}
             placeholder={t("Add name")}
             onChange={(event) => setMasterData({ ...masterData, name:event.target.value })}
             value={masterData.name}
@@ -113,7 +139,7 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
               onChange={(event) => setMasterData({ ...masterData, phone:event.target.value })}
             />
          </FormControl>
-         <h5> {t("Do you want to give an access to the master? Please, make sure user account with this email exists")} </h5>
+         <h5> {t("Do you want to give the master the access to view own appointments? Please, make sure user account with this email exists")} </h5>
         <Checkbox
             checked={masterData.isStaff}
             color="primary"
@@ -130,7 +156,7 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
           <Button
             disabled={submitting}
             variant="outlined"
-            onClick={() => setMasterData({ ...masterData, name: "", email: "", prone: "" })}
+            onClick={() => setMasterData({ ...masterData, name: "", email: "", phone: "", isStaff: false })}
             className={classes.cancel}
           >
             {t("Cancel")}
@@ -156,7 +182,12 @@ const MasterForm = ({ data_salon, setOpen, userId }) => {
       );
     }}
   </Mutation>
-
+  <Snackbar open={snack.snackOpen} autoHideDuration={1500} onClose={handleSnackClose}>
+    <Alert onClose={handleSnackClose} severity={snack.snackType}>
+      {snack.snackMessage}
+    </Alert>
+  </Snackbar>
+  </div>
   );
 } 
 
@@ -198,11 +229,31 @@ const AddMasterForm = ({classes, currentUser}) => {
 
   return(
     <div className={classes.container}>
+      <Breadcrumbs
+        separator={<NavigateNextIcon fontSize="small" />}
+        aria-label="breadcrumb"
+        className={classes.breadcrumb}
+      >
+        <Link
+          variant="body1"
+          color="inherit"
+          to={`/partner/${userId}/salon/view`}
+          //component={RouterLink}
+        >
+          {t("Salon")}
+        </Link>
+        <Typography
+          variant="body1"
+          color="textPrimary"
+        >
+          {t("Masters")}
+        </Typography>
+      </Breadcrumbs>
       <Paper className={classes.paper}>
           <h3>{t("Add Master")}</h3> 
               <MasterForm data_salon={data_salon} setOpen={setOpen} userId={userId}/>    
       </Paper>
-      <Dialog
+      {/* <Dialog
           open={open}
           disableBackdropClick={true}
           TransitionComponent={Transition}
@@ -224,7 +275,7 @@ const AddMasterForm = ({classes, currentUser}) => {
                 </Link>
               </Button>
             </DialogActions>
-        </Dialog>
+        </Dialog> */}
     </div>
   )};
 
@@ -253,7 +304,7 @@ const styles = theme => ({
     alignItems:"center"
   },
   paper: {
-    marginTop: theme.spacing.unit * 8,
+    //marginTop: theme.spacing.unit * 8,
     width: "100%",
     display: "flex",
     flexDirection: "column",
@@ -285,6 +336,10 @@ const styles = theme => ({
   },
   field: {
     marginTop: "8px"
+  },
+  breadcrumb: {
+    paddingLeft: "10px",
+    paddingTop: "15px"
   },
   fab: {
     position: "fixed",

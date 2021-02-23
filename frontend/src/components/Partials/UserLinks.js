@@ -201,11 +201,17 @@ export default function UserLinks(props) {
             </ListItem> 
 
             <ListItem className={classes.listItem}>
-            <Button className={classes.username} size="small" 
+            {/* <Button className={classes.username} size="small" 
               //variant="outlined"
               onClick={handleDashboardOpen}>
               {t("List your salon")}
-            </Button>
+            </Button> */}
+            <Link to={"/partner"} className={classes.grow}>
+              <Button className={classes.listItem} variant="outlined"
+                onClick={(e)=> e.preventDefault}>
+                <h6 style={{margin:"5px", color: "white"}}>{t("List your salon")}</h6>
+              </Button>
+            </Link>
             </ListItem>
 
             <ListItem className={classes.listItem}>

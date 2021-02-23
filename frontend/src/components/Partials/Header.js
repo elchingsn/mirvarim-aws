@@ -38,6 +38,9 @@ const Header = (props) => {
     setFlag(code);
   }
 
+  var isMobile = navigator.userAgent.match(
+    /(iPad)|(iPhone)|(iPod)|(android)|(webOS)|(BlackBerry)|(IEMobile)|(Opera Mini)|(Lumia)/i
+  );
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const classes = useStyles();
@@ -82,11 +85,28 @@ const Header = (props) => {
     [classes.absolute]: absolute,
     [classes.fixed]: fixed
   });
+
+  if((props.location.pathname.match(/activate/))||(props.location.pathname.match(/password-reset/))
+      ||(props.location.pathname.match(/login/)) || (props.location.pathname === "/partner")) {
+    return (
+      <AppBar className={appBarClasses}>      
+        <Toolbar className={classes.container}> 
+          {isMobile ? 
+            (<img src={mirvarim_logo} alt="logo" style={{width: 110, height: 35, marginTop: "5px"}}/>)
+          : (<Link to="/"><img src={mirvarim_logo} alt="logo" style={{width: 110, height: 35, marginTop: "5px"}}/></Link>)
+          }
+        </Toolbar>
+      </AppBar>
+    );
+    }
+
   return (
     <AppBar className={appBarClasses}>
       <Toolbar className={classes.container}> 
         <Hidden mdUp implementation="css" className={classes.hidden}>
-          <Link to="/"><img src={mirvarim_logo} alt="logo" style={{width: 123, height: 39, marginTop: "0px"}}/></Link>
+          {props.location.pathname !== "/partner" &&
+           <Link to="/"><img src={mirvarim_logo} alt="logo" style={{width: 110, height: 35, marginTop: "5px"}}/></Link>
+          }
           {props.location.pathname === "/" &&
             (<FormControl className={classes.flag} >
               <Select

@@ -38,9 +38,7 @@ const EventForm = ({
     isConfirmed: event.extendedProps.isConfirmed
   })
 
-  console.log({...bookingData, isConfirmed:true})
- 
-  console.log('bookingdata', bookingData)
+  //console.log('bookingdata', bookingData)
   //const textFieldStyle = { minHeight: "5rem" };
 
   const handleServiceSelect = (value) => {
@@ -96,6 +94,7 @@ const EventForm = ({
                 size="small"
                 value={bookingData.serviceTitle}
                 disabled={true}
+                getOptionLabel={option => t(`${option}`)}
                 options={ [...new Set(services.map(service => service.title))] }
                 onChange={(event,value) => handleServiceSelect(value)}
                 renderInput={(params) => (

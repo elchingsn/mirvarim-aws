@@ -18,7 +18,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { useMutation } from '@apollo/react-hooks';
 import { useTranslation } from 'react-i18next';
 
-//import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import CancelIcon from '@material-ui/icons/Cancel';
 
@@ -29,8 +29,9 @@ import InputMask from 'react-input-mask';
 // import { DayCellContent } from '@fullcalendar/react';
 // import { setDay } from 'date-fns';
 
-import {CREATE_BOOKING } from "components/Partner/Dashboard/views/calendar/CalendarView/CreateEventForm.js"
+import { CREATE_BOOKING } from "components/Partner/Dashboard/views/calendar/CalendarView/CreateEventForm.js"
 import { PROFILE_QUERY } from "pages/Profile.js"
+import { SlowMotionVideoOutlined } from '@material-ui/icons';
 
 export default function Booking({services, salon, currentUser, setBookingDialog}) {
 
@@ -48,6 +49,15 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
     snackMessage: ""
   })
 
+  // const [masterWorkingHours, setMasterWorkingHours] = useState({
+  //   monday: [],
+  //   tuesday: [],
+  //   wednesday: [],
+  //   thursday: [],
+  //   friday: [],
+  //   saturday: [],
+  //   sunday: []
+  // })
 
   const [bookingData, setBookingData] = useState({
     //masterId: salon.masterSet[0].id,
@@ -58,11 +68,13 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
     serviceTitle: services[0].title,
     servicePrice: services[0].promotionPrice ? Math.min(services[0].price,services[0].promotionPrice) : services[0].price,
     duration: services[0].duration,
-    start: ''
+    start: '',
+    isConfirmed: false
   })
 
   const [den, setDen] = useState("");
   const [busyTime, setBusyTime] = useState({});
+  const [freeTime, setFreeTime] = useState([]);
 
   //choose default master by least booking in the calendar
   // useEffect(() => {
@@ -109,9 +121,9 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  // const handleBack = () => {
-  //   setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  // };
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
 
   const handleCancel = () => {
     setBookingDialog(false);
@@ -124,9 +136,12 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
       serviceTitle: services[0].title,
       servicePrice: services[0].promotionPrice ? Math.min(services[0].price,services[0].promotionPrice) : services[0].price,
       duration: services[0].duration,
-      start: ''
+      start: '',
+      isConfirmed: false
     })
   };
+
+  // console.log("bookingData", bookingData)
 
   const handleConfirm = () => {
     createBooking({variables: { bookingData: bookingData }}).catch(err => {
@@ -135,6 +150,12 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
     setSubmitting(true)
   };
 
+  const handleSnackClose = () => {
+    //setSubmitting(false);
+    setBookingDialog(false)
+    setSnack ({ ...snack,snackOpen: false })
+  }
+
   function getSteps() {
     return [t("Choose the service"), t("When do you want it?"), t("Enter your phone number")];
   }
@@ -142,7 +163,10 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
   const selectedDay = val => {
     //console.log(formatISO(val));
     let bookings = []
+    let selectedMaster = []
+    let workingHours = []
     let master_id = bookingData.masterId;
+    let master_hour_set = []
     //choose default master by least booking in the calendar
     if (bookingData.masterId === "" || bookingData.masterId === undefined || masterBookings === undefined) {
       const sorted_bookingSet = _.map(salon.masterSet, function(item, index) {
@@ -156,20 +180,72 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
       bookings = sorted_bookingSet[0].bookingSet;
       master_id = sorted_bookingSet[0].id;
     } else if (salon.masterSet.length === 1) {
-      bookings = salon.masterSet[0].bookingSet
+      bookings = salon.masterSet[0].bookingSet.filter(booking => (new Date(booking.end)-new Date())>0)
     } else {
       bookings = masterBookings.filter(booking => (new Date(booking.end)-new Date())>0)
     }
 
-    let _val = new Date(val.setMinutes(0,0,0));
-    let init_hour = 10;
-    setDen(new Date(_val.setHours(0)));
-    if ((new Date().getDate() === val.getDate()) && (new Date().getMonth() === val.getMonth())) {
-      init_hour = new Date().getHours();
-    } 
-    let available_hours=[];
-    let hour_arr = {10:true,11:true,12:true,13:true,14:true,15:true,16:true,17:true,18:true,19:true,20:true,21:true}
+    selectedMaster = salon.masterSet.filter(item => item.id === master_id)[0]
 
+    let _val = new Date(val.setMinutes(0,0,0));
+    setDen(new Date(_val.setHours(0)));
+
+    // console.log(bookings)
+    // console.log(salon.masterSet)
+    // console.log(selectedMaster)
+
+    switch (val.getDay()) {
+      case 0: 
+        workingHours = selectedMaster.sundayHours.map(h => h.substring(0,5))
+        break;
+      case 1: 
+        workingHours = selectedMaster.mondayHours.map(h => h.substring(0,5))
+        break;
+      case 2: 
+        workingHours = selectedMaster.tuesdayHours.map(h => h.substring(0,5))
+        break;
+      case 3: 
+        workingHours = selectedMaster.wednesdayHours.map(h => h.substring(0,5))
+        break;
+      case 4: 
+        workingHours = selectedMaster.thursdayHours.map(h => h.substring(0,5))
+        break;
+      case 5: 
+        workingHours = selectedMaster.fridayHours.map(h => h.substring(0,5))
+        break;
+      case 6: 
+        workingHours = selectedMaster.saturdayHours.map(h => h.substring(0,5))
+        break;
+      default: workingHours = ["08:00","21:00"]
+    }
+
+    const hour_set = ["00:00","00:30","01:00","01:30","02:00","02:30","03:00","03:30","04:00","04:30","05:00","05:30",
+                      "06:00","06:30","07:00","07:30","08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30",
+                      "12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30",
+                      "18:00","18:30","19:00","19:30","20:00","20:30","21:00","21:30","22:00","22:30","23:00","23:30"]
+    
+    if (workingHours[0] !== workingHours[1]) {
+      if ((new Date().getDate() === val.getDate()) && (new Date().getMonth() === val.getMonth())) {
+        master_hour_set = hour_set.slice(hour_set.indexOf(`${new Date().getHours()+1}:00`),hour_set.indexOf(workingHours[1])+1)
+      } else {
+        master_hour_set = hour_set.slice(hour_set.indexOf(workingHours[0]),hour_set.indexOf(workingHours[1])+1)
+      }
+    } 
+
+    var available_hour_set = master_hour_set.filter(function(slot){
+      let i,j
+      [i,j] = slot.split(":")
+      let k = new Date(_val.setHours(parseInt(i),parseInt(j)));
+      let existing_booking = bookings.filter(b => ( (((k-new Date(b.end))<=600000)&&(k>=new Date(b.end)))|| (((new Date(b.start)-k)<=600000)&&(k<=new Date(b.start)))))
+      // console.log(existing_booking)
+      return existing_booking.length === 0 
+    })
+
+    setFreeTime(available_hour_set)
+
+    let available_hours=[];
+    let init_hour = 10;
+    let hour_arr = {10:true,11:true,12:true,13:true,14:true,15:true,16:true,17:true,18:true,19:true,20:true,21:true}
     for(let i=init_hour; i<22; i++) {
       let k = new Date(_val.setHours(i));
       let existing_booking = bookings.filter(b => ( (((k-new Date(b.end))<=600000)&&(k>=new Date(b.end)))|| (((new Date(b.start)-k)<=600000)&&(k<=new Date(b.start)))))
@@ -181,7 +257,6 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
     }
     setBusyTime(hour_arr);
     setBookingData({ ...bookingData, masterId: master_id });
-    //setBookingData({...bookingData, start: formatISO(val)})
   };
 
   const handleServiceSelect = (value) => {
@@ -230,7 +305,7 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
                         ...bookingData, 
                         masterId: salon.masterSet.filter(item => item.masterName === value).map(item => item.id)[0]
                       })    
-                      setMasterbookings(salon.masterSet.filter(item => item.masterName === value).map(item => item.bookingSet)[0])                  
+                      setMasterbookings(salon.masterSet.filter(item => item.masterName === value).map(item => item.bookingSet)[0])  
             }}
             renderInput={(params) => (
               <TextField {...params} 
@@ -258,7 +333,7 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
             display="flex"
             flexWrap="wrap"
           >
-            {_.range(10,22).map(i => {
+            {/* {_.range(10,22).map(i => {
               return(
                 <Button
                   key={i}
@@ -270,16 +345,23 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
                   {`${i}:00`}
                 </Button>
               )})
-            }
-            {/* <Button
-              disabled={busyTime[10]}
-              variant="outlined"
-              className={classes.button}
-              onClick={() => setBookingData({...bookingData, start: formatISO(new Date(den.setHours(10)))})}
-            >
-              10:00
-            </Button>
-           */}
+            } */}
+            {freeTime.map(slot => {
+              return(
+                <Button
+                  key={slot}
+                  variant="outlined"
+                  className={classes.button}
+                  onClick={() => {
+                    let i,j
+                    [i,j] = slot.split(":")
+                    setBookingData({...bookingData, start: formatISO(new Date(den.setHours(parseInt(i),parseInt(j))))})
+                  }}
+                >
+                  {slot}
+                </Button>
+              )
+            })}
           </Box>
           {(!bookingData.start || (new Date(bookingData.start) == den))?
             (<h4>{t("No time selected")}</h4>) :
@@ -317,19 +399,19 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
         </Stepper>
           <div className={classes.actionsContainer}>
             <div>
-              {/* <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                className={classes.button}
-              >
-                <ArrowBackIosIcon/>
-              </Button> */}
               <Button
                 onClick={handleCancel}
                 className={classes.button}
               >
                 <CancelIcon/>
               </Button>
+              <Button
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                className={classes.button}
+              >
+                <ArrowBackIosIcon/>
+              </Button> 
               <Button
                 //variant="contained"
                 disabled={
@@ -366,8 +448,8 @@ export default function Booking({services, salon, currentUser, setBookingDialog}
           }
         </Paper>
       )}
-      <Snackbar open={snack.snackOpen} autoHideDuration={3000} onClose={()=>setBookingDialog(false)}>
-        <Alert onClose={()=>setBookingDialog(false)} severity={snack.snackType}>
+      <Snackbar open={snack.snackOpen} autoHideDuration={3000} onClose={handleSnackClose}>
+        <Alert onClose={handleSnackClose} severity={snack.snackType}>
           {snack.snackMessage}
         </Alert>
       </Snackbar>

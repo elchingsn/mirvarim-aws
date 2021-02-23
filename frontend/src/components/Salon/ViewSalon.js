@@ -140,10 +140,11 @@ const BrowseSalon = ({currentUser}) => {
   const masterRef = useRef(null);
 
   const masterStatusMap = {
-    "pending": "confirmation request sent",
+    "pending": "confirmation request sent to the master",
     "confirmed": "master has confirmed the request", 
     "rejected": "master has rejected the request",
-    "": "no master account created"
+    "no match": "master account with such email does not exist",
+    "": "you have not given an access to the master"
   }
 
   const { data: review_data, fetchMore } = useQuery(
@@ -365,7 +366,7 @@ const BrowseSalon = ({currentUser}) => {
                           </div>
                           <div style={{paddingLeft:"15px", color: "purple"}}>
                             &nbsp;
-                            {masterStatusMap[master.staffStatus]}
+                            {t(masterStatusMap[master.staffStatus])}
                           </div>
                           <Divider />
                         </> 

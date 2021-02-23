@@ -258,8 +258,6 @@ const Calendar = ({salon, masterId, bookings, isModalOpen, setModalOpen, locale}
     }
   })
 
-  console.log ('events', events);
-
   //create array of all services offered by the salon
   const hairServices = salon.hairserviceSet
   const nailsServices = salon.nailsserviceSet

@@ -4,13 +4,14 @@ import salons.schema
 import users.schema
 import reviews.schema
 import services.schema
+import transactions.schema
 from graphql_auth.schema import UserQuery, MeQuery
 
 
 # class Query(salons.schema.Query, users.schema.Query, graphene.ObjectType):
 #     pass
 
-class Query(UserQuery, MeQuery, salons.schema.Query, reviews.schema.Query, services.schema.Query, graphene.ObjectType):
+class Query(UserQuery, MeQuery, salons.schema.Query, reviews.schema.Query, services.schema.Query,transactions.schema.Query, graphene.ObjectType):
     pass
 
 

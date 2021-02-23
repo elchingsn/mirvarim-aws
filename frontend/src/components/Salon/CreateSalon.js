@@ -21,9 +21,12 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 import FormHelperText from '@material-ui/core/FormHelperText';
+import Checkbox from '@material-ui/core/Checkbox';
 //import NativeSelect from '@material-ui/core/NativeSelect';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import InputMask from 'react-input-mask';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import { UserContext } from "App";
 import Error from "../Shared/Error"; 
@@ -51,7 +54,7 @@ const CreateSalon = ({classes}) => {
     if (currentUser.salonSet[0]) {
         return (
           <div className={classes.container}>
-            <div className={classes.field}> {t("This account has already added a salon. Please, contact us if you want to delete your salon.")} </div>
+            <div className={classes.field}> {t("This account has successfully added a salon. Please, contact us if you want to delete your salon.")} </div>
           </div>
         ) 
     } else {
@@ -68,21 +71,21 @@ const AddSalonForm = ({ classes, currentUser }) => {
     const [cityId, setCityId] = useState("");
     const [areaId, setAreaId] = useState("");
     const [description, setDescription] = useState("");
-    const [priceRange, setPriceRange] = useState(2);
-    const [masters, setMasters] = useState(1);
-    const [hairCategories, setHairCategories] = useState([]);
-    const [nailsCategories, setNailsCategories] = useState([]);
-    const [hairRemovalCategories, setHairRemovalCategories] = useState([]);
-    const [makeupCategories, setMakeupCategories] = useState([]);
-    const [massageCategories, setMassageCategories] = useState([]);
-    const [cosmetologyCategories, setCosmetologyCategories] = useState([]);
-    const [eyebrowCategories, setEyebrowCategories] = useState([]);
-    const [tattooCategories, setTattooCategories] = useState([]);
-    const [aestheticsCategories, setAestheticsCategories] = useState([]);
+    // const [hairCategories, setHairCategories] = useState([]);
+    // const [nailsCategories, setNailsCategories] = useState([]);
+    // const [hairRemovalCategories, setHairRemovalCategories] = useState([]);
+    // const [makeupCategories, setMakeupCategories] = useState([]);
+    // const [massageCategories, setMassageCategories] = useState([]);
+    // const [cosmetologyCategories, setCosmetologyCategories] = useState([]);
+    // const [eyebrowCategories, setEyebrowCategories] = useState([]);
+    // const [tattooCategories, setTattooCategories] = useState([]);
+    // const [aestheticsCategories, setAestheticsCategories] = useState([]);
     const [male, setMale] = useState(false);
     const [female, setFemale] = useState(false);
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
+    const [facebook, setFacebook] = useState("");
+    const [instagram, setInstagram] = useState("");
     const [img0, setImg0] = useState("");
     const [photo1, setPhoto1] = useState("");
     const [photo2, setPhoto2] = useState("");
@@ -103,6 +106,22 @@ const AddSalonForm = ({ classes, currentUser }) => {
       sizeError6: "",
     });
 
+    const [imgThumb, setImgThumb] = useState({
+      img0: "",
+      img1: "",
+      img2: "",
+      img3: "",
+      img4: "",
+      img5: "",
+      img6: "",
+    })
+
+    const [snack, setSnack] = useState({
+      snackOpen: false,
+      snackType: "",
+      snackMessage: ""
+    })
+
     //const [addMaster, { data: master_data }] = useMutation(ADD_MASTER_MUTATION);
 
     //const dt = new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '/' );
@@ -118,6 +137,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
         setImg0(selectedFile);
         setFileError({...fileError, sizeError0: ""});
       }
+      var reader = new FileReader();
+      var url = reader.readAsDataURL(selectedFile);
+      reader.onloadend = function(e) {
+        setImgThumb({...imgThumb, img0:[reader.result]})
+      }
     };
 
     const handlePhoto1Change = event => {
@@ -128,6 +152,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
       } else {
         setPhoto1(selectedFile);
         setFileError({...fileError, sizeError1: ""});
+      }
+      var reader = new FileReader();
+      var url = reader.readAsDataURL(selectedFile);
+      reader.onloadend = function(e) {
+        setImgThumb({...imgThumb, img1:[reader.result]})
       }
     };
 
@@ -140,6 +169,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
         setPhoto2(selectedFile);
         setFileError({...fileError, sizeError2: ""});
       }
+      var reader = new FileReader();
+      var url = reader.readAsDataURL(selectedFile);
+      reader.onloadend = function(e) {
+        setImgThumb({...imgThumb, img2:[reader.result]})
+      }
     };
 
     const handlePhoto3Change = event => {
@@ -150,6 +184,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
       } else {
         setPhoto3(selectedFile);
         setFileError({...fileError, sizeError3: ""});
+      }
+      var reader = new FileReader();
+      var url = reader.readAsDataURL(selectedFile);
+      reader.onloadend = function(e) {
+        setImgThumb({...imgThumb, img3:[reader.result]})
       }
     };
 
@@ -162,6 +201,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
         setPhoto4(selectedFile);
         setFileError({...fileError, sizeError4: ""});
       }
+      var reader = new FileReader();
+      var url = reader.readAsDataURL(selectedFile);
+      reader.onloadend = function(e) {
+        setImgThumb({...imgThumb, img4:[reader.result]})
+      }
     };
 
     const handlePhoto5Change = event => {
@@ -173,6 +217,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
         setPhoto5(selectedFile);
         setFileError({...fileError, sizeError5: ""});
       }
+      var reader = new FileReader();
+      var url = reader.readAsDataURL(selectedFile);
+      reader.onloadend = function(e) {
+        setImgThumb({...imgThumb, img5:[reader.result]})
+      }
     };
 
     const handlePhoto6Change = event => {
@@ -183,6 +232,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
       } else {
         setPhoto6(selectedFile);
         setFileError({...fileError, sizeError6: ""});
+      }
+      var reader = new FileReader();
+      var url = reader.readAsDataURL(selectedFile);
+      reader.onloadend = function(e) {
+        setImgThumb({...imgThumb, img6:[reader.result]})
       }
     };
   
@@ -215,7 +269,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
         if (photo) {uploadedUrl[i] = await handleImageUpload(photo)}
       }
 
-      // console.log( name, address, cityId, areaId, description, priceRange, masters, hairCategories, nailsCategories,
+      // console.log( name, address, cityId, areaId, description, hairCategories, nailsCategories,
       //   hairRemovalCategories, makeupCategories, massageCategories, eyebrowCategories, cosmetologyCategories,
       //   tattooCategories, aestheticsCategories,
       //   male, female, email, phone, uploadedUrl[0],
@@ -223,9 +277,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
       //   uploadedUrl[4], uploadedUrl[5], uploadedUrl[6] );
       createSalon({variables: {
                    salonData: {
-                      name, address, cityId, areaId, description, priceRange, masters, hairCategories, nailsCategories, 
-                      hairRemovalCategories, makeupCategories, massageCategories, eyebrowCategories, cosmetologyCategories,
-                      tattooCategories, aestheticsCategories, male, female, email, phone, photoMain: uploadedUrl[0],
+                      name, address, cityId, areaId, description, 
+                      // priceRange, masters, hairCategories, nailsCategories,hairRemovalCategories, 
+                      // makeupCategories, massageCategories, eyebrowCategories, cosmetologyCategories,
+                      // tattooCategories, aestheticsCategories,
+                      male, female, facebook, instagram, email, phone, photoMain: uploadedUrl[0],
                       photo1: uploadedUrl[1], photo2: uploadedUrl[2], photo3: uploadedUrl[3],
                       photo4: uploadedUrl[4], photo5: uploadedUrl[5], photo6: uploadedUrl[6] 
                   }}}).catch(err => {
@@ -240,6 +296,10 @@ const AddSalonForm = ({ classes, currentUser }) => {
       // }
     };
 
+    function Alert(props) {
+      return <MuiAlert elevation={6} variant="filled" {...props} />;
+    }
+
     return(
       <div className={classes.container}>
         <Paper className={classes.paper}>
@@ -247,8 +307,14 @@ const AddSalonForm = ({ classes, currentUser }) => {
             <Mutation
               mutation={CREATE_SALON_MUTATION}
               onCompleted={data => {
-              setSubmitting(false);
-              setOpen(true);
+              //setSubmitting(false);
+              //setOpen(true);
+              setSnack ({
+                ...snack,
+                snackOpen: true,
+                snackType: "success",
+                snackMessage: t("Confirmed")
+              })
               }}
               // update={handleUpdateCache}
               refetchQueries={() => [{ query: ME_QUERY, variables: {id:currentUser.id} }]}
@@ -257,9 +323,10 @@ const AddSalonForm = ({ classes, currentUser }) => {
               if (error) return <Error error={error} />;
                 return(
                   <form onSubmit={event => handleSubmit(event, createSalon)}>
+                    <h5>{t("Fields marked with an asterisk (*) are required")}</h5>
                     <FormControl fullWidth className={classes.field}>
                       <TextField
-                      label={t("Name")}
+                      label={t("Name*")}
                       placeholder={t("Add Name")}
                       onChange={event => setName(event.target.value)}
                       value={name}
@@ -269,7 +336,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
                     </FormControl>
                     <FormControl fullWidth className={classes.field}>
                       <TextField
-                      label={t("Address")}
+                      label={t("Address*")}
                       placeholder={t("Add Address")}
                       onChange={event => setAddress(event.target.value)}
                       value={address}
@@ -298,7 +365,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
                                           renderInput={(params) => (
                                             <TextField {...params} 
                                             variant="outlined"  
-                                            label={t("City")} 
+                                            label={t("City*")} 
                                             // margin="normal" 
                                             // className={classes.textField}
                                             />
@@ -330,7 +397,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
                                           renderInput={(params) => (
                                             <TextField {...params} 
                                             variant="outlined" 
-                                            label={t("Location")} 
+                                            label={t("Location*")} 
                                             // margin="normal" 
                                             // className={classes.textField}
                                             />
@@ -344,7 +411,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       <TextField
                         multiline
                         rows="4"
-                        label={t("Description")}
+                        label={t("Description*")}
                         placeholder={t("Add Description")}
                         onChange={event => setDescription(event.target.value)}
                         value={description}
@@ -371,25 +438,26 @@ const AddSalonForm = ({ classes, currentUser }) => {
                         onChange={(event) => setPhone(event.target.value)}
                       />
                     </FormControl>
-                  {/* <FormControl fullWidth>
-                    <NativeSelect
-                      value={priceRange}
-                      onChange={event => {
-                        setPriceRange(parseInt(event.target.value));
-                      }}
-                      name="priceRange"
-                      className={classes.selectEmpty}
-                      inputProps={{ 'aria-label': 'priceRange' }}
-                      variant="outlined"  
-                    >
-                      <option value="1">$</option>
-                      <option value="2">$$</option>
-                      <option value="3">$$$</option>
-                      <option value="4">$$$$</option>
-                    </NativeSelect>
-                  </FormControl> */}
-                  <h5>{t("Select relevant services")}</h5>
-                  <FormControl fullWidth className={classes.field}>
+                    <FormControl fullWidth className={classes.field}>
+                      <TextField
+                      label={t("Facebook account")}
+                      placeholder={t("Add facebook account")}
+                      onChange={(event) => setFacebook(event.target.value)}
+                      value={facebook}
+                      variant="outlined"
+                      />
+                    </FormControl>
+                    <FormControl fullWidth className={classes.field}>
+                      <TextField
+                      label={t("Instagram account")}
+                      placeholder={t("Add instagram account")}
+                      onChange={(event) => setInstagram(event.target.value)}
+                      value={instagram}
+                      variant="outlined"
+                      />
+                    </FormControl>
+{/*                <h5>{t("Select relevant services")}</h5>
+                   <FormControl fullWidth className={classes.field}>
                     <Query query={HAIR_QUERY}>
                       {({data, loading, error}) => {
                         if (loading) return <Loading />;
@@ -633,17 +701,44 @@ const AddSalonForm = ({ classes, currentUser }) => {
                               />;
                             }}
                       </Query>
-                  </FormControl>
+                  </FormControl> */}
+
+                  <Box
+                    mt={1}
+                    justifyContent="left"
+                    display="flex"
+                  >
+                    <h4> {t("Female")} </h4>
+                    <Checkbox
+                      checked={female}
+                      color="primary"
+                      onChange={() => {
+                        setFemale(!female);
+                      }}
+                      inputProps={{ 'aria-label': 'primary checkbox' }}
+                    />
+                    <h4> {t("Male")} </h4>
+                    <Checkbox
+                      checked={male}
+                      color="primary"
+                      onChange={() => {
+                        setMale(!male);
+                      }}
+                      inputProps={{ 'aria-label': 'primary checkbox' }}
+                    />
+                  </Box>
+                  <h5>{t("Upload photo of your workplace or services provided. Visitors will be able to see your photos while reviewing your salon")}</h5>
                   <FormControl fullWidth className={classes.field} error={Boolean(fileError)}>
                     <input
                       id="photoMain"
                       required
                       type="file"
                       accept=".jpg, .jpeg, .png"
+                      capture="camera"
                       className={classes.input}
                       onChange={handlePhotoMainChange}
                     />
-                    <label htmlFor="photoMain">
+                    <label htmlFor="photoMain" className={classes.label} >
                       <Button
                         variant="outlined"
                         size="small"
@@ -651,10 +746,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
                         component="span"
                         className={classes.button}
                       >
-                        {t("Main photo")}
+                        {t("Main photo*")}
                       </Button>
                       {img0 && img0.name}
                       <FormHelperText>{fileError.sizeError0}</FormHelperText>
+                      {imgThumb.img0 && <img src={imgThumb.img0} className={classes.imgThumb} />}   
                     </label>
                   </FormControl>
                   <FormControl fullWidth error={Boolean(fileError)}>
@@ -662,10 +758,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       id="photo1"
                       type="file"
                       accept=".jpg, .jpeg, .png"
+                      capture="camera"
                       className={classes.input}
                       onChange={handlePhoto1Change}
                     />
-                    <label htmlFor="photo1">
+                    <label htmlFor="photo1" className={classes.label} >
                       <Button
                         variant="outlined"
                         size="small"
@@ -677,6 +774,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       </Button>
                       {photo1 && photo1.name}
                       <FormHelperText>{fileError.sizeError1}</FormHelperText>
+                      {imgThumb.img1 && <img src={imgThumb.img1} className={classes.imgThumb} />}   
                     </label>
                   </FormControl>
                   <FormControl fullWidth error={Boolean(fileError)}>
@@ -684,10 +782,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       id="photo2"
                       type="file"
                       accept=".jpg, .jpeg, .png"
+                      capture="camera"
                       className={classes.input}
                       onChange={handlePhoto2Change}
                     />
-                    <label htmlFor="photo2">
+                    <label htmlFor="photo2" className={classes.label} >
                       <Button
                         variant="outlined"
                         size="small"
@@ -699,6 +798,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       </Button>
                       {photo2 && photo2.name}
                       <FormHelperText>{fileError.sizeError2}</FormHelperText>
+                      {imgThumb.img2 && <img src={imgThumb.img2} className={classes.imgThumb} />}   
                     </label>
                   </FormControl>
                   <FormControl fullWidth error={Boolean(fileError)}>
@@ -706,10 +806,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       id="photo3"
                       type="file"
                       accept=".jpg, .jpeg, .png"
+                      capture="camera"
                       className={classes.input}
                       onChange={handlePhoto3Change}
                     />
-                    <label htmlFor="photo3">
+                    <label htmlFor="photo3" className={classes.label} >
                       <Button
                         variant="outlined"
                         size="small"
@@ -721,6 +822,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       </Button>
                       {photo3 && photo3.name}
                       <FormHelperText>{fileError.sizeError3}</FormHelperText>
+                      {imgThumb.img3 && <img src={imgThumb.img3} className={classes.imgThumb} />}   
                     </label>
                   </FormControl>
                   <FormControl fullWidth error={Boolean(fileError)}>
@@ -728,10 +830,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       id="photo4"
                       type="file"
                       accept=".jpg, .jpeg, .png"
+                      capture="camera"
                       className={classes.input}
                       onChange={handlePhoto4Change}
                     />
-                    <label htmlFor="photo4">
+                    <label htmlFor="photo4" className={classes.label} >
                       <Button
                         variant="outlined"
                         size="small"
@@ -743,6 +846,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       </Button>
                       {photo4 && photo4.name}
                       <FormHelperText>{fileError.sizeError4}</FormHelperText>
+                      {imgThumb.img4 && <img src={imgThumb.img4} className={classes.imgThumb} />}   
                     </label>
                   </FormControl>
                   <FormControl fullWidth error={Boolean(fileError)}>
@@ -750,10 +854,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       id="photo5"
                       type="file"
                       accept=".jpg, .jpeg, .png"
+                      capture="camera"
                       className={classes.input}
                       onChange={handlePhoto5Change}
                     />
-                    <label htmlFor="photo5">
+                    <label htmlFor="photo5" className={classes.label} >
                       <Button
                         variant="outlined"
                         size="small"
@@ -765,6 +870,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       </Button>
                       {photo5 && photo5.name}
                       <FormHelperText>{fileError.sizeError5}</FormHelperText>
+                      {imgThumb.img5 && <img src={imgThumb.img5} className={classes.imgThumb} />}   
                     </label>
                   </FormControl>
                   <FormControl fullWidth error={Boolean(fileError)}>
@@ -772,10 +878,11 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       id="photo6"
                       type="file"
                       accept=".jpg, .jpeg, .png"
+                      capture="camera"
                       className={classes.input}
                       onChange={handlePhoto6Change}
                     />
-                    <label htmlFor="photo6">
+                    <label htmlFor="photo6" className={classes.label} >
                       <Button
                         variant="outlined"
                         size="small"
@@ -787,6 +894,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
                       </Button>
                       {photo6 && photo6.name}
                       <FormHelperText>{fileError.sizeError6}</FormHelperText>
+                      {imgThumb.img6 && <img src={imgThumb.img6} className={classes.imgThumb} />}   
                     </label>
                   </FormControl>                                                      
                   <Box
@@ -835,7 +943,12 @@ const AddSalonForm = ({ classes, currentUser }) => {
             </Mutation>
         </Paper>
         {/* Success Dialog */}
-          <Dialog
+        <Snackbar open={snack.snackOpen} autoHideDuration={1000} onClose={() => history.push(`/partner/${currentUser.id}/salon/view`)}>
+          <Alert onClose={() => history.push(`/partner/${currentUser.id}/salon/view`)} severity={snack.snackType}>
+            {snack.snackMessage}
+          </Alert>
+        </Snackbar>
+          {/* <Dialog
           open={open}
           disableBackdropClick={true}
           TransitionComponent={Transition}
@@ -861,7 +974,7 @@ const AddSalonForm = ({ classes, currentUser }) => {
                 </Link>
               </Button>
             </DialogActions>
-        </Dialog>
+        </Dialog> */}
       </div>
 
     )};
@@ -916,7 +1029,7 @@ const AREA_QUERY = gql`
 }
 `;
 
-const HAIR_QUERY = gql`
+export const HAIR_QUERY = gql`
 {
     hairCat{
         id
@@ -925,7 +1038,7 @@ const HAIR_QUERY = gql`
 }
 `;
 
-const NAILS_QUERY = gql`
+export const NAILS_QUERY = gql`
 {
     nailsCat{
         id
@@ -934,7 +1047,7 @@ const NAILS_QUERY = gql`
 }
 `;
 
-const HAIR_REMOVAL_QUERY = gql`
+export const HAIR_REMOVAL_QUERY = gql`
 {
     hairRemovalCat{
         id
@@ -943,7 +1056,7 @@ const HAIR_REMOVAL_QUERY = gql`
 }
 `;
 
-const MAKEUP_QUERY = gql`
+export const MAKEUP_QUERY = gql`
 {
     makeupCat{
         id
@@ -952,7 +1065,7 @@ const MAKEUP_QUERY = gql`
 }
 `;
 
-const MASSAGE_QUERY = gql`
+export const MASSAGE_QUERY = gql`
 {
     massageCat{
         id
@@ -961,7 +1074,7 @@ const MASSAGE_QUERY = gql`
 }
 `;
 
-const EYEBROW_QUERY = gql`
+export const EYEBROW_QUERY = gql`
 {
     eyebrowCat{
         id
@@ -970,7 +1083,7 @@ const EYEBROW_QUERY = gql`
 }
 `;
 
-const COSMETOLOGY_QUERY = gql`
+export const COSMETOLOGY_QUERY = gql`
 {
     cosmetologyCat{
         id
@@ -979,7 +1092,7 @@ const COSMETOLOGY_QUERY = gql`
 }
 `;
 
-const TATTOO_QUERY = gql`
+export const TATTOO_QUERY = gql`
 {
     tattooCat{
         id
@@ -988,7 +1101,7 @@ const TATTOO_QUERY = gql`
 }
 `;
 
-const AESTHETICS_QUERY = gql`
+export const AESTHETICS_QUERY = gql`
 {
     aestheticsCat{
         id
@@ -1044,8 +1157,14 @@ const styles = theme => ({
     bottom: theme.spacing.unit * 2,
     right: theme.spacing.unit * 2,
     zIndex: "200"
+  },
+  imgThumb: {
+    width:"100%"
+  },
+  label:{
+    display:"block", 
+    width:"130px"
   }
 });
-
 
 export default withStyles(styles)(CreateSalon);

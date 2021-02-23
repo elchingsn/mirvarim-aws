@@ -25,7 +25,12 @@ import Slide from "@material-ui/core/Slide";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import Checkbox from '@material-ui/core/Checkbox';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Typography from '@material-ui/core/Typography';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import { UserContext } from "App.js"
 import {ME_QUERY} from "App.js"
 
@@ -63,17 +68,28 @@ const SelectMaster = ({classes, currentUser}) => {
     /(iPad)|(iPhone)|(iPod)|(android)|(webOS)|(BlackBerry)|(IEMobile)|(Opera Mini)|(Lumia)/i
   );
 
-  //for update master hook was not used. Ideally both update and delete should use hook.
-  const [deleteMaster, { data: delete_data }] = useMutation(DELETE_MASTER_MUTATION, {
-    onCompleted({ deleteMaster }) {
-      history.push(`/partner/${currentUser.id}/salon/view`);
-    },
-    refetchQueries: [{ query: ME_QUERY, variables: {id:currentUser.id} }],
-    awaitRefetchQueries: true,
-  });
-
   return (
     <div className={classes.container}>
+      <Breadcrumbs
+        separator={<NavigateNextIcon fontSize="small" />}
+        aria-label="breadcrumb"
+        className={classes.breadcrumb}
+      >
+        <Link
+          variant="body1"
+          color="inherit"
+          to={`/partner/${currentUser.id}/salon/view`}
+          //component={RouterLink}
+        >
+          {t("Salon")}
+        </Link>
+        <Typography
+          variant="body1"
+          color="textPrimary"
+        >
+          {t("Masters")}
+        </Typography>
+      </Breadcrumbs>
       <Paper className={classes.paper}>
         {!selectedMaster.id &&
           (<FormControl fullWidth className={classes.field}>
@@ -101,12 +117,11 @@ const SelectMaster = ({classes, currentUser}) => {
             classes={classes} 
             currentUser={currentUser} 
             selectedMaster={selectedMaster} 
-            setOpen={setOpen} 
-            deleteMutation={deleteMaster}
+            setSelectedMaster={setSelectedMaster}
           />  
           }
           </Paper>
-        <Dialog
+        {/* <Dialog
             open={open}
             disableBackdropClick={true}
             TransitionComponent={Transition}
@@ -128,19 +143,31 @@ const SelectMaster = ({classes, currentUser}) => {
                   </Link>
                 </Button>
               </DialogActions>
-          </Dialog>
+          </Dialog> */}
       </div>
     );
 }
 
-const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen, deleteMutation }) => {
+const UpdateMasterForm = ({classes, currentUser, selectedMaster, setSelectedMaster }) => {
   const userId = currentUser.id;
   //const salonId = currentUser.salonSet[0].id;
   const history = useHistory();
   const { t } = useTranslation();
 
-  const [masterData, setMasterData] = useState({})
-  
+  const [masterData, setMasterData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    isStaff: false,
+    status: ''
+  })
+
+  const [snack, setSnack] = useState({
+    snackOpen: false,
+    snackType: "",
+    snackMessage: ""
+  })
+
   useEffect(() => {
       setMasterData({
         ...masterData,
@@ -162,7 +189,8 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen, delete
     "pending": "confirmation request sent",
     "confirmed": "master has confirmed the request", 
     "rejected": "master has rejected the request",
-    "": "no master account created"
+    "no match": "master account with such email does not exist",
+    "": "you have not given an access to the master"
   }
 
   // const handleUpdateCache = (cache, { data: { updateTrack } }) => {
@@ -170,6 +198,20 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen, delete
   //   const tracks = data.tracks.concat(updateTrack.track);
   //   cache.writeQuery({ query: GET_TRACKS_QUERY, data: { tracks } });
   // };
+
+  //for update master hook was not used. Ideally both update and delete should use hook.
+  const [deleteMaster, { data: delete_data }] = useMutation(DELETE_MASTER_MUTATION, {
+    onCompleted({ delete_data }) {
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Master successfully removed!")
+      })
+    },
+    refetchQueries: [{ query: ME_QUERY, variables: {id:currentUser.id} }],
+    awaitRefetchQueries: true,
+  });
 
   const handleSubmit = async (event, updateMaster) => {
     event.preventDefault();
@@ -182,6 +224,16 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen, delete
                 });
   };
 
+  const handleSnackClose = () => {
+    setSubmitting(false);
+    setSnack ({ ...snack,snackOpen: false })
+    setSelectedMaster({})
+  }
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+
   return(
     <div className={classes.container}>
       <Paper className={classes.pape}>
@@ -190,7 +242,12 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen, delete
           onCompleted={data => {
           //console.log({ data });
           setSubmitting(false);
-          setOpen(true);
+          setSnack ({
+            ...snack,
+            snackOpen: true,
+            snackType: "success",
+            snackMessage: t("Master successfully updated!")
+          })
           }}
           // update={handleUpdateCache}
           refetchQueries={() => [{ query: ME_QUERY, variables: {id:currentUser.id} }]}
@@ -202,18 +259,19 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen, delete
               <form onSubmit={event => handleSubmit(event, updateMaster)} style={{marginBottom: "0"}}>
                 <FormControl fullWidth className={classes.field}>
                   <TextField
-                  label="Name*"
+                  label={t("Name")}
                   placeholder={t("Add name")}
                   onChange={(event) => setMasterData({ ...masterData, name:event.target.value })}
                   value={masterData.name}
                   variant="outlined"
                   disabled={submitting}
                   InputLabelProps={{ shrink: true }} 
+                  error={!masterData.name.trim()} 
                   />
                 </FormControl>
                 <FormControl fullWidth className={classes.field}>
                   <TextField
-                  label="Description"
+                  label={t("Email")}
                   placeholder="Add email"
                   onChange={(event) => setMasterData({ ...masterData, email:event.target.value })}
                   value={masterData.email}
@@ -319,15 +377,16 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen, delete
                     <DeleteOutlineIcon/>
                   </Button>
                   <Box flexGrow={1} />
-                  <Link to={`/partner/${userId}/salon/view`}>
-                    <Button
+                  {/* <Link to={`/partner/${userId}/salon/view`}>
+                  </Link> */}
+                  <Button
                       disabled={submitting}
                       variant="outlined"
                       className={classes.cancel}
+                      onClick={()=>setSelectedMaster({})}
                     >
                       {t("Cancel")}
                     </Button>
-                  </Link>
                   <Button 
                       variant="outlined"
                       disabled={masterData.name ?
@@ -367,22 +426,27 @@ const UpdateMasterForm = ({classes, currentUser, selectedMaster, setOpen, delete
                   setConfirmOpen(false);
                 }}
               >
-                No
+                {t("No")}
               </Button>
               <Button
                 //color="secondary"
                 variant="contained"
                 onClick={() => 
-                  deleteMutation({variables: { masterId: parseInt(selectedMaster.id) }}).catch(err => {
+                  deleteMaster({variables: { masterId: parseInt(selectedMaster.id) }}).catch(err => {
                     console.error(err);
                     history.push('/partner');
                   })
                 }
               >
-                Yes
+                {t("Yes")}
               </Button>
             </DialogActions>
         </Dialog>
+        <Snackbar open={snack.snackOpen} autoHideDuration={1000} onClose={handleSnackClose}>
+          <Alert onClose={() => setSubmitting(false)} severity={snack.snackType}>
+            {snack.snackMessage}
+          </Alert>
+        </Snackbar>
       </div>
 )}
 
@@ -420,7 +484,7 @@ const styles = theme => ({
     alignItems:"center"
   },
   paper: {
-    marginTop: theme.spacing.unit * 8,
+    //marginTop: theme.spacing.unit * 8,
     width:"100%",
     display: "flex",
     flexDirection: "column",
@@ -466,6 +530,10 @@ const styles = theme => ({
     paddingTop: "10px",
     paddingLeft: "20px",
     paddingRight: "20px"
+  },
+  breadcrumb: {
+    paddingLeft: "10px",
+    paddingTop: "15px"
   }
 });
 

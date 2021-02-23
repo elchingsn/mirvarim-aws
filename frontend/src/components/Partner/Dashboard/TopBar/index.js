@@ -15,7 +15,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { THEMES } from 'constants.js';
 import Account from './Account';
 import Notifications from './Notifications';
-//import Settings from './Settings';
+import Settings from './Settings';
 import mirvarim_logo from "assets/img/mirvarim1.png"
 
 const useStyles = makeStyles((theme) => ({
@@ -59,16 +59,14 @@ const TopBar = ({
           </IconButton>
         </Hidden>
         <Hidden mdDown>
-          <Link to="/">
-           <Link to="/"><img src={mirvarim_logo} alt="logo" style={{width: 140, height: 50, marginTop: "0px"}}/></Link>
-          </Link>
+           <img src={mirvarim_logo} alt="logo" style={{width: 140, height: 50, marginTop: "0px"}}/>
         </Hidden>
         <Box
           ml={2}
           flexGrow={1}
         />
         <Notifications user={user}/>
-        {/* <Settings /> */}
+        <Settings />
         <Box ml={2}>
           <Account user={user}/>
         </Box>

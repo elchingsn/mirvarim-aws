@@ -4,7 +4,7 @@ import React, {
   useEffect
 } from 'react';
 import gql from "graphql-tag";
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks'; 
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import {
@@ -46,7 +46,7 @@ const Notifications = ({ user }) => {
   const classes = useStyles();
   const ref = useRef(null);
   const [isOpen, setOpen] = useState(false);    
-  console.log(user) 
+  const { t } = useTranslation();
   
   const [updateMaster, { data: update_data }] = useMutation(UPDATE_MASTER_MUTATION, {
     onCompleted({ updateMaster }) {
@@ -79,14 +79,14 @@ const Notifications = ({ user }) => {
 
   return (
     <>
-      <Tooltip title="Notifications">
+      <Tooltip title={t("Notifications")}>
         <IconButton
           color="inherit"
           ref={ref}
           onClick={handleOpen}
         >
           {/* <NotificationsIcon /> */}
-          <i class="fas fa-bell">
+          <i className="fas fa-bell">
             {notifications.length > 0 ? (<sup className={classes.sup}>&nbsp;{notifications.length}</sup>) : null}
           </i>
         </IconButton>
@@ -102,11 +102,11 @@ const Notifications = ({ user }) => {
         open={isOpen}
       >
         <Box p={1}>
-          <h3><strong>Notifications</strong></h3>
+          <h3><strong>{t("Notifications")}</strong></h3>
         </Box>
         {notifications.length === 0 ? (
           <Box p={1}>
-            <h4> There are no notifications </h4>
+            <h4> {t("There are no notifications")} </h4>
           </Box>
         ) : (
           <>
@@ -114,12 +114,12 @@ const Notifications = ({ user }) => {
               {notifications.map((notification) => {
 
                 return (
-                  <div>
+                  <div key={notification.id}>
                     <ListItem
-                    component={RouterLink}
-                    divider
-                    key={notification.id}
-                  >
+                      component={RouterLink}
+                      divider
+                      key={notification.id}
+                    >
                     {/* <ListItemAvatar>
                       <Avatar
                         className={classes.icon}

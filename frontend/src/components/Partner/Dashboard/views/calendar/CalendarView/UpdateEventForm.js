@@ -111,6 +111,7 @@ const EventForm = ({
                 size="small"
                 value={bookingData.serviceTitle}
                 disabled={true}
+                getOptionLabel={option => t(`${option}`)}
                 options={ [...new Set(services.map(service => service.title))] }
                 onChange={(event,value) => handleServiceSelect(value)}
                 renderInput={(params) => (

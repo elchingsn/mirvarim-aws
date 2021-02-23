@@ -8,7 +8,9 @@ import {
   Button,
   FormControlLabel,
   IconButton,
+  MenuItem,
   Popover,
+  Select,
   SvgIcon,
   Switch,
   TextField,
@@ -19,6 +21,11 @@ import {
 import SettingsIcon from '@material-ui/icons/Settings';
 import useSettings from 'utils/hooks/useSettings';
 import { THEMES } from 'constants.js';
+
+import { useTranslation } from 'react-i18next';
+import aze_flag from "assets/img/aze.png"
+import ru_flag from "assets/img/ru.png"
+import en_flag from "assets/img/eng.png"
 
 const useStyles = makeStyles((theme) => ({
   badge: {
@@ -44,6 +51,14 @@ const Settings = () => {
     responsiveFontSizes: settings.responsiveFontSizes,
     theme: settings.theme
   });
+  const { t, i18n } = useTranslation();
+  const [flag, setFlag] = useState(localStorage.getItem("i18nextLng"));
+
+  const changeLang = (code) => {
+    i18n.changeLanguage(code);
+    setFlag(code);
+    setOpen(false);
+  }
 
   const handleOpen = () => {
     setOpen(true);
@@ -94,13 +109,33 @@ const Settings = () => {
         onClose={handleClose}
         open={isOpen}
       >
-        <Typography
-          variant="h4"
-          color="textPrimary"
-        >
+        <h3>
           Settings
-        </Typography>
+        </h3>
         <Box
+          mt={2}
+          px={1}
+        >
+          <Select
+            labelId="demo-simple-select-outlined-label"
+            id="demo-simple-select-outlined"
+            variant="outlined"
+            value={flag}
+            onChange={(event) => changeLang(event.target.value)}
+            label="flag"
+          >
+            <MenuItem value="aze">
+              <img alt="az" src={aze_flag} style={{width: 21, height: 21}}/>
+            </MenuItem>
+            <MenuItem value="ru">
+              <img alt="ru" src={ru_flag} style={{width: 21, height: 21}}/>
+            </MenuItem>
+            <MenuItem value="en">
+              <img alt="en" src={en_flag} style={{width: 21, height: 21}}/>
+            </MenuItem>
+          </Select>
+        </Box>
+        {/* <Box
           mt={2}
           px={1}
         >
@@ -162,7 +197,7 @@ const Settings = () => {
           >
             Save Settings
           </Button>
-        </Box>
+        </Box> */}
       </Popover>
     </>
   );

@@ -24,6 +24,7 @@ import Loading from "components/Shared/Loading";
 import Error from "components/Shared/Error"
 import Login from "components/Auth/Login"
 import Auth from "components/Auth"
+import Auth_partner from "components/Auth_partner"
 import Activate from "components/Auth/Activate"
 import PasswordReset from "components/Auth/PasswordReset"
 import SendPasswordReset from "components/Auth/SendPasswordReset"
@@ -54,7 +55,7 @@ const App = () => (
               <Route path="/reset" component={SendPasswordReset} />
               <Route path="/password-reset/:token" component={PasswordReset} />
               <Route exact path="/salon" component={Salon} />
-              <Route exact path="/partner" component={Auth} />
+              <Route exact path="/partner" component={Auth_partner} />
               <Route path="/profile/:id" component={Profile} />
               <Route path="/salon/:id" component={SalonDetail} />
               <Route path="/review/:id" component={CreateReview} />
@@ -109,7 +110,7 @@ export const ME_QUERY = gql`
           address
           email
           phone
-          openingHour
+          openingHour 
           closingHour
           isPublished
           isFeatured
@@ -313,6 +314,10 @@ export const ME_QUERY = gql`
         phone
         openingHour
         closingHour
+        female
+        male
+        facebook
+        instagram
         isPublished
         isFeatured
         appointment
@@ -321,6 +326,16 @@ export const ME_QUERY = gql`
           id
           username
         }
+        balanceSet{
+          id
+          amount
+        }
+        transactionSet{
+          id
+          date
+          amount
+          description
+        }
         masterSet {
           id
           masterName
@@ -328,6 +343,13 @@ export const ME_QUERY = gql`
           masterPhone
           isStaff
           staffStatus
+          mondayHours
+          tuesdayHours
+          wednesdayHours
+          thursdayHours
+          fridayHours
+          saturdayHours
+          sundayHours
           bookingSet {
             id
             customerName

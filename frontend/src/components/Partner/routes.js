@@ -68,6 +68,11 @@ const routes = [
       },
       {
         exact: true,
+        path: "/partner/:id/master/hours",
+        component: lazy(() => import('components/Master/WorkingHours'))
+      },
+      {
+        exact: true,
         path: "/partner/:id/report", 
         component: lazy(() => import('components/Partner/Dashboard/views/reports/ReportView'))
       },
@@ -85,6 +90,16 @@ const routes = [
         exact: true,
         path: "/partner/:id/service/edit",
         component: lazy(() => import('components/Service/UpdateService'))
+      },
+      {
+        exact: true,
+        path: "/partner/:id/account",
+        component: lazy(() => import('components/Partner/Dashboard/views/account'))
+      },
+      {
+        exact: true,
+        path: "/partner/:id/contact",
+        component: lazy(() => import('pages/Contact'))
       },
       // {
       //   exact: true,

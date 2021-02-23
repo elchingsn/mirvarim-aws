@@ -156,6 +156,10 @@ class CreateHairService(graphene.Mutation):
           for id in masterIds:
             hairService.master.add(Master.objects.get(id=id))
 
+        # add category to salon's hair categories
+        salon_obj.hair_categories.add(hair_obj)
+        salon_obj.save()
+
         return CreateHairService(hairService=hairService)
 
 class UpdateHairService(graphene.Mutation):
@@ -201,7 +205,11 @@ class DeleteHairService(graphene.Mutation):
         if user.is_anonymous:
             raise GraphQLError('Log in to delete service.')
                 
+        salon_obj = hairService.salon
+        salon_obj.hair_categories.remove(hairService.category)
+        salon_obj.save()
         hairService.delete()
+
         return DeleteHairService(hairService=hairService)
 
 
@@ -247,7 +255,11 @@ class CreateNailsService(graphene.Mutation):
         masterIds = serviceData.masterIds
         if masterIds[0]:
           for id in masterIds:
-            nailsService.master.add(Master.objects.get(id=id))                                      
+            nailsService.master.add(Master.objects.get(id=id)) 
+
+        # add category to salon's nails categories
+        salon_obj.nails_categories.add(nails_obj)
+        salon_obj.save()                                     
 
         return CreateNailsService(nailsService=nailsService)
 
@@ -294,7 +306,11 @@ class DeleteNailsService(graphene.Mutation):
         if user.is_anonymous:
             raise GraphQLError('Log in to delete service.')
                 
+        salon_obj = nailsService.salon
+        salon_obj.nails_categories.remove(nailsService.category)
+        salon_obj.save()        
         nailsService.delete()
+
         return DeleteNailsService(nailsService=nailsService)
 
 class HairRemovalServiceInput(graphene.InputObjectType):
@@ -341,6 +357,10 @@ class CreateHairRemovalService(graphene.Mutation):
           for id in masterIds:
             hairRemovalService.master.add(Master.objects.get(id=id))
 
+        # add category to salon's hair removal categories
+        salon_obj.hair_removal_categories.add(hairRemoval_obj)
+        salon_obj.save()
+
         return CreateHairRemovalService(hairRemovalService=hairRemovalService)
 
 class UpdateHairRemovalService(graphene.Mutation):
@@ -385,8 +405,12 @@ class DeleteHairRemovalService(graphene.Mutation):
 
         if user.is_anonymous:
             raise GraphQLError('Log in to delete service.')
-                
+
+        salon_obj = hairRemovalService.salon
+        salon_obj.hair_removal_categories.remove(hairRemovalService.category)
+        salon_obj.save()        
         hairRemovalService.delete()
+        
         return DeleteHairRemovalService(hairRemovalService=hairRemovalService)
 
 class MakeupServiceInput(graphene.InputObjectType):
@@ -431,7 +455,11 @@ class CreateMakeupService(graphene.Mutation):
         masterIds = serviceData.masterIds
         if masterIds[0]:
           for id in masterIds:
-            makeupService.master.add(Master.objects.get(id=id))                                      
+            makeupService.master.add(Master.objects.get(id=id)) 
+
+        # add category to salon's makeup categories
+        salon_obj.makeup_categories.add(makeup_obj)
+        salon_obj.save()                                     
 
         return CreateMakeupService(makeupService=makeupService)
 
@@ -477,8 +505,12 @@ class DeleteMakeupService(graphene.Mutation):
 
         if user.is_anonymous:
             raise GraphQLError('Log in to delete service.')
-                
+
+        salon_obj = makeupService.salon
+        salon_obj.makeup_categories.remove(makeupService.category)
+        salon_obj.save()        
         makeupService.delete()
+        
         return DeleteMakeupService(makeupService=makeupService)
 
 class MassageServiceInput(graphene.InputObjectType):
@@ -525,6 +557,10 @@ class CreateMassageService(graphene.Mutation):
           for id in masterIds:
             massageService.master.add(Master.objects.get(id=id))
 
+        # add category to salon's massage categories
+        salon_obj.massage_categories.add(massage_obj)
+        salon_obj.save()
+
         return CreateMassageService(massageService=massageService)
 
 class UpdateMassageService(graphene.Mutation):
@@ -570,7 +606,11 @@ class DeleteMassageService(graphene.Mutation):
         if user.is_anonymous:
             raise GraphQLError('Log in to delete service.')
                 
+        salon_obj = massageService.salon
+        salon_obj.massage_categories.remove(massageService.category)
+        salon_obj.save()
         massageService.delete()
+        
         return DeleteMassageService(massageService=massageService)
 
 class EyebrowServiceInput(graphene.InputObjectType):
@@ -616,6 +656,10 @@ class CreateEyebrowService(graphene.Mutation):
         if masterIds[0]:
           for id in masterIds:
             eyebrowService.master.add(Master.objects.get(id=id))
+        
+        # add category to salon's eyebrow categories
+        salon_obj.eyebrow_categories.add(eyebrow_obj)
+        salon_obj.save()
 
         return CreateEyebrowService(eyebrowService=eyebrowService)
 
@@ -661,8 +705,12 @@ class DeleteEyebrowService(graphene.Mutation):
 
         if user.is_anonymous:
             raise GraphQLError('Log in to delete service.')
-                
+
+        salon_obj = eyebrowService.salon
+        salon_obj.eyebrow_categories.remove(eyebrowService.category)
+        salon_obj.save()        
         eyebrowService.delete()
+        
         return DeleteEyebrowService(eyebrowService=eyebrowService)
 
 class CosmetologyServiceInput(graphene.InputObjectType):
@@ -708,6 +756,10 @@ class CreateCosmetologyService(graphene.Mutation):
         if masterIds[0]:
           for id in masterIds:
             cosmetologyService.master.add(Master.objects.get(id=id))
+
+        # add category to salon's cosmetology categories
+        salon_obj.cosmetology_categories.add(cosmetology_obj)
+        salon_obj.save()
             
         return CreateCosmetologyService(cosmetologyService=cosmetologyService)
 
@@ -753,8 +805,12 @@ class DeleteCosmetologyService(graphene.Mutation):
 
         if user.is_anonymous:
             raise GraphQLError('Log in to delete service.')
-                
+
+        salon_obj = cosmetologyService.salon
+        salon_obj.cosmetology_categories.remove(cosmetologyService.category)
+        salon_obj.save()        
         cosmetologyService.delete()
+        
         return DeleteCosmetologyService(cosmetologyService=cosmetologyService)
 
 class TattooServiceInput(graphene.InputObjectType):
@@ -801,6 +857,10 @@ class CreateTattooService(graphene.Mutation):
           for id in masterIds:
             tattooService.master.add(Master.objects.get(id=id))
 
+        # add category to salon's tattoo categories
+        salon_obj.tattoo_categories.add(tattoo_obj)
+        salon_obj.save()
+
         return CreateTattooService(tattooService=tattooService)
 
 class UpdateTattooService(graphene.Mutation):
@@ -845,8 +905,12 @@ class DeleteTattooService(graphene.Mutation):
 
         if user.is_anonymous:
             raise GraphQLError('Log in to delete service.')
-                
+
+        salon_obj = tattooService.salon
+        salon_obj.tattoo_categories.remove(tattooService.category)
+        salon_obj.save()        
         tattooService.delete()
+        
         return DeleteTattooService(tattooService=tattooService)
 
 class AestheticsServiceInput(graphene.InputObjectType):
@@ -893,6 +957,10 @@ class CreateAestheticsService(graphene.Mutation):
           for id in masterIds:
             aestheticsService.master.add(Master.objects.get(id=id))
 
+        # add category to salon's aesthetics categories
+        salon_obj.aesthetics_categories.add(aesthetics_obj)
+        salon_obj.save()
+
         return CreateAestheticsService(aestheticsService=aestheticsService)
 
 class UpdateAestheticsService(graphene.Mutation):
@@ -937,8 +1005,12 @@ class DeleteAestheticsService(graphene.Mutation):
 
         if user.is_anonymous:
             raise GraphQLError('Log in to delete service.')
-                
+
+        salon_obj = aestheticsService.salon
+        salon_obj.aesthetics_categories.remove(aestheticsService.category)
+        salon_obj.save()        
         aestheticsService.delete()
+        
         return DeleteAestheticsService(aestheticsService=aestheticsService)
 
 class ServiceMutation(graphene.ObjectType):

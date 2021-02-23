@@ -63,7 +63,7 @@ const SectionFooter = (props) => {
                       </Link>
                     </a>
                   </ListItem>
-                  <ListItem className={classes.inlineBlock}>
+                  {/* <ListItem className={classes.inlineBlock}>
                     <a
                       target="_blank"
                       className={classes.block}
@@ -72,7 +72,7 @@ const SectionFooter = (props) => {
                         {t("Pricing")}
                       </Link>
                     </a>
-                  </ListItem>
+                  </ListItem> */}
                   <ListItem className={classes.inlineBlock}>
                     <a
                       target="_blank"

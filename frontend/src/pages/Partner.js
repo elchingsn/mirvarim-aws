@@ -16,7 +16,7 @@ const Partner = ({ match })=>{
         document.body.scrollTop = 0;
     },[]);
     
-    console.log(currentUser)
+    //console.log(currentUser)
     if (currentUser.role === "A_1") {
       return <div style={{padding: "5px 5px"}}>{t("Please login as a salon or freelancer to add salon/service")}</div>
     } else return (

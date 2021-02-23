@@ -14,7 +14,8 @@ import requests
 import os
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
-
+from django.utils.timezone import make_aware,is_naive 
+from django.conf import settings
 
 from .models import Salon, Master, Hair, Nails, HairRemoval, Makeup, Massage, Eyebrow, Cosmetology, Tattoo, Aesthetics, City, Area, Booking
 from services.models import HairService, NailsService, HairRemovalService, MassageService, MakeupService, EyebrowService, CosmetologyService, TattooService, AestheticsService
@@ -75,7 +76,6 @@ class MasterType(DjangoObjectType):
 class BookingType(DjangoObjectType): 
     class Meta:
         model = Booking
-
 
 #Query definition
 class Query(graphene.ObjectType):
@@ -227,17 +227,19 @@ class SalonInput(graphene.InputObjectType):
     city_id = graphene.Int()
     area_id = graphene.Int()
     description = graphene.String()
-    price_range = graphene.Int()
+    # price_range = graphene.Int()
     masters =   graphene.Int()
-    hair_categories = graphene.List(graphene.String)
-    nails_categories = graphene.List(graphene.String)
-    hair_removal_categories = graphene.List(graphene.String)
-    makeup_categories = graphene.List(graphene.String)
-    massage_categories = graphene.List(graphene.String)
-    eyebrow_categories = graphene.List(graphene.String)
-    cosmetology_categories = graphene.List(graphene.String)
-    tattoo_categories = graphene.List(graphene.String)
-    aesthetics_categories = graphene.List(graphene.String)
+    # hair_categories = graphene.List(graphene.String)
+    # nails_categories = graphene.List(graphene.String)
+    # hair_removal_categories = graphene.List(graphene.String)
+    # makeup_categories = graphene.List(graphene.String)
+    # massage_categories = graphene.List(graphene.String)
+    # eyebrow_categories = graphene.List(graphene.String)
+    # cosmetology_categories = graphene.List(graphene.String)
+    # tattoo_categories = graphene.List(graphene.String)
+    # aesthetics_categories = graphene.List(graphene.String)
+    facebook = graphene.String()
+    instagram = graphene.String()
     male = graphene.Boolean()
     female = graphene.Boolean()
     email = graphene.String()
@@ -263,34 +265,22 @@ class CreateSalon(graphene.Mutation):
         if user.is_anonymous:
             raise GraphQLError('Log in to add a salon.')
       
-        city_id = salon_data.city_id,
-        area_id = salon_data.area_id,    
-        hair_categories = salon_data.hair_categories,
-        nails_categories = salon_data.nails_categories,
-        hair_removal_categories = salon_data.hair_removal_categories,
-        makeup_categories = salon_data.makeup_categories,
-        massage_categories = salon_data.massage_categories,
-        eyebrow_categories = salon_data.eyebrow_categories,
-        cosmetology_categories = salon_data.cosmetology_categories,
-        tattoo_categories = salon_data.tattoo_categories,
-        aesthetics_categories = salon_data.aesthetics_categories,
-        male = salon_data.male,
-        female = salon_data.female,
-        email = salon_data.email,
-        phone = salon_data.phone,
-        photo_main = salon_data.photo_main,
-        photo_1 = salon_data.photo_1,
-        photo_2 = salon_data.photo_2,
-        photo_3 = salon_data.photo_3,
-        photo_4 = salon_data.photo_4,
-        photo_5 = salon_data.photo_5,
-        photo_6 = salon_data.photo_6
+        city_id = salon_data.city_id
+        area_id = salon_data.area_id    
+        # hair_categories = salon_data.hair_categories,
+        # nails_categories = salon_data.nails_categories,
+        # hair_removal_categories = salon_data.hair_removal_categories,
+        # makeup_categories = salon_data.makeup_categories,
+        # massage_categories = salon_data.massage_categories,
+        # eyebrow_categories = salon_data.eyebrow_categories,
+        # cosmetology_categories = salon_data.cosmetology_categories,
+        # tattoo_categories = salon_data.tattoo_categories,
+        # aesthetics_categories = salon_data.aesthetics_categories,
 
         # city_title = "city1"
-        city_obj = City.objects.get(id=city_id[0])
-        area_obj = Area.objects.get(id=area_id[0])  
+        city_obj = City.objects.get(id=city_id)
+        area_obj = Area.objects.get(id=area_id)  
          
-        
         salon = Salon.objects.create(
                                       created_by = user,
                                       name = salon_data.name,
@@ -298,17 +288,15 @@ class CreateSalon(graphene.Mutation):
                                       city = city_obj,
                                       area = area_obj,
                                       description = salon_data.description,
-                                      price_range = salon_data.price_range,
-                                      masters = salon_data.masters,
+                                      # price_range = salon_data.price_range,
+                                      # masters = salon_data.masters,
                                       # hair_categories = salon_data.hair_categories,
-                                      # nails_categories = salon_data.nails_categories,
-                                      # hair_removal_categories = salon_data.hair_removal_categories,
-                                      # makeup_categories = salon_data.makeup_categories,
-                                      # massage_categories = salon_data.massage_categories,
                                       male = salon_data.male,
                                       female = salon_data.female,
                                       email = salon_data.email,
                                       phone = salon_data.phone,
+                                      facebook = salon_data.facebook,
+                                      instagram = salon_data.instagram,
                                       photo_main = salon_data.photo_main,
                                       photo_1 = salon_data.photo_1,
                                       photo_2 = salon_data.photo_2,
@@ -317,41 +305,41 @@ class CreateSalon(graphene.Mutation):
                                       photo_5 = salon_data.photo_5,
                                       photo_6 = salon_data.photo_6
                                       )
-        if hair_categories[0]:
-          for id in hair_categories[0]:
-            salon.hair_categories.add(Hair.objects.get(id=id))
+        # if hair_categories[0]:
+        #   for id in hair_categories[0]:
+        #     salon.hair_categories.add(Hair.objects.get(id=id))
 
-        if nails_categories[0]:
-          for id in nails_categories[0]:
-            salon.nails_categories.add(Nails.objects.get(id=id))
+        # if nails_categories[0]:
+        #   for id in nails_categories[0]:
+        #     salon.nails_categories.add(Nails.objects.get(id=id))
 
-        if hair_removal_categories[0]:
-          for id in hair_removal_categories[0]:
-            salon.hair_removal_categories.add(HairRemoval.objects.get(id=id))
+        # if hair_removal_categories[0]:
+        #   for id in hair_removal_categories[0]:
+        #     salon.hair_removal_categories.add(HairRemoval.objects.get(id=id))
 
-        if makeup_categories[0]:
-          for id in makeup_categories[0]:
-            salon.makeup_categories.add(Makeup.objects.get(id=id))
+        # if makeup_categories[0]:
+        #   for id in makeup_categories[0]:
+        #     salon.makeup_categories.add(Makeup.objects.get(id=id))
 
-        if massage_categories[0]:
-          for id in massage_categories[0]:
-            salon.massage_categories.add(Massage.objects.get(id=id))
+        # if massage_categories[0]:
+        #   for id in massage_categories[0]:
+        #     salon.massage_categories.add(Massage.objects.get(id=id))
 
-        if eyebrow_categories[0]:
-          for id in eyebrow_categories[0]:
-            salon.eyebrow_categories.add(Eyebrow.objects.get(id=id))
+        # if eyebrow_categories[0]:
+        #   for id in eyebrow_categories[0]:
+        #     salon.eyebrow_categories.add(Eyebrow.objects.get(id=id))
 
-        if cosmetology_categories[0]:
-          for id in cosmetology_categories[0]:
-            salon.cosmetology_categories.add(Cosmetology.objects.get(id=id))
+        # if cosmetology_categories[0]:
+        #   for id in cosmetology_categories[0]:
+        #     salon.cosmetology_categories.add(Cosmetology.objects.get(id=id))
 
-        if tattoo_categories[0]:
-          for id in tattoo_categories[0]:
-            salon.tattoo_categories.add(Tattoo.objects.get(id=id))
+        # if tattoo_categories[0]:
+        #   for id in tattoo_categories[0]:
+        #     salon.tattoo_categories.add(Tattoo.objects.get(id=id))
 
-        if aesthetics_categories[0]:
-          for id in aesthetics_categories[0]:
-            salon.aesthetics_categories.add(Aesthetics.objects.get(id=id))
+        # if aesthetics_categories[0]:
+        #   for id in aesthetics_categories[0]:
+        #     salon.aesthetics_categories.add(Aesthetics.objects.get(id=id))
 
         return CreateSalon(salon=salon)
 
@@ -370,32 +358,34 @@ class UpdateSalon(graphene.Mutation):
         if salon.created_by != user:
             raise GraphQLError('Not permitted to update this salon.') 
       
-        city_id = salon_data.city_id,
-        area_id = salon_data.area_id,    
-        hair_categories = salon_data.hair_categories,
-        nails_categories = salon_data.nails_categories,
-        hair_removal_categories = salon_data.hair_removal_categories,
-        makeup_categories = salon_data.makeup_categories,
-        massage_categories = salon_data.massage_categories,
-        eyebrow_categories = salon_data.eyebrow_categories,
-        cosmetology_categories = salon_data.cosmetology_categories,
-        tattoo_categories = salon_data.tattoo_categories,
-        aesthetics_categories = salon_data.aesthetics_categories,
+        city_id = salon_data.city_id
+        area_id = salon_data.area_id    
+        # hair_categories = salon_data.hair_categories,
+        # nails_categories = salon_data.nails_categories,
+        # hair_removal_categories = salon_data.hair_removal_categories,
+        # makeup_categories = salon_data.makeup_categories,
+        # massage_categories = salon_data.massage_categories,
+        # eyebrow_categories = salon_data.eyebrow_categories,
+        # cosmetology_categories = salon_data.cosmetology_categories,
+        # tattoo_categories = salon_data.tattoo_categories,
+        # aesthetics_categories = salon_data.aesthetics_categories,
         # id is passed from frontend, salon model however requires relevant objects
-        city_obj = City.objects.get(id=city_id[0])
-        area_obj = Area.objects.get(id=area_id[0])  
+        city_obj = City.objects.get(id=city_id)
+        area_obj = Area.objects.get(id=area_id)  
        
         salon.name = salon_data.name
         salon.address = salon_data.address
         salon.city = city_obj
         salon.area = area_obj
         salon.description = salon_data.description
-        salon.price_range = salon_data.price_range
-        salon.masters = salon_data.masters
+        # salon.price_range = salon_data.price_range
+        # salon.masters = salon_data.masters
         salon.male = salon_data.male
         salon.female = salon_data.female
         salon.email = salon_data.email
         salon.phone = salon_data.phone
+        salon.facebook = salon_data.facebook
+        salon.instagram = salon_data.instagram
         salon.photo_main = salon_data.photo_main
         salon.photo_1 = salon_data.photo_1
         salon.photo_2 = salon_data.photo_2
@@ -404,50 +394,50 @@ class UpdateSalon(graphene.Mutation):
         salon.photo_5 = salon_data.photo_5
         salon.photo_6 = salon_data.photo_6
         
-        if hair_categories[0]:
-          salon.hair_categories.clear()
-          for id in hair_categories[0]:
-            salon.hair_categories.add(Hair.objects.get(id=id))
+        # if hair_categories[0]:
+        #   salon.hair_categories.clear()
+        #   for id in hair_categories[0]:
+        #     salon.hair_categories.add(Hair.objects.get(id=id))
 
-        if nails_categories[0]:
-          salon.nails_categories.clear()
-          for id in nails_categories[0]:
-            salon.nails_categories.add(Nails.objects.get(id=id))
+        # if nails_categories[0]:
+        #   salon.nails_categories.clear()
+        #   for id in nails_categories[0]:
+        #     salon.nails_categories.add(Nails.objects.get(id=id))
 
-        if hair_removal_categories[0]:
-          salon.hair_removal_categories.clear()
-          for id in hair_removal_categories[0]:
-            salon.hair_removal_categories.add(HairRemoval.objects.get(id=id))
+        # if hair_removal_categories[0]:
+        #   salon.hair_removal_categories.clear()
+        #   for id in hair_removal_categories[0]:
+        #     salon.hair_removal_categories.add(HairRemoval.objects.get(id=id))
 
-        if makeup_categories[0]:
-          salon.makeup_categories.clear()
-          for id in makeup_categories[0]:
-            salon.makeup_categories.add(Makeup.objects.get(id=id))
+        # if makeup_categories[0]:
+        #   salon.makeup_categories.clear()
+        #   for id in makeup_categories[0]:
+        #     salon.makeup_categories.add(Makeup.objects.get(id=id))
         
-        salon.massage_categories.clear()
-        if massage_categories[0]:
-          for id in massage_categories[0]:
-            salon.massage_categories.add(Massage.objects.get(id=id))
+        # salon.massage_categories.clear()
+        # if massage_categories[0]:
+        #   for id in massage_categories[0]:
+        #     salon.massage_categories.add(Massage.objects.get(id=id))
 
-        if eyebrow_categories[0]:
-          salon.eyebrow_categories.clear()
-          for id in eyebrow_categories[0]:
-            salon.eyebrow_categories.add(Eyebrow.objects.get(id=id))
+        # if eyebrow_categories[0]:
+        #   salon.eyebrow_categories.clear()
+        #   for id in eyebrow_categories[0]:
+        #     salon.eyebrow_categories.add(Eyebrow.objects.get(id=id))
 
-        if cosmetology_categories[0]:
-          salon.cosmetology_categories.clear()
-          for id in cosmetology_categories[0]:
-            salon.cosmetology_categories.add(Cosmetology.objects.get(id=id))
+        # if cosmetology_categories[0]:
+        #   salon.cosmetology_categories.clear()
+        #   for id in cosmetology_categories[0]:
+        #     salon.cosmetology_categories.add(Cosmetology.objects.get(id=id))
 
-        if tattoo_categories[0]:
-          salon.tattoo_categories.clear()
-          for id in tattoo_categories[0]:
-            salon.tattoo_categories.add(Tattoo.objects.get(id=id))
+        # if tattoo_categories[0]:
+        #   salon.tattoo_categories.clear()
+        #   for id in tattoo_categories[0]:
+        #     salon.tattoo_categories.add(Tattoo.objects.get(id=id))
 
-        if aesthetics_categories[0]:
-          salon.aesthetics_categories.clear()
-          for id in aesthetics_categories[0]:
-            salon.aesthetics_categories.add(Aesthetics.objects.get(id=id))
+        # if aesthetics_categories[0]:
+        #   salon.aesthetics_categories.clear()
+        #   for id in aesthetics_categories[0]:
+        #     salon.aesthetics_categories.add(Aesthetics.objects.get(id=id))
 
         salon.save()
         
@@ -489,14 +479,15 @@ class AddMaster(graphene.Mutation):
                                       salon = salon_obj,
                                       master_name = master_data.name.title(),
                                       master_email = master_data.email,
-                                      master_phone = master_data.phone,
-                                      is_staff = master_data.isStaff
+                                      master_phone = master_data.phone
                                       )
         if master_data.isStaff:
           if get_user_model().objects.filter(email=master_data.email).exists():
             master.staff = get_user_model().objects.get(email=master_data.email)
+            master.is_staff = True
             master.staff_status = 'pending'
           else: 
+            master.is_staff = False
             master.staff_status = 'no match'
         
         master.save()
@@ -578,6 +569,41 @@ class DeleteMaster(graphene.Mutation):
         master.delete()
         return DeleteMaster(master=master)
 
+class WorkingHourInput(graphene.InputObjectType):
+    monday = graphene.List(graphene.String)
+    tuesday = graphene.List(graphene.String)
+    wednesday = graphene.List(graphene.String)
+    thursday = graphene.List(graphene.String)
+    friday = graphene.List(graphene.String)
+    saturday = graphene.List(graphene.String)
+    sunday = graphene.List(graphene.String)
+
+class MasterWorkingHours(graphene.Mutation):
+    master = graphene.Field(MasterType)
+
+    class Arguments:
+      master_id = graphene.Int(required=True)
+      working_hours = WorkingHourInput(required=True)
+    
+    @staticmethod
+    def mutate(root,info,master_id,working_hours):
+        user = info.context.user
+        master=Master.objects.get(id=master_id)
+
+        if user.is_anonymous:
+            raise GraphQLError('Log in to update master.')
+
+        master.monday_hours = [datetime.datetime.strptime(x,'%H:%M').time() for x in working_hours.monday]
+        master.tuesday_hours = [datetime.datetime.strptime(x,'%H:%M').time() for x in working_hours.tuesday]
+        master.wednesday_hours = [datetime.datetime.strptime(x,'%H:%M').time() for x in working_hours.wednesday]
+        master.thursday_hours = [datetime.datetime.strptime(x,'%H:%M').time() for x in working_hours.thursday]
+        master.friday_hours = [datetime.datetime.strptime(x,'%H:%M').time() for x in working_hours.friday]
+        master.saturday_hours = [datetime.datetime.strptime(x,'%H:%M').time() for x in working_hours.saturday]
+        master.sunday_hours = [datetime.datetime.strptime(x,'%H:%M').time() for x in working_hours.sunday]
+   
+        master.save()
+        return MasterWorkingHours(master=master)
+
 class BookingInput(graphene.InputObjectType):
     master_id = graphene.String()
     customer_name = graphene.String()
@@ -603,7 +629,10 @@ class CreateBooking(graphene.Mutation):
 
         if user.is_anonymous:
             raise GraphQLError('Log in to add a booking.')
-              
+
+        if is_naive(booking_data.start):
+            booking_data.start = make_aware(booking_data.start)
+            
         # def service_model(type, service_id):
         #   if type == "HairServiceType":
         #     return ContentType.objects.get_for_model(HairService.objects.get(id=service_id))
@@ -623,11 +652,10 @@ class CreateBooking(graphene.Mutation):
                                       service_title = booking_data.service_title,
                                       service_price = booking_data.service_price,
                                       start = booking_data.start,
-                                      end = booking_data.start + datetime.timedelta(minutes=booking_data.duration)
+                                      end = booking_data.start + datetime.timedelta(minutes=booking_data.duration),
+                                      is_confirmed = booking_data.isConfirmed
                                       )
-        if booking_data.isConfirmed:
-          booking.is_confirmed = True
-        booking.save()
+
         return CreateBooking(booking=booking)
 
 class UpdateBooking(graphene.Mutation):
@@ -644,6 +672,10 @@ class UpdateBooking(graphene.Mutation):
 
         if user.is_anonymous:
             raise GraphQLError('Log in to update booking.')
+
+        if is_naive(booking_data.start):
+            booking_data.start = make_aware(booking_data.start)
+                        
         # duration = booking.end - booking.start
         booking.customer_name = booking_data.customer_name
         booking.customer_mobile = booking_data.customer_mobile
@@ -764,6 +796,7 @@ class SalonMutation(graphene.ObjectType):
     add_master = AddMaster.Field()
     update_master = UpdateMaster.Field()
     delete_master = DeleteMaster.Field()
+    master_working_hours = MasterWorkingHours.Field()
     upload_img = UploadFile.Field()
 
     

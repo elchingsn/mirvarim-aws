@@ -130,6 +130,7 @@ const EventForm = ({
                 id="size-small-clearOnEsc"
                 disableClearable
                 size="small"
+                getOptionLabel={option => t(`${option}`)}
                 options={ [...new Set(services.map(service => service.title))] }
                 onChange={(event,value) => handleServiceSelect(value)}
                 renderInput={(params) => (

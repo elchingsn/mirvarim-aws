@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
 import { Mutation } from '@apollo/react-components';
+import { useQuery } from "@apollo/react-hooks";
 // import { useMutation } from '@apollo/react-hooks';
 import gql from "graphql-tag";
 import { makeStyles } from '@material-ui/core/styles';
@@ -19,6 +20,14 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Checkbox from '@material-ui/core/Checkbox';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Typography from '@material-ui/core/Typography';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import { UserContext } from "App.js"
 import { useTranslation } from 'react-i18next';
@@ -27,6 +36,18 @@ import Error from "../Shared/Error";
 import Loading from "../Shared/Loading";
 import { useHistory } from 'react-router-dom';
 import {ME_QUERY} from "App.js"
+
+import{
+        HAIR_QUERY,
+        NAILS_QUERY,
+        HAIR_REMOVAL_QUERY,
+        MAKEUP_QUERY,
+        MASSAGE_QUERY,
+        EYEBROW_QUERY,
+        COSMETOLOGY_QUERY,
+        TATTOO_QUERY,
+        AESTHETICS_QUERY
+      } from "components/Salon/CreateSalon"
 
 //import styles from "../assets/jss/salonDetailStyle.js";
 
@@ -62,19 +83,19 @@ NumberFormatCustom.propTypes = {
   //onChange: PropTypes.func.isRequired,
 };
 
-const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
+const ServiceForm = ({role, serviceMutation, catType, data_salon, category_dict, setCatValue}) => {
   const { t } = useTranslation();
   const classes = formStyles();
   const history = useHistory();
 
-  const [promo, setPromo] = React.useState(false);
+  const [promo, setPromo] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const [serviceData, setServiceData] = useState({
     salonId: data_salon.id,
     categoryId: "1", 
     masterIds: [],
-    title: '',
+    title: category_dict[catType][catType][0].title,
     description: '',
     duration: 30,
     price: '',
@@ -90,11 +111,11 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
     }
   }, [role])
   
+  //console.log(serviceData)
 
   const handleSubmit = async (event, serviceMutation) => {
     event.preventDefault();
-    setSubmitting(true);
-  
+    setTimeout(() => setSubmitting(true),1500);
   
     // serviceMutation({variables: { serviceData: {salonId: serviceData.salonId, categoryId: serviceData.categoryId,
     //   title: serviceData.title, description: serviceData.description, duration: serviceData.duration,
@@ -111,16 +132,40 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
 
   return(
     <form onSubmit={event => handleSubmit(event, serviceMutation)}>
-      <FormControl fullWidth className={classes.field}>
+    <FormControl fullWidth variant="outlined" className={classes.field}>
+      <InputLabel id="demo-simple-select-outlined-label">{t("Subcategory")}</InputLabel>
+      <Select
+        labelId="demo-simple-select-outlined-label"
+        id="demo-simple-select-outlined"
+        value={category_dict[catType][catType].filter(item => item.id === serviceData.categoryId)[0] ?
+          category_dict[catType][catType].filter(item => item.id === serviceData.categoryId)[0].title :
+          ""}
+        onChange={(event) => {
+          setServiceData({ ...serviceData, 
+            categoryId:category_dict[catType][catType].filter(item => item.title === event.target.value)[0].id,
+            title:event.target.value
+          })
+        }}
+        label={t("Subcategory")}
+      >
+        {category_dict[catType][catType].map(subcat => (
+          <MenuItem key={subcat.id} value={subcat.title}>
+            {t(`${subcat.title}`)}
+          </MenuItem>
+        ))}
+      </Select>
+      </FormControl>
+      {/* <FormControl fullWidth className={classes.field}>
         <Autocomplete
           id="size-small-clearOnEsc"
           disableClearable
           size="small"
           getOptionLabel={option => t(`${option}`)}
-          options={data_salon[catType].map(item => item.title).flat(1)}
+          //options={data_salon[catType].map(item => item.title).flat(1)}
+          options={category_dict[catType][catType].map(item => item.title).flat(1)}
           onChange={(event,value) => {
             setServiceData({ ...serviceData, 
-              categoryId:data_salon[catType].filter(item => item.title === value)[0].id,
+              categoryId:category_dict[catType][catType].filter(item => item.title === value)[0].id,
               title:value
             })
           }}
@@ -131,14 +176,15 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
             />
           )}
         />
-      </FormControl>
+      </FormControl> */}
       <FormControl fullWidth className={classes.field}>
         <TextField
-        label={t("Service name")}
-        placeholder={t("Add service name")}
-        onChange={(event) => setServiceData({ ...serviceData, title:event.target.value })}
-        value={t(serviceData.title)}
-        variant="outlined"
+          label={t("Service name")}
+          placeholder={t("Add service name")}
+          onChange={(event) => setServiceData({ ...serviceData, title:event.target.value })}
+          value={t(serviceData.title)}
+          variant="outlined"
+          error={!serviceData.title.trim()} 
         />
       </FormControl>
       { role === "A_3" &&
@@ -160,6 +206,7 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
             variant="outlined" 
             label={t("Choose masters")} 
             placeholder={t("More masters")}
+            error={serviceData.masterIds.length === 0} 
           />
           )}
         />
@@ -176,7 +223,7 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
         rowsMax={3}
         />
       </FormControl>
-      <FormControl fullWidth className={classes.field}>
+      {/* <FormControl fullWidth className={classes.field}>
         <Autocomplete
           id="size-small-clearOnEsc"
           disableClearable
@@ -190,6 +237,29 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
             />
             )}
         />
+      </FormControl> */}
+      <FormControl fullWidth variant="outlined" className={classes.field}>
+      <InputLabel id="demo-simple-select-outlined-label">{t("Duration in mitutes")}</InputLabel>
+      <Select
+        labelId="demo-simple-select-outlined-label"
+        id="demo-simple-select-outlined"
+        value={serviceData.duration}
+        onChange={(event) => {
+          setServiceData({ ...serviceData, 
+            duration: parseInt(event.target.value)
+          })
+        }}
+        label={t("Duration in mitutes")}
+      >
+        <MenuItem value="30">30</MenuItem>
+        <MenuItem value="45">45</MenuItem>
+        <MenuItem value="60">60</MenuItem>
+        <MenuItem value="90">90</MenuItem>
+        <MenuItem value="120">120</MenuItem>
+        <MenuItem value="180">180</MenuItem>
+        <MenuItem value="240">240</MenuItem>
+
+      </Select>
       </FormControl>
       <FormControl fullWidth className={classes.field}>
         <TextField
@@ -202,6 +272,7 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
         InputProps={{
           inputComponent: NumberFormatCustom
         }}
+        error={!serviceData.price}
       />
     </FormControl>
     <h4> {t("Is promotion available?")} </h4>
@@ -238,7 +309,7 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
         disabled={submitting}
         variant="outlined"
         //onClick={() => setServiceData({ ...serviceData,title:"",masterIds:[],description:"",price:"" })}
-        onClick={() => history.push(`/partner/${data_salon.createdBy.id}/salon/view`)}
+        onClick={() => setCatValue("")}
         className={classes.cancel}
       >
         {t("Cancel")}
@@ -266,8 +337,30 @@ const ServiceForm = ({role, serviceMutation, catType, data_salon}) => {
   )
 } 
 
-const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
+const CategoryServices = ({role, catValue, data_salon, setOpen, userId, setCatValue, snack, setSnack }) => {
   const { t } = useTranslation();
+
+  const { data:data_hair } = useQuery(HAIR_QUERY);
+  const { data:data_nails } = useQuery(NAILS_QUERY);
+  const { data:data_hair_removal } = useQuery(HAIR_REMOVAL_QUERY);
+  const { data:data_makeup } = useQuery(MAKEUP_QUERY);
+  const { data:data_massage } = useQuery(MASSAGE_QUERY);
+  const { data:data_eyebrow } = useQuery(EYEBROW_QUERY);
+  const { data:data_cosmetology } = useQuery(COSMETOLOGY_QUERY);
+  const { data:data_tattoo } = useQuery(TATTOO_QUERY);
+  const { data:data_aesthetics } = useQuery(AESTHETICS_QUERY);
+
+  const category_dict = {
+    "hairCat":data_hair,
+    "nailsCat":data_nails,
+    "hairRemovalCat":data_hair_removal,
+    "makeupCat":data_makeup,
+    "massageCat":data_massage,
+    "eyebrowCat":data_eyebrow,
+    "cosmetologyCat":data_cosmetology,
+    "tattooCat":data_tattoo,
+    "aestheticsCat":data_aesthetics
+  }
 
   switch (catValue) {
     case t("category types", {returnObjects: true})["HairType"]:
@@ -276,8 +369,12 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
           mutation={CREATE_HAIR_SERVICE_MUTATION}
           onCompleted={data => {
           //console.log({ data });
-          //setSubmitting(false);
-          setOpen(true);
+            setSnack ({
+              ...snack,
+              snackOpen: true,
+              snackType: "success",
+              snackMessage: t("Service successfully created!")
+            })
           }}
           // update={handleUpdateCache}
           refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
@@ -285,7 +382,7 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
           {(createHairService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm role={role} serviceMutation={createHairService} catType="hairCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createHairService} catType="hairCat" data_salon={data_salon} category_dict={category_dict} setCatValue={setCatValue} />
             );
           }}
         </Mutation>
@@ -295,8 +392,12 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_NAILS_SERVICE_MUTATION}
           onCompleted={data => {
-          //setSubmitting(false);
-          setOpen(true);
+            setSnack ({
+              ...snack,
+              snackOpen: true,
+              snackType: "success",
+              snackMessage: t("Service successfully created!")
+            })
           }}
           // update={handleUpdateCache}
           refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
@@ -304,7 +405,7 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
           {(createNailsService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm role={role} serviceMutation={createNailsService} catType="nailsCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createNailsService} catType="nailsCat" data_salon={data_salon} category_dict={category_dict} setCatValue={setCatValue} />
             );
           }}
         </Mutation>
@@ -314,8 +415,12 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_HAIR_REMOVAL_SERVICE_MUTATION}
           onCompleted={data => {
-          //setSubmitting(false);
-          setOpen(true);
+            setSnack ({
+              ...snack,
+              snackOpen: true,
+              snackType: "success",
+              snackMessage: t("Service successfully created!")
+            })
           }}
           // update={handleUpdateCache}
           refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
@@ -323,7 +428,7 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
           {(createHairRemovalService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm role={role} serviceMutation={createHairRemovalService} catType="hairRemovalCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createHairRemovalService} catType="hairRemovalCat" data_salon={data_salon} category_dict={category_dict} setCatValue={setCatValue} />
             );
           }}
         </Mutation>
@@ -333,8 +438,12 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_MAKEUP_SERVICE_MUTATION}
           onCompleted={data => {
-          //setSubmitting(false);
-          setOpen(true);
+            setSnack ({
+              ...snack,
+              snackOpen: true,
+              snackType: "success",
+              snackMessage: t("Service successfully created!")
+            })
           }}
           // update={handleUpdateCache}
           refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
@@ -342,7 +451,7 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
           {(createMakeupService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm role={role} serviceMutation={createMakeupService} catType="makeupCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createMakeupService} catType="makeupCat" data_salon={data_salon} category_dict={category_dict} setCatValue={setCatValue} />
             );
           }}
         </Mutation>
@@ -352,8 +461,12 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_MASSAGE_SERVICE_MUTATION}
           onCompleted={data => {
-          //setSubmitting(false);
-          setOpen(true);
+            setSnack ({
+              ...snack,
+              snackOpen: true,
+              snackType: "success",
+              snackMessage: t("Service successfully created!")
+            })
           }}
           // update={handleUpdateCache}
           refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
@@ -361,7 +474,7 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
           {(createMassageService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm role={role} serviceMutation={createMassageService} catType="massageCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createMassageService} catType="massageCat" data_salon={data_salon} category_dict={category_dict} setCatValue={setCatValue} />
             );
           }}
         </Mutation>
@@ -371,8 +484,12 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_EYEBROW_SERVICE_MUTATION}
           onCompleted={data => {
-          //setSubmitting(false);
-          setOpen(true);
+            setSnack ({
+              ...snack,
+              snackOpen: true,
+              snackType: "success",
+              snackMessage: t("Service successfully created!")
+            })
           }}
           // update={handleUpdateCache}
           refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
@@ -380,7 +497,7 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
           {(createEyebrowService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm role={role} serviceMutation={createEyebrowService} catType="eyebrowCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createEyebrowService} catType="eyebrowCat" data_salon={data_salon} category_dict={category_dict} setCatValue={setCatValue} />
             );
           }}
         </Mutation>
@@ -390,8 +507,12 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_COSMETOLOGY_SERVICE_MUTATION}
           onCompleted={data => {
-          //setSubmitting(false);
-          setOpen(true);
+            setSnack ({
+              ...snack,
+              snackOpen: true,
+              snackType: "success",
+              snackMessage: t("Service successfully created!")
+            })
           }}
           // update={handleUpdateCache}
           refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
@@ -399,7 +520,7 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
           {(createCosmetologyService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm role={role} serviceMutation={createCosmetologyService} catType="cosmetologyCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createCosmetologyService} catType="cosmetologyCat" data_salon={data_salon} category_dict={category_dict} setCatValue={setCatValue} />
             );
           }}
         </Mutation>
@@ -409,8 +530,12 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_TATTOO_SERVICE_MUTATION}
           onCompleted={data => {
-          //setSubmitting(false);
-          setOpen(true);
+            setSnack ({
+              ...snack,
+              snackOpen: true,
+              snackType: "success",
+              snackMessage: t("Service successfully created!")
+            })
           }}
           // update={handleUpdateCache}
           refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
@@ -418,7 +543,7 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
           {(createTattooService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm role={role} serviceMutation={createTattooService} catType="tattooCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createTattooService} catType="tattooCat" data_salon={data_salon} category_dict={category_dict} setCatValue={setCatValue} />
             );
           }}
         </Mutation>
@@ -428,8 +553,12 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
         <Mutation
           mutation={CREATE_AESTHETICS_SERVICE_MUTATION}
           onCompleted={data => {
-          //setSubmitting(false);
-          setOpen(true);
+            setSnack ({
+              ...snack,
+              snackOpen: true,
+              snackType: "success",
+              snackMessage: t("Service successfully created!")
+            })
           }}
           // update={handleUpdateCache}
           refetchQueries={() => [{ query: ME_QUERY, variables: {id:userId} }]}
@@ -437,7 +566,7 @@ const CategoryServices = ({role, catValue, data_salon, setOpen, userId}) => {
           {(createAestheticsService, { loading, error }) => {
           if (error) return <Error error={error} />;
             return(
-              <ServiceForm role={role} serviceMutation={createAestheticsService} catType="aestheticsCategories" data_salon={data_salon} />
+              <ServiceForm role={role} serviceMutation={createAestheticsService} catType="aestheticsCat" data_salon={data_salon} category_dict={category_dict} setCatValue={setCatValue} />
             );
           }}
         </Mutation>
@@ -467,21 +596,24 @@ const CreateServiceForm = ({classes, currentUser}) => {
   const salonId = data_salon.id;
   const { t } = useTranslation();
 
-  const hairService_set = data_salon.hairCategories.map(item => item.__typename);
-  const nailsService_set = data_salon.nailsCategories.map(item => item.__typename);
-  const hairRemovalService_set = data_salon.hairRemovalCategories.map(item => item.__typename);
-  const makeupService_set = data_salon.makeupCategories.map(item => item.__typename);
-  const massageService_set = data_salon.massageCategories.map(item => item.__typename);
-  const eyebrowService_set = data_salon.eyebrowCategories.map(item => item.__typename);
-  const cosmetologyService_set = data_salon.cosmetologyCategories.map(item => item.__typename);
-  const tattooService_set = data_salon.tattooCategories.map(item => item.__typename);
-  const aestheticsService_set = data_salon.aestheticsCategories.map(item => item.__typename);
+  // const hairService_set = data_salon.hairCategories.map(item => item.__typename);
+  // const nailsService_set = data_salon.nailsCategories.map(item => item.__typename);
+  // const hairRemovalService_set = data_salon.hairRemovalCategories.map(item => item.__typename);
+  // const makeupService_set = data_salon.makeupCategories.map(item => item.__typename);
+  // const massageService_set = data_salon.massageCategories.map(item => item.__typename);
+  // const eyebrowService_set = data_salon.eyebrowCategories.map(item => item.__typename);
+  // const cosmetologyService_set = data_salon.cosmetologyCategories.map(item => item.__typename);
+  // const tattooService_set = data_salon.tattooCategories.map(item => item.__typename);
+  // const aestheticsService_set = data_salon.aestheticsCategories.map(item => item.__typename);
   
-  const _category_set = [].concat(hairService_set,nailsService_set,hairRemovalService_set,makeupService_set,
-                      massageService_set,eyebrowService_set,cosmetologyService_set,tattooService_set,aestheticsService_set);
-  // translate the array and filter unique/distinct elements of above categories array. The latter is [...new Set(original_array)]
-  const category_set = [...new Set(_category_set.map((key) => t("category types", {returnObjects: true})[key]))];
+  // const _category_set = [].concat(hairService_set,nailsService_set,hairRemovalService_set,makeupService_set,
+  //                     massageService_set,eyebrowService_set,cosmetologyService_set,tattooService_set,aestheticsService_set);
+  // // translate the array and filter unique/distinct elements of above categories array. The latter is [...new Set(original_array)]
+  // const category_set = [...new Set(_category_set.map((key) => t("category types", {returnObjects: true})[key]))];
 
+  //we want to include all categories in v2
+  const _category_set = ["HairType","NailsType","HairRemovalType","MakeupType","MassageType","EyebrowType","CosmetologyType","TattooType","AestheticsType"]
+  const category_set = _category_set.map((key) => t("category types", {returnObjects: true})[key])
   const [catValue, setCatValue] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -500,11 +632,46 @@ const CreateServiceForm = ({classes, currentUser}) => {
   //   cache.writeQuery({ query: GET_TRACKS_QUERY, data: { tracks } });
   // };
 
+  const [snack, setSnack] = useState({
+    snackOpen: false,
+    snackType: "",
+    snackMessage: ""
+  })
+
+  const handleSnackClose = () => {
+    setCatValue("")
+    setSnack ({ ...snack,snackOpen: false })
+  }
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+
   return(
     <div className={classes.container}>
+      <Breadcrumbs
+        separator={<NavigateNextIcon fontSize="small" />}
+        aria-label="breadcrumb"
+        className={classes.breadcrumb}
+      >
+        <Link
+          variant="body1"
+          color="inherit"
+          to={`/partner/${userId}/salon/view`}
+        >
+          {t("Salon")}
+        </Link>
+        <Typography
+          variant="body1"
+          color="textPrimary"
+        >
+          {t("Services")}
+        </Typography>
+      </Breadcrumbs>
       <Paper className={classes.paper}>
           <h3>{t("Add Service")}</h3>
-              <FormControl fullWidth className={classes.field}>
+              <FormControl fullWidth variant="outlined" className={classes.field}>
+                {/* <p> {t("You can add services from the categories that are available for your salon. Please, update your salon to add more categories.")}</p>
                 <Autocomplete
                   id="size-small-clearOnEsc"
                   disableClearable
@@ -522,16 +689,41 @@ const CreateServiceForm = ({classes, currentUser}) => {
                     placeholder={t("Select service category")}
                     />
                   )}
-                />
+                /> */}
+                <InputLabel id="demo-simple-select-outlined-label">{t("Category")}</InputLabel>
+                <Select
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={catValue}
+                  disabled={catValue}
+                  onChange={(event) => {
+                    setCatValue(event.target.value);
+                  }}
+                  label={t("Category")}
+                >
+                  {category_set.map(cat => (
+                    <MenuItem key={cat} value={cat}>
+                      {t(`${cat}`)}
+                    </MenuItem>
+                  ))}
+                </Select>
               </FormControl>     
               <CategoryServices 
-                role={currentUser.role}
-                data_salon={data_salon} 
-                catValue={catValue} 
-                setOpen={setOpen} 
-                userId={userId}/>    
+                  role={currentUser.role}
+                  data_salon={data_salon} 
+                  catValue={catValue} 
+                  setCatValue={setCatValue} 
+                  snack={snack}
+                  setSnack={setSnack}
+                  userId={userId}
+                />  
       </Paper>
-      <Dialog
+      <Snackbar open={snack.snackOpen} autoHideDuration={1500} onClose={handleSnackClose}>
+        <Alert onClose={handleSnackClose} severity={snack.snackType}>
+          {snack.snackMessage}
+        </Alert>
+      </Snackbar>
+      {/* <Dialog
           open={open}
           disableBackdropClick={true}
           TransitionComponent={Transition}
@@ -553,7 +745,7 @@ const CreateServiceForm = ({classes, currentUser}) => {
                 </Link>
               </Button>
             </DialogActions>
-        </Dialog>
+        </Dialog> */}
     </div>
   )};
 
@@ -729,7 +921,7 @@ const styles = theme => ({
     alignItems:"center"
   },
   paper: {
-    marginTop: theme.spacing.unit * 8,
+    //marginTop: theme.spacing.unit * 8,
     width: "100%",
     display: "flex",
     flexDirection: "column",
@@ -772,6 +964,10 @@ const styles = theme => ({
     paddingTop: "10px",
     paddingLeft: "20px",
     paddingRight: "20px"
+  },
+  breadcrumb: {
+    paddingLeft: "10px",
+    paddingTop: "15px"
   }
 });
 

@@ -74,9 +74,9 @@ const Navbar = (props) => {
       );
     }
 
-    if(props.location.pathname.match(/partner/)){
-      return (null);
-    }
+    // if(props.location.pathname.match(/partner/)){
+    //   return (null);
+    // }
 
     if(props.location.pathname === "/") {
       return (

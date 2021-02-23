@@ -23,6 +23,7 @@ import Error from "./components/Shared/Error";
 
 import Login from "components/Auth/Login"
 import Auth from "components/Auth"
+import Auth_partner from "components/Auth_partner"
 import Activate from "components/Auth/Activate"
 import PasswordReset from "components/Auth/PasswordReset"
 import SendPasswordReset from "components/Auth/SendPasswordReset"
@@ -38,7 +39,7 @@ const App = () => (
         <Route exact path="/login" component={Auth} />
         <Route path="/activate/:token" component={Activate} />
         <Route path="/reset" component={SendPasswordReset} />
-        <Route exact path="/partner" component={Auth} />
+        <Route path="/partner" component={Auth_partner} />
         <Route path="/password-reset/:token" component={PasswordReset} />
         <Route exact path="/salon" component={Salon} />
         <Route path="/salon/:id" component={SalonDetail} />

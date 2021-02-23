@@ -17,8 +17,17 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 import FormHelperText from '@material-ui/core/FormHelperText';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Checkbox from '@material-ui/core/Checkbox';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Typography from '@material-ui/core/Typography';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import { UserContext } from "App.js"
 import { useTranslation } from 'react-i18next';
@@ -62,7 +71,7 @@ NumberFormatCustom.propTypes = {
   //onChange: PropTypes.func.isRequired,
 };
 
-const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedService, data_salon }) => {
+const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedService, data_salon, userId, setCatValue }) => {
   const classes = formStyles();
   const history = useHistory();
   const { t } = useTranslation();
@@ -70,6 +79,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
   const [promo, setPromo] = React.useState(Boolean(selectedService.promotionPrice));
   const [disabled, setDisabled] = useState(true)
   const [submitting, setSubmitting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   //console.log('salon_data', data_salon);
 
   const [serviceData, setServiceData] = useState({
@@ -81,19 +91,19 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
     promotionPrice: selectedService.promotionPrice
   })
 
-  // useEffect(() => {
-  //   if (selectedService.title) {
-  //     setServiceData({
-  //       ...serviceData, 
-  //       masterIds: selectedService.master.map(item => item.id).flat(1),
-  //       title: selectedService.title,
-  //       description: selectedService.description,
-  //       duration: selectedService.duration,
-  //       price: selectedService.price,
-  //       promotionPrice: selectedService.promotionPrice
-  //     })
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (selectedService.title) {
+      setServiceData({
+        ...serviceData, 
+        masterIds: selectedService.master.map(item => item.id).flat(1),
+        title: selectedService.title,
+        description: selectedService.description,
+        duration: selectedService.duration,
+        price: selectedService.price,
+        promotionPrice: selectedService.promotionPrice
+      })
+    }
+  }, [selectedService])
 
   useEffect(() => {
     if (role === "A_2") {
@@ -106,7 +116,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
 
   const handleSubmit = async (event, updateMutation) => {
     event.preventDefault();
-    //setSubmitting(true);
+    setTimeout(() => setSubmitting(true),1500);
   
     updateMutation({variables: { serviceData: serviceData, serviceId: parseInt(selectedService.id) }}).catch(err => {
       console.error(err);
@@ -135,12 +145,13 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
       </FormControl> */}
       <FormControl fullWidth className={classes.field}>
         <TextField
-        label={t("Service name")}
-        placeholder={t("Add service name")}
-        onChange={(event) => setServiceData({ ...serviceData, title:event.target.value })}
-        value={serviceData.title}
-        disabled={disabled}
-        variant="outlined"
+          label={t("Service name")}
+          placeholder={t("Add service name")}
+          onChange={(event) => setServiceData({ ...serviceData, title:event.target.value })}
+          value={t(serviceData.title)}
+          //disabled={disabled}
+          variant="outlined"
+          error={!serviceData.title.trim()}
         />
       </FormControl>
       { role === "A_3" && 
@@ -150,7 +161,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
           limitTags={3}
           id="size-small-standard-multi"
           size="small"
-          disabled={disabled}
+          //disabled={disabled}
           defaultValue={serviceData.masterIds.map(masterId => data_salon.masterSet.filter(item => item.id == masterId)[0].masterName)}
           options={data_salon.masterSet.map(item => item.masterName)}
           onChange={(event,value) => {
@@ -164,6 +175,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
             variant="outlined" 
             label={t("Choose masters")} 
             placeholder={t("More masters")}
+            error={serviceData.masterIds.length === 0}
           />
           )}
         />
@@ -175,34 +187,40 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
         placeholder={t("Add description")}
         onChange={(event) => setServiceData({ ...serviceData, description:event.target.value })}
         value={serviceData.description}
-        disabled={disabled}
+        //disabled={disabled}
         variant="outlined"
         multiline
         rowsMax={3}
         />
       </FormControl>
-      <FormControl fullWidth className={classes.field}>
-        <Autocomplete
-          id="size-small-clearOnEsc"
-          disableClearable
-          size="small"
-          disabled={disabled}
-          defaultValue={serviceData.duration}
-          options={["15","30","45","60","75","90"]}
-          onChange={(event,value) => setServiceData({ ...serviceData, duration: parseInt(value) }) }
-          renderInput={(params) => (
-            <TextField {...params} 
-            variant="outlined"  
-            label={t("Duration in mitutes")} 
-            />
-            )}
-        />
+      <FormControl fullWidth variant="outlined" className={classes.field}>
+      <InputLabel id="demo-simple-select-outlined-label">{t("Duration in mitutes")}</InputLabel>
+        <Select
+          labelId="demo-simple-select-outlined-label"
+          id="demo-simple-select-outlined"
+          value={serviceData.duration}
+          onChange={(event) => {
+            setServiceData({ ...serviceData, 
+              duration: parseInt(event.target.value)
+            })
+          }}
+          label={t("Duration in mitutes")}
+        >
+          <MenuItem value="30">30</MenuItem>
+          <MenuItem value="45">45</MenuItem>
+          <MenuItem value="60">60</MenuItem>
+          <MenuItem value="90">90</MenuItem>
+          <MenuItem value="120">120</MenuItem>
+          <MenuItem value="180">180</MenuItem>
+          <MenuItem value="240">240</MenuItem>
+
+        </Select>
       </FormControl>
       <FormControl fullWidth className={classes.field}>
         <TextField
         label={t("Price")}
         variant="outlined"
-        disabled={disabled}
+        //disabled={disabled}
         value={serviceData.price}
         onChange={(event) => setServiceData({ ...serviceData, price: parseInt(event.target.value) })}
         name="numberformat"
@@ -210,6 +228,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
         InputProps={{
           inputComponent: NumberFormatCustom
         }}
+        error={!serviceData.price}
       />
     </FormControl>
     {!promo && (
@@ -217,7 +236,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
       <h4> {t("Is promotion available?")} </h4>
       <Checkbox
           checked={promo}
-          disabled={disabled}
+          //disabled={disabled}
           color="primary"
           onChange={() => {
             setPromo(!promo);
@@ -232,7 +251,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
         <TextField
         label={t("Promotion price")}
         variant="outlined"
-        disabled={disabled}
+        //disabled={disabled}
         value={serviceData.promotionPrice}
         onChange={(event) => setServiceData({ ...serviceData, promotionPrice: parseInt(event.target.value) })}
         name="numberformat"
@@ -243,7 +262,7 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
       />
     </FormControl>
     )}
-    {disabled ? 
+    {/* {disabled ? 
       (<Box
         mt={1}
         justifyContent="center"
@@ -276,15 +295,6 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
         justifyContent="center"
         display="flex"
       >
-      {/* <Button
-        variant="outlined"
-        //onClick={() => history.push(`/partner/${data_salon.createdBy.id}/salon/view`)}
-        onClick={() => history.push(`/partner/${data_salon.createdBy.id}/salon/edit`)}
-        className={classes.cancel}
-      >
-        {t("Cancel")}
-      </Button> */}
-      {/* <Box flexGrow={1} /> */}
       <Button
         variant="outlined"
         disabled={
@@ -303,144 +313,302 @@ const ServiceForm = ({ role, updateMutation, deleteMutation, catType, selectedSe
         )}
       </Button>
       </Box>)
-    }
+    } */}
+    <Box
+      mt={1}
+      justifyContent="center"
+      display="flex"
+    >
+      <Button 
+        disabled={submitting}
+        variant="outlined"
+        onClick={() => setConfirmOpen(true)}
+        className={classes.cancel}
+      >
+        <DeleteOutlineIcon/>
+      </Button>
+      <Box flexGrow={1} />
+        <Button
+          disabled={submitting}
+          variant="outlined"
+          onClick={() => setCatValue("")}
+          className={classes.cancel}
+        >
+          {t("Cancel")}
+        </Button>
+      <Button 
+        variant="outlined"
+        disabled={serviceData.title ?
+          (submitting ||
+          !serviceData.title.trim()) ||
+          !serviceData.price ||
+          serviceData.masterIds.length === 0
+          : true
+        }
+        type="submit"
+        className={classes.save}
+      >
+        {submitting ? (
+          <CircularProgress className={classes.save} size={24} />
+        ) : (
+          `${t("Save")}`
+        )}
+      </Button>
+    </Box>
+    <Dialog
+      open={confirmOpen}
+      disableBackdropClick={true}
+      TransitionComponent={Transition}
+      //fullScreen={!!isMobile}
+    >
+      <DialogTitle>
+        {t("Are you sure you want to delete the service?")}
+      </DialogTitle>
+      <DialogActions>
+        <Button
+          //color="secondary"
+          variant="contained"
+          onClick={() => {
+            setConfirmOpen(false);
+          }}
+        >
+          {t("No")}
+        </Button>
+        <Button
+          //color="secondary"
+          variant="contained"
+          onClick={() => 
+            deleteMutation({variables: { serviceId: parseInt(selectedService.id) }}).catch(err => {
+              console.error(err);
+              history.push('/partner');
+            })
+          }
+        >
+          {t("Yes")}
+        </Button>
+      </DialogActions>
+    </Dialog>
   </form>
   )
 } 
 
-const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen, userId}) => {
+const CategoryServices = ({role, catValue, selectedService, data_salon, userId, setCatValue, snack, setSnack }) => {
   const { t } = useTranslation();
   const history = useHistory();
 
   const [updateHairService, { data: update_data }] = useMutation(UPDATE_HAIR_SERVICE_MUTATION, {
     onCompleted({ updateHairService }) {
-      history.push(`/partner/${userId}/salon/view`);
-    //   setSnack ({
-    //   ...snack,
-    //   snackOpen: true,
-    //   snackType: "success",
-    //   snackMessage: "Confirmed"
-    // })
-    //setSubmitting(false);
+      //history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully updated!")
+      })
   },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [deleteHairService, { data: delete_data }] = useMutation(DELETE_HAIR_SERVICE_MUTATION, {
     onCompleted({ deleteHairService }) {
-      history.push(`/partner/${userId}/salon/view`);
-    },
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully deleted!")
+      })
+  },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [updateNailsService] = useMutation(UPDATE_NAILS_SERVICE_MUTATION, {
     onCompleted({ updateNailsService }) {
-      history.push(`/partner/${userId}/salon/view`);
-  },
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully updated!")
+      })
+},
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [deleteNailsService] = useMutation(DELETE_NAILS_SERVICE_MUTATION, {
     onCompleted({ deleteNailsService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully deleted!")
+      })
     },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [updateHairRemovalService] = useMutation(UPDATE_HAIR_REMOVAL_SERVICE_MUTATION, {
     onCompleted({ updateHairRemovalService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully updated!")
+      })
   },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [deleteHairRemovalService] = useMutation(DELETE_HAIR_REMOVAL_SERVICE_MUTATION, {
     onCompleted({ deleteHairRemovalService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully deleted!")
+      })
     },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [updateMakeupService] = useMutation(UPDATE_MAKEUP_SERVICE_MUTATION, {
     onCompleted({ updateMakeupService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully updated!")
+      })
   },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [deleteMakeupService] = useMutation(DELETE_MAKEUP_SERVICE_MUTATION, {
     onCompleted({ deleteMakeupService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully deleted!")
+      })
     },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [updateMassageService] = useMutation(UPDATE_MASSAGE_SERVICE_MUTATION, {
     onCompleted({ updateMassageService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully updated!")
+      })
   },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [deleteMassageService] = useMutation(DELETE_MASSAGE_SERVICE_MUTATION, {
     onCompleted({ deleteMassageService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully deleted!")
+      })
     },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [updateEyebrowService] = useMutation(UPDATE_EYEBROW_SERVICE_MUTATION, {
     onCompleted({ updateEyebrowService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully updated!")
+      })
   },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [deleteEyebrowService] = useMutation(DELETE_EYEBROW_SERVICE_MUTATION, {
     onCompleted({ deleteEyebrowService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully deleted!")
+      })
     },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [updateCosmetologyService] = useMutation(UPDATE_COSMETOLOGY_SERVICE_MUTATION, {
     onCompleted({ updateCosmetologyService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully updated!")
+      })
   },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [deleteCosmetologyService] = useMutation(DELETE_COSMETOLOGY_SERVICE_MUTATION, {
     onCompleted({ deleteCosmetologyService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully deleted!")
+      })
     },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [updateTattooService] = useMutation(UPDATE_TATTOO_SERVICE_MUTATION, {
     onCompleted({ updateTattooService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully updated!")
+      })
   },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [deleteTattooService] = useMutation(DELETE_TATTOO_SERVICE_MUTATION, {
     onCompleted({ deleteTattooService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully deleted!")
+      })
     },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [updateAestheticsService] = useMutation(UPDATE_AESTHETICS_SERVICE_MUTATION, {
     onCompleted({ updateAestheticsService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully updated!")
+      })
   },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
   });
   const [deleteAestheticsService] = useMutation(DELETE_AESTHETICS_SERVICE_MUTATION, {
     onCompleted({ deleteAestheticsService }) {
-      history.push(`/partner/${userId}/salon/view`);
+      setSnack ({
+        ...snack,
+        snackOpen: true,
+        snackType: "success",
+        snackMessage: t("Service successfully deleted!")
+      })
     },
     refetchQueries: [{ query: ME_QUERY, variables: {id:userId} }],
     awaitRefetchQueries: true,
@@ -456,6 +624,8 @@ const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen,
           catType="hairCategories" 
           selectedService={selectedService} 
           data_salon={data_salon}
+          userId={userId}
+          setCatValue={setCatValue}
         />
       );   
     case t("category types", {returnObjects: true})["NailsType"]:
@@ -467,6 +637,8 @@ const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen,
           catType="nailsCategories" 
           selectedService={selectedService} 
           data_salon={data_salon}
+          userId={userId}
+          setCatValue={setCatValue}
         />
       );          
     case t("category types", {returnObjects: true})["HairRemovalType"]:
@@ -478,6 +650,8 @@ const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen,
           catType="hairRemovalCategories" 
           selectedService={selectedService} 
           data_salon={data_salon}
+          userId={userId}
+          setCatValue={setCatValue}
         />
       );          
     case t("category types", {returnObjects: true})["MakeupType"]:
@@ -489,6 +663,8 @@ const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen,
           catType="makeupCategories" 
           selectedService={selectedService} 
           data_salon={data_salon}
+          userId={userId}
+          setCatValue={setCatValue}
         />
       );   
     case t("category types", {returnObjects: true})["MassageType"]:
@@ -500,6 +676,8 @@ const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen,
           catType="massageCategories" 
           selectedService={selectedService} 
           data_salon={data_salon}
+          userId={userId}
+          setCatValue={setCatValue}
         />
       );          
     case t("category types", {returnObjects: true})["EyebrowType"]:
@@ -511,6 +689,8 @@ const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen,
           catType="eyebrowCategories" 
           selectedService={selectedService} 
           data_salon={data_salon}
+          userId={userId}
+          setCatValue={setCatValue}
         />
       );          
     case t("category types", {returnObjects: true})["CosmetologyType"]:
@@ -522,6 +702,8 @@ const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen,
           catType="cosmetologyCategories" 
           selectedService={selectedService} 
           data_salon={data_salon}
+          userId={userId}
+          setCatValue={setCatValue}
         />
       );   
     case t("category types", {returnObjects: true})["TattooType"]:
@@ -533,6 +715,8 @@ const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen,
           catType="tattooCategories" 
           selectedService={selectedService} 
           data_salon={data_salon}
+          userId={userId}
+          setCatValue={setCatValue}
         />
       );          
     case t("category types", {returnObjects: true})["AestheticsType"]:
@@ -544,6 +728,8 @@ const CategoryServices = ({role, catValue, selectedService, data_salon, setOpen,
           catType="aestheticsCategories" 
           selectedService={selectedService} 
           data_salon={data_salon}
+          userId={userId}
+          setCatValue={setCatValue}
         />
       );                
     default:
@@ -609,29 +795,83 @@ const UpdateServiceForm = ({classes, currentUser}) => {
   //   cache.writeQuery({ query: GET_TRACKS_QUERY, data: { tracks } });
   // };
 
+  const [snack, setSnack] = useState({
+    snackOpen: false,
+    snackType: "",
+    snackMessage: ""
+  })
+
+  const handleSnackClose = () => {
+    setCatValue("")
+    setSnack ({ ...snack,snackOpen: false })
+  }
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+
   return(
     <div className={classes.container}>
+      <Breadcrumbs
+        separator={<NavigateNextIcon fontSize="small" />}
+        aria-label="breadcrumb"
+        className={classes.breadcrumb}
+      >
+        <Link
+          variant="body1"
+          color="inherit"
+          to={`/partner/${userId}/salon/view`}
+          //component={RouterLink}
+        >
+          {t("Salon")}
+        </Link>
+        <Typography
+          variant="body1"
+          color="textPrimary"
+        >
+          {t("Update Service")}
+        </Typography>
+      </Breadcrumbs>
       <Paper className={classes.paper}>
           <h3>{t("Update Service")}</h3>
-          <FormControl fullWidth className={classes.field}>
-            <Autocomplete
+          <FormControl fullWidth variant="outlined" className={classes.field}>
+            {/* <Autocomplete
               id="size-small-clearOnEsc"
               disableClearable
               size="small"
               //getOptionLabel={option => t(`${option}`)}
               options={category_set}
               onChange={(event,value) => {
-                        setCatValue(value);
+                        setCatValue(value)
+                        setSelectedService({})
               }}
               renderInput={(params) => (
                 <TextField {...params} 
-                variant="outlined" 
-                label={t("Category")} 
-                placeholder={t("Select service category")}
+                  variant="outlined" 
+                  label={t("Category")} 
+                  placeholder={t("Select service category")}
                 />
               )}
-            />
-            <FormHelperText>{t("Choose a category")}</FormHelperText>
+            /> */}
+            <InputLabel id="demo-simple-select-outlined-label">{t("Category")}</InputLabel>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              value={catValue}
+              //disabled={catValue}
+              onChange={(event) => {
+                setCatValue(event.target.value)
+                setSelectedService({})
+              }}
+              label={t("Category")}
+            >
+              {category_set.map(cat => (
+                <MenuItem key={cat} value={cat}>
+                  {t(`${cat}`)}
+                </MenuItem>
+              ))}
+            </Select>
+            {/* <FormHelperText>{t("Choose a category")}</FormHelperText> */}
           </FormControl> 
           {catValue &&               
             (<FormControl fullWidth className={classes.field}> 
@@ -661,33 +901,17 @@ const UpdateServiceForm = ({classes, currentUser}) => {
               data_salon={data_salon} 
               catValue={catValue} 
               selectedService={selectedService}
-              setOpen={setOpen} 
+              setCatValue={setCatValue} 
+              snack={snack}
+              setSnack={setSnack} 
               userId={userId}
             />)} 
       </Paper>
-      <Dialog
-        open={open}
-        disableBackdropClick={true}
-        TransitionComponent={Transition}
-        fullScreen={!!isMobile}
-        >
-          <DialogTitle>
-            {t("Service successfully updated!")}
-          </DialogTitle>
-          <DialogActions>
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => {
-                setOpen(false);
-              }}
-            >
-              <Link to={`/partner/${userId}/salon/view`}>
-                {t("Back to salon page")}
-              </Link>
-            </Button>
-          </DialogActions>
-      </Dialog>
+      <Snackbar open={snack.snackOpen} autoHideDuration={1500} onClose={handleSnackClose}>
+        <Alert onClose={handleSnackClose} severity={snack.snackType}>
+          {snack.snackMessage}
+        </Alert>
+      </Snackbar>
     </div>
   )};
 
@@ -953,7 +1177,7 @@ const styles = theme => ({
     alignItems:"center"
   },
   paper: {
-    marginTop: theme.spacing.unit * 8,
+    //marginTop: theme.spacing.unit * 8,
     width: "100%",
     display: "flex",
     flexDirection: "column",
@@ -996,6 +1220,10 @@ const styles = theme => ({
     paddingTop: "10px",
     paddingLeft: "20px",
     paddingRight: "20px"
+  },
+  breadcrumb: {
+    paddingLeft: "10px",
+    paddingTop: "15px"
   }
 });
 

@@ -1,4 +1,4 @@
-import React, {useState, useContext, useRef} from "react";
+import React, {useState, useEffect, useContext, useRef} from "react";
 import {Link} from "react-router-dom";
 import classNames from "classnames";
 import ImageGallery from "react-image-gallery";
@@ -107,6 +107,39 @@ const Service = ({title, duration, promotionPrice, price }) => {
 }  
 
 const SalonDetail=({match}) => {
+
+  // function queryReports() {
+  //   gapi.client.request({
+  //     path: '/v4/reports:batchGet',
+  //     root: 'https://analyticsreporting.googleapis.com/',
+  //     method: 'POST',
+  //     body: {
+  //       reportRequests: [
+  //         {
+  //           viewId: VIEW_ID,
+  //           dateRanges: [
+  //             {
+  //               startDate: '7daysAgo',
+  //               endDate: 'today'
+  //             }
+  //           ],
+  //           metrics: [
+  //             {
+  //               expression: 'ga:sessions'
+  //             }
+  //           ]
+  //         }
+  //       ]
+  //     }
+  //   }).then(displayResults, console.error.bind(console));
+  // }
+
+  // function displayResults(response) {
+  //   console.log('response',response);
+  //   var formattedJson = JSON.stringify(response.result, null, 2);
+  //   document.getElementById('query-output').value = formattedJson;
+  // }
+
     const classes = useStyles();
     const currentUser = useContext(UserContext);
     const history = useHistory();
@@ -353,7 +386,14 @@ const SalonDetail=({match}) => {
 
       };
     },[window.innerWidth]);
-      
+
+    const plural = (n) => {
+      //find correct suffix in plural translation
+      if (n%10==1) return 0 
+      else if (n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20)) return 1 
+      else return 2
+    }
+    
     return (
     <div>
         <Query query={SELECTED_SALON_QUERY} variables={{ id }}>
@@ -370,6 +410,7 @@ const SalonDetail=({match}) => {
                 }
               })
             } 
+            //console.log('data',data)
             const salon = data.salonSelected[0];
             const hairServices = salon.hairserviceSet
             const nailsServices = salon.nailsserviceSet
@@ -383,7 +424,7 @@ const SalonDetail=({match}) => {
             const services = [...hairServices, ...nailsServices, ...hairRemovalServices, ...makeupServices, ...massageServices,
                               ...eyebrowServices, ...cosmetologyServices, ...tattooServices, ...aestheticsServices]   
 
-            const cosmetology_diff = salon.cosmetologyCategories.map(el => el.title).filter(x => !cosmetologyServices.map(el => el.title).includes(x))
+            //const cosmetology_diff = salon.cosmetologyCategories.map(el => el.title).filter(x => !cosmetologyServices.map(el => el.title).includes(x))
 
             const _raw_images = [salon.photoMain, salon.photo1, salon.photo2, salon.photo3,
                 salon.photo4, salon.photo5, salon.photo6];
@@ -440,7 +481,7 @@ const SalonDetail=({match}) => {
                               </Link>
                             </GridItem>
 
-                            {salon.appointment &&
+                            {salon.appointment && services.length > 0 &&
                             <GridItem md={6} sm={6} xs={6} className={classes.pullRight}>
                               {currentUser
                                 ? (<div>
@@ -509,7 +550,7 @@ const SalonDetail=({match}) => {
                           <h5>{t("View all reviews")}</h5>
                         </Link>
                       </GridItem>
-                    {salon.appointment &&
+                    {salon.appointment && services.length > 0 &&
                     <GridItem md={6} sm={6} className={classes.pullRight}>
                       {currentUser
                         ? (<div>
@@ -681,7 +722,7 @@ const SalonDetail=({match}) => {
                       )}  
                       {salon.cosmetologyCategories[0] && (
                         <Accordion title={t("Cosmetology Services")}>
-                          {cosmetology_diff.map(service => (
+                          {/* {cosmetology_diff.map(service => (
                             <div key={service}>
                               <CardFooter style={{paddingTop:"5px",paddingBottom:"10px",paddingLeft:"0px"}}>
                                 <div className={classes.priceContainer}>
@@ -690,7 +731,7 @@ const SalonDetail=({match}) => {
                               </CardFooter>
                               <Divider />
                             </div> 
-                          ))}
+                          ))} */}
                           {cosmetologyServices.map(service => (
                             <div key={service.id}>
                             <Service 
@@ -797,35 +838,35 @@ const SalonDetail=({match}) => {
                           <div>
                           {smallViewSize ?
                           ( <GridContainer className={classes.paddingTLR}>
-                                { (Number.isNaN(parseFloat(avgRating))) ? (
-                                  <GridItem xs={7} sm={5}>
+                             {(Number.isNaN(parseFloat(avgRating))) ? (
+                              <GridItem xs={7} sm={7}>
+                              <Box display="flex" justifyContent="center">
+                                <Box> <Rating value={avgRating} precision={0.1} readOnly/> </Box>
+                              </Box>
+                              <Box display="flex" justifyContent="center">
+                                {/* <Box> <div>{countReviews} {t("reviews")}</div> </Box> */}
+                                <Box> <div>{t("No review")}</div> </Box>
+                              </Box>
+                              </GridItem>
+                              ) : (
+                                <GridItem xs={7} sm={7}>
+                                  <GridItem xs={6} sm={6}>
+                                  <Box display="flex" justifyContent="center">
+                                    <Box> <h1>{avgRating}</h1> </Box>
+                                  </Box>
+                                  </GridItem>
+                                  <GridItem xs={6} sm={6}>
                                   <Box display="flex" justifyContent="center">
                                     <Box> <Rating value={avgRating} precision={0.1} readOnly/> </Box>
                                   </Box>
                                   <Box display="flex" justifyContent="center">
-                                    {/* <Box> <div>{countReviews} {t("reviews")}</div> </Box> */}
-                                    <Box> <div>{t("No review")}</div> </Box>
+                                  {countReviews} {t(`review_${plural(countReviews)}`)}
                                   </Box>
                                   </GridItem>
-                                  ) : (
-                                    <>
-                                    <GridItem xs={3} sm={2}>
-                                    <Box display="flex" justifyContent="center">
-                                      <Box> <h1>{avgRating}</h1> </Box>
-                                    </Box>
-                                    </GridItem>
-                                    <GridItem xs={4} sm={3}>
-                                    <Box display="flex" justifyContent="center">
-                                      <Box> <Rating value={avgRating} precision={0.1} readOnly/> </Box>
-                                    </Box>
-                                    <Box display="flex" justifyContent="center">
-                                      {t("review",{count:{countReviews}})}
-                                    </Box>
-                                    </GridItem>
-                                    </>
-                                  )}
+                                </GridItem>
+                              )}
 
-                                <RateButton xs="5" sm="7" md="2"/>
+                            <RateButton xs="5" sm="5" md="2"/>
 
                             <GridItem xs={12} sm={12} className={classes.marginLR}>
                             <RatingDistribution value="5" progress={progressFive} quantity={ratedFive} />
@@ -862,7 +903,8 @@ const SalonDetail=({match}) => {
                                  </Box>) :
                                  (<Box display="flex" justifyContent="center">
                                  <Box> 
-                                  {countReviews} {t("review",{count:{countReviews}})}
+                                 {/* {countReviews} {t("review",{count: {countReviews}})} */}
+                                  {countReviews} {t(`review_${plural(countReviews)}`)}
                                 </Box>
                                 </Box>)
                                 }
@@ -943,7 +985,7 @@ const SalonDetail=({match}) => {
     );
 };
 
-const SELECTED_SALON_QUERY = gql`
+export const SELECTED_SALON_QUERY = gql`
 query selected_salon ($id:Int!) {
     salonSelected(id:$id) {
         id
@@ -1075,6 +1117,17 @@ query selected_salon ($id:Int!) {
         masterSet {
           id
           masterName
+          masterEmail
+          masterPhone
+          isStaff
+          staffStatus
+          mondayHours
+          tuesdayHours
+          wednesdayHours
+          thursdayHours
+          fridayHours
+          saturdayHours
+          sundayHours
           bookingSet {
             id
             customerName

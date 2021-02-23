@@ -316,7 +316,7 @@ const Calendar = ({salon, masterId, bookings, isModalOpen, setModalOpen, locale}
         />
         {!salon.appointment && 
           <h6> 
-            {t("Customer access to your calendar and booking from the website is available in standard package.")}
+            {t("Customer access to your calendar and booking from the website is not activated. Please, contact us if you want to activate it.")}
           </h6>
         }
         <Paper className={classes.calendar}>

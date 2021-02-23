@@ -41,7 +41,7 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
   const history = useHistory();
 
   var isMobile = navigator.userAgent.match(
-    /(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i
+    /(iPad)|(iPhone)|(iPod)|(android)|(webOS)|(BlackBerry)|(IEMobile)|(Opera Mini)|(Lumia)/i
   );
 
   // handle login form submission
@@ -234,6 +234,7 @@ const Login = ({ classes, setNewUser, setLoginOpen }) => {
         open={open}
         disableBackdropClick={true}
         TransitionComponent={Transition}
+        fullScreen={isMobile? true:false}
       >
         <DialogTitle>
           {t("Invalid credentials.")} 

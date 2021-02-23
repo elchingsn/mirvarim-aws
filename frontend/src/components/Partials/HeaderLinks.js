@@ -34,7 +34,7 @@ export default function HeaderLinks(props) {
   const smoothScroll = (e, target) => {
     if (window.location.pathname === "/sections") {
       var isMobile = navigator.userAgent.match(
-        /(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i
+        /(iPad)|(iPhone)|(iPod)|(android)|(webOS)|(BlackBerry)|(IEMobile)|(Opera Mini)|(Lumia)/i
       );
       if (isMobile) {
         // if we are on mobile device the scroll into view will be managed by the browser

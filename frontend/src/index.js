@@ -81,7 +81,7 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
     for (let err of graphQLErrors) {
       // switch (err.extensions.code) {
       //   case 'UNAUTHENTICATED':
-      if (err.message.includes("Signature has expired")) {
+      if (err.message.includes("Signature has expired") && localStorage.getItem("refreshToken")) {
       // switch (err.message) {
       //   case "Signature has expired":
 

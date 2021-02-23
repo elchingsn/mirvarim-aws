@@ -15,9 +15,13 @@ import {
   ListSubheader,
   makeStyles
 } from '@material-ui/core';
+import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ReceiptIcon from '@material-ui/icons/ReceiptOutlined';
 import PieChartIcon from '@material-ui/icons/PieChart';
 import BusinessCenterIcon from '@material-ui/icons/BusinessCenter';
+import LoyaltyIcon from '@material-ui/icons/Loyalty';
 import NavItem from './NavItem';
 
 function renderNavItems({
@@ -112,10 +116,20 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
 
   const sections = [
     {
+      subheader: `${t("Finances")}`,
+      items: [
+        {
+          title: `${t("Balance")}`,
+          href: `/partner/${user.id}/account`,
+          icon: AccountBalanceIcon
+        }
+      ]
+    },
+    {
       subheader: `${t("Listings")}`,
       items: [
         {
-          title: `${t("Salons")}`,
+          title: `${t("Salon")}`,
           href: `/partner/${user.id}/salon/view`,
           icon: BusinessCenterIcon,
           items: [
@@ -136,7 +150,7 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
         {
           title: `${t("Masters")}`,
           href: `/partner/${user.id}/master/view`,
-          icon: BusinessCenterIcon,
+          icon: SupervisorAccountIcon,
           items: [
             // {
             //   title: 'View Masters',
@@ -149,13 +163,17 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
             {
               title: `${t("Update Master")}`,
               href: `/partner/${user.id}/master/edit`
+            },
+            {
+              title: `${t("Business hours")}`,
+              href: `/partner/${user.id}/master/hours`
             }
           ]
         },
         {
           title: `${t("Services")}`,
           href: `/partner/salon/:id/service/view`,
-          icon: BusinessCenterIcon,
+          icon: LoyaltyIcon,
           items: [
             // {
             //   title: 'Browse Services',
@@ -236,7 +254,7 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
               variant="subtitle1"
               color="secondary"
               component={RouterLink}
-              to="/contact"
+              to={`/partner/${user.id}/contact`}
             >
               {t("Contact us")}
             </Link>

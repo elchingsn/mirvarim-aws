@@ -54,6 +54,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'django_dramatiq',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -71,6 +72,7 @@ INSTALLED_APPS = [
     # 'utils',
     'users',
     'reviews',
+    'transactions',
 
     # 3rd party
     'django_extensions',
@@ -104,8 +106,27 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-
 ]
+
+REDIS_HOST= os.environ.get('REDIS_HOST')
+
+# Dramatiq settings
+DRAMATIQ_BROKER = {
+    "BROKER": "dramatiq.brokers.redis.RedisBroker",
+    "OPTIONS": {
+        # "url": 'redis://'+ REDIS_HOST +':6379/0',
+        "url": 'redis://'+ REDIS_HOST,
+    },
+    "MIDDLEWARE": [
+        "dramatiq.middleware.Prometheus",
+        "dramatiq.middleware.AgeLimit",
+        "dramatiq.middleware.TimeLimit",
+        "dramatiq.middleware.Callbacks",
+        "dramatiq.middleware.Retries",
+        "django_dramatiq.middleware.AdminMiddleware",
+        "django_dramatiq.middleware.DbConnectionsMiddleware",
+    ]
+}
 
 # allow webpack development server to make cross-request
 CORS_ORIGIN_WHITELIST = (
@@ -165,8 +186,8 @@ AUTH_USER_MODEL = 'users.CustomUser'
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
     'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
-    'JWT_EXPIRATION_DELTA': timedelta(hours=12),
-    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=14),
+    'JWT_EXPIRATION_DELTA': timedelta(days=30),
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=180),
 
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",
@@ -205,7 +226,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                 'django.template.context_processors.media', # access media url
+                'django.template.context_processors.media', # access media url
             ],
         },
     },
